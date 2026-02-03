@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [activeView, setActiveView] = useState('links'); // 'links' or 'settings'
+  const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
   const router = useRouter();
 
   useEffect(() => {
@@ -32,7 +33,19 @@ export default function Dashboard() {
       return;
     }
     fetchUrls();
+    fetchUserPlan();
   }, []);
+
+  const fetchUserPlan = async () => {
+    try {
+      const { data } = await api.get('/auth/me');
+      if (data.data) {
+        setUserPlan(data.data.plan || 'free'); 
+      }
+    } catch (err) {
+      console.error('Error fetching plan:', err);
+    }
+  };
 
   const fetchUrls = async () => {
     try {
@@ -290,7 +303,21 @@ export default function Dashboard() {
                      <MapPin className="w-3 h-3 text-rose-500" />
                      TOP CITIES & MARKETS
                    </h3>
-                   <div className="space-y-4">
+                   <div className="space-y-4 relative">
+                      {/* Gate Overlay */}
+                      {['free', 'starter'].includes(userPlan) && (
+                        <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4">
+                            <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center mb-2 shadow-xl">
+                                <Zap className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                            </div>
+                            <h4 className="text-xs font-black uppercase tracking-widest text-black mb-1">Elite Feature</h4>
+                            <p className="text-[10px] text-zinc-500 font-medium mb-3">Upgrade to see City-level data</p>
+                            <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-colors">
+                                Unlock
+                            </button>
+                        </div>
+                      )}
+
                       {analytics.cityStats.length > 0 ? analytics.cityStats.slice(0, 6).map((c, i) => (
                         <div key={i} className="flex justify-between items-center group">
                            <div className="flex items-center gap-3">
