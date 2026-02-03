@@ -1,81 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, Zap, Globe, Shield, Activity, Users, Loader2 } from 'lucide-react';
+import { Check, Zap, Globe, Shield, Activity } from 'lucide-react';
 import Link from 'next/link';
-import useRazorpay from 'react-razorpay';
-import api from '@/lib/api';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 export default function PricingSection() {
-    const [Razorpay] = useRazorpay();
-    const router = useRouter();
-
-    const handleUpgrade = async (planId, price) => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            router.push('/login');
-            return;
-        }
-
-        try {
-            // 1. Create Order
-            const { data: orderData } = await api.post('/payment/create-order', {
-                planId,
-                amount: price
-            });
-
-            if (!orderData.success) {
-                toast.error('Failed to initiate payment');
-                return;
-            }
-
-            // 2. Open Razorpay
-            const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Public Key
-                amount: orderData.order.amount,
-                currency: "INR",
-                name: "Shorty SaaS",
-                description: `Upgrade to ${planId.toUpperCase()} Plan`,
-                order_id: orderData.order.id,
-                handler: async function (response) {
-                    // 3. Verify Payment
-                    try {
-                        const verifyRes = await api.post('/payment/verify', {
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
-                        });
-
-                        if (verifyRes.data.success) {
-                            toast.success(verifyRes.data.message);
-                            // Refresh page or user state
-                            window.location.href = '/dashboard';
-                        }
-                    } catch (err) {
-                        toast.error('Payment verification failed');
-                    }
-                },
-                prefill: {
-                    name: "",
-                    email: "",
-                    contact: ""
-                },
-                theme: {
-                    color: "#000000"
-                }
-            };
-
-            const rzp1 = new Razorpay(options);
-            rzp1.open();
-
-        } catch (err) {
-            console.error(err);
-            toast.error(err.response?.data?.error || 'Something went wrong');
-        }
-    };
-
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -151,14 +80,13 @@ export default function PricingSection() {
                             "Community Support"
                         ]}
                         icon={<Zap className="w-5 h-5 text-zinc-400" />}
-                        onUpgrade={handleUpgrade}
                     />
 
                     {/* STARTER TIER */}
                     <PricingCard
                         variants={itemVariants}
                         name="Growth"
-                        price="9"
+                        price="399"
                         planId="starter"
                         description="For creators building an audience."
                         features={[
@@ -170,7 +98,6 @@ export default function PricingSection() {
                         ]}
                         icon={<Activity className="w-5 h-5 text-emerald-500" />}
                         accentColor="emerald"
-                        onUpgrade={handleUpgrade}
                     />
 
                     {/* PRO TIER (RECOMMENDED) */}
@@ -179,7 +106,7 @@ export default function PricingSection() {
                         <PricingCard
                             variants={itemVariants}
                             name="Elite"
-                            price="29"
+                            price="899"
                             planId="pro"
                             description="For brands dominating markets."
                             features={[
@@ -193,7 +120,6 @@ export default function PricingSection() {
                             icon={<Shield className="w-5 h-5 text-indigo-500" />}
                             highlight={true}
                             accentColor="indigo"
-                            onUpgrade={handleUpgrade}
                         />
                     </div>
 
@@ -201,7 +127,7 @@ export default function PricingSection() {
                     <PricingCard
                         variants={itemVariants}
                         name="Scale"
-                        price="79"
+                        price="2499"
                         planId="business"
                         description="For teams running operations."
                         features={[
@@ -214,7 +140,6 @@ export default function PricingSection() {
                         ]}
                         icon={<Globe className="w-5 h-5 text-amber-500" />}
                         accentColor="amber"
-                        onUpgrade={handleUpgrade}
                     />
                 </motion.div>
             </div>
@@ -222,16 +147,8 @@ export default function PricingSection() {
     );
 }
 
-function PricingCard({ name, price, planId, description, features, icon, highlight = false, accentColor = "zinc", variants, onUpgrade }) {
+function PricingCard({ name, price, planId, description, features, icon, highlight = false, accentColor = "zinc", variants }) {
     const isFree = price === "0";
-    const [loading, setLoading] = useState(false);
-
-    const handleClick = async () => {
-        if (isFree) return;
-        setLoading(true);
-        await onUpgrade(planId, price);
-        setLoading(false);
-    }
 
     return (
         <motion.div
@@ -253,7 +170,7 @@ function PricingCard({ name, price, planId, description, features, icon, highlig
 
             <div className="mb-6">
                 <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black tracking-tighter">${price}</span>
+                    <span className="text-4xl font-black tracking-tighter">₹{price}</span>
                     <span className="text-zinc-400 font-bold text-xs uppercase tracking-widest">/mo</span>
                 </div>
                 <p className="text-zinc-500 text-xs font-medium mt-2 leading-relaxed h-10">{description}</p>
@@ -268,26 +185,15 @@ function PricingCard({ name, price, planId, description, features, icon, highlig
                 ))}
             </div>
 
-            {isFree ? (
-                <Link
-                    href="/signup"
-                    className={`w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-100`}
-                >
-                    Start Free
-                </Link>
-            ) : (
-                <button
-                    onClick={handleClick}
-                    disabled={loading}
-                    className={`w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 disabled:opacity-70 ${highlight
-                        ? 'bg-black text-white hover:bg-zinc-800 hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20'
-                        : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-100'
-                        }`}
-                >
-                    {loading && <Loader2 className="w-3 h-3 animate-spin" />}
-                    {loading ? 'Processing...' : 'Get Started'}
-                </button>
-            )}
+            <Link
+                href={`/pricing/${planId}`}
+                className={`w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center ${highlight
+                    ? 'bg-black text-white hover:bg-zinc-800 hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20'
+                    : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100 border border-zinc-100'
+                    }`}
+            >
+                {isFree ? 'Start Free' : 'View Details'}
+            </Link>
         </motion.div>
     );
 }
