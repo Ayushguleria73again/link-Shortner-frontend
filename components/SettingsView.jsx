@@ -65,6 +65,31 @@ export default function SettingsView() {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+    };
+
+    const handleDeleteAccount = async () => {
+        const confirmDelete = window.confirm(
+            "⚠️ DANGER ZONE ⚠️\n\nAre you sure you want to delete your account?\nThis action will:\n- Wipe your proifle\n- Delete ALL your short links\n- Remove all analytics data\n\nThis cannot be undone."
+        );
+
+        if (confirmDelete) {
+            const doubleCheck = prompt("Type 'DELETE' to confirm destruction of your account.");
+            if (doubleCheck === 'DELETE') {
+                try {
+                    await api.delete('/auth/me');
+                    alert('Account terminated. Goodbye.');
+                    handleLogout();
+                } catch (err) {
+                    alert('Termination failed. Contact support.');
+                }
+            }
+        }
+    };
+
     if (loading) return (
         <div className="py-20 flex flex-col items-center gap-4">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
@@ -196,10 +221,24 @@ export default function SettingsView() {
                     </div>
                 </div>
 
-                <button className="w-full flex items-center justify-center gap-3 bg-rose-50 text-rose-500 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-100 transition-all border border-rose-100">
-                    <PowerOff className="w-4 h-4" />
-                    Terminate Session
-                </button>
+                {/* Account Actions */}
+                <div className="space-y-4">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center gap-3 bg-zinc-100 text-zinc-600 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all border border-zinc-200"
+                    >
+                        <PowerOff className="w-4 h-4" />
+                        Log Out
+                    </button>
+
+                    <button
+                        onClick={handleDeleteAccount}
+                        className="w-full flex items-center justify-center gap-3 bg-rose-50 text-rose-500 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all border border-rose-100 group"
+                    >
+                        <PowerOff className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+                        Delete Account
+                    </button>
+                </div>
             </div>
         </div>
     );
