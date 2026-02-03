@@ -1,6 +1,7 @@
 import { Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,9 +22,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${spaceMono.variable} min-h-screen`}>
+      <body className={`${inter.className} ${spaceMono.variable} min-h-screen flex flex-col`}>
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-grow">{children}</main>
+        <Footer />
         <Toaster position="bottom-right" theme="dark" />
       </body>
     </html>

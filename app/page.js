@@ -7,6 +7,7 @@ import {
   ArrowRight, Link2, BarChart2, Shield, Zap, 
   Globe, Activity, MousePointer2, Users, ChevronRight
 } from 'lucide-react';
+import PricingSection from '@/components/PricingSection';
 
 const ScrambleText = ({ text, delay = 0 }) => {
   const [displayText, setDisplayText] = React.useState('');
@@ -197,6 +198,7 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* Features Grid */}
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -220,6 +222,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <PricingSection />
+
       {/* Final CTA */}
       <section className="pb-32 px-6">
         <div className="max-w-5xl mx-auto bg-black rounded-[48px] p-12 md:p-24 text-center text-white relative overflow-hidden">
@@ -239,22 +244,6 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="py-20 border-t border-zinc-100">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
-           <div className="flex items-center gap-2 font-black tracking-tighter text-xl">
-             <Link2 className="w-6 h-6" />
-             SHORTY.
-           </div>
-           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-300">
-             &copy; {new Date().getFullYear()} — Engineered for Data Obsession.
-           </p>
-           <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-400">
-              <a href="#" className="hover:text-black transition-colors">Twitter</a>
-              <a href="#" className="hover:text-black transition-colors">Github</a>
-              <a href="#" className="hover:text-black transition-colors">Privacy</a>
-           </div>
-        </div>
-      </footer>
     </div>
   );
 }
