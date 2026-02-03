@@ -24,6 +24,9 @@ export default function SettingsView() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const [userUsage, setUserUsage] = useState(null); // New state for usage
+    const [userPlan, setUserPlan] = useState('free'); // New state for plan
+
     useEffect(() => {
         fetchSettings();
     }, []);
@@ -39,8 +42,10 @@ export default function SettingsView() {
             if (profileRes.data.data) {
                 setProfile(profileRes.data.data);
             }
-            if (userRes.data.data.apiKey) {
+            if (userRes.data.data) {
                 setApiKey(userRes.data.data.apiKey);
+                setUserUsage(userRes.data.data.usage);
+                setUserPlan(userRes.data.data.plan);
             }
         } catch (err) {
             console.error('Error fetching settings:', err);
@@ -217,12 +222,59 @@ export default function SettingsView() {
 
             {/* Sidebar Settings */}
             <div className="space-y-8">
+                {/* Usage & Plan Card */}
                 <div className="bg-black text-white rounded-[32px] p-8 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[40px] -mr-16 -mt-16" />
-                    <Shield className="w-8 h-8 mb-6 text-indigo-400" />
-                    <h3 className="text-xl font-black tracking-tight mb-4 uppercase">Elite Pro.</h3>
-                    <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-8">You are currently on the Enterprise Protocol. All advanced trackers and API shards are active.</p>
-                    <button className="w-full py-4 bg-white/10 hover:bg-white/20 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">Manage License</button>
+
+                    <div className="flex items-center justify-between mb-6">
+                        <Shield className="w-8 h-8 text-indigo-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full">
+                            {userPlan} Tier
+                        </span>
+                    </div>
+
+                    <h3 className="text-xl font-black tracking-tight mb-2 uppercase">
+                        {userPlan === 'business' ? 'Scale Protocol' : userPlan === 'pro' ? 'Elite Protocol' : userPlan === 'starter' ? 'Growth Protocol' : 'Spark Protocol'}
+                    </h3>
+                    <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-8">
+                        {userPlan === 'free' ? 'Upgrade to unlock advanced analytics and more links.' : 'All advanced systems active.'}
+                    </p>
+
+                    {userUsage && (
+                        <div className="space-y-6 mb-8">
+                            {/* Link Limit */}
+                            <div>
+                                <div className="flex justify-between text-[10px] uppercase font-black tracking-widest mb-2">
+                                    <span className="text-zinc-400">Links Created</span>
+                                    <span>{userUsage.linksCreated} / {userPlan === 'free' ? '50' : userPlan === 'starter' ? '500' : '∞'}</span>
+                                </div>
+                                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-indigo-500 rounded-full transition-all duration-1000"
+                                        style={{ width: `${Math.min((userUsage.linksCreated / (userPlan === 'free' ? 50 : userPlan === 'starter' ? 500 : 10000)) * 100, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Click Limit */}
+                            <div>
+                                <div className="flex justify-between text-[10px] uppercase font-black tracking-widest mb-2">
+                                    <span className="text-zinc-400">Monthly Clicks</span>
+                                    <span>{userUsage.clicksRecorded.toLocaleString()} / {userPlan === 'free' ? '1k' : userPlan === 'starter' ? '15k' : userPlan === 'pro' ? '150k' : '2M'}</span>
+                                </div>
+                                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-1000 ${userUsage.clicksRecorded > (userPlan === 'free' ? 1000 : 15000) ? 'bg-rose-500' : 'bg-emerald-500'}`}
+                                        style={{ width: `${Math.min((userUsage.clicksRecorded / (userPlan === 'free' ? 1000 : userPlan === 'starter' ? 15000 : userPlan === 'pro' ? 150000 : 2000000)) * 100, 100)}%` }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <button className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-200 transition-all">
+                        {userPlan === 'business' ? 'Manage Subscription' : 'Upgrade Plan'}
+                    </button>
                 </div>
 
                 <div className="bg-zinc-50 border border-zinc-100 rounded-[32px] p-8">
