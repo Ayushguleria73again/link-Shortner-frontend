@@ -1,6 +1,7 @@
 import { Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ["latin"] });
 const spaceMono = Space_Mono({ 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} ${spaceMono.variable} min-h-screen`}>
         <Navbar />
         <main>{children}</main>
+        <Toaster position="bottom-right" theme="dark" />
       </body>
     </html>
   );
