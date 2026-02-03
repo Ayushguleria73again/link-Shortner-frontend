@@ -6,6 +6,7 @@ import api from '@/lib/api';
 const ShortenForm = ({ onUrlCreated }) => {
     const [url, setUrl] = useState('');
     const [alias, setAlias] = useState('');
+    const [isOneTime, setIsOneTime] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -19,10 +20,12 @@ const ShortenForm = ({ onUrlCreated }) => {
         try {
             const { data } = await api.post('/url/shorten', {
                 originalUrl: url,
-                customAlias: alias
+                customAlias: alias,
+                isOneTime
             });
             setUrl('');
             setAlias('');
+            setIsOneTime(false);
             onUrlCreated(data.data);
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to shorten URL');
@@ -59,6 +62,18 @@ const ShortenForm = ({ onUrlCreated }) => {
                             value={alias}
                             onChange={(e) => setAlias(e.target.value)}
                         />
+                        <div className="flex items-center gap-2 mt-2 px-1">
+                            <input
+                                type="checkbox"
+                                id="one-time"
+                                checked={isOneTime}
+                                onChange={(e) => setIsOneTime(e.target.checked)}
+                                className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
+                            />
+                            <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
+                                Burn after read (One-time link)
+                            </label>
+                        </div>
                     </div>
 
                     <div className="md:col-span-12 lg:col-span-2 flex items-end">
