@@ -3,45 +3,45 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
-import { Loader2, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Eye, EyeOff, Mail, Key } from 'lucide-react';
 
 export default function Signup() {
+  const [step, setStep] = useState(1); // 1: Signup, 2: OTP
   const [formData, setFormData] = useState({ 
+    firstName: '',
+    lastName: '',
     email: '', 
     password: '', 
     confirmPassword: '' 
   });
+  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
       return;
     }
 
     setLoading(true);
 
     try {
-      const { data } = await api.post('/auth/register', {
+      await api.post('/auth/register', {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
         password: formData.password
       });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      router.push('/dashboard');
+      setStep(2); // Move to OTP step
+      setSuccess('Verification code sent to your email.');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed');
     } finally {
@@ -49,15 +49,173 @@ export default function Signup() {
     }
   };
 
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const { data } = await api.post('/auth/verify', {
+        email: formData.email,
+        otp
+      });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      await api.post('/auth/resend-otp', { email: formData.email });
+      setSuccess('New code sent to your email.');
+    } catch (err) {
+      setError('Failed to resend code.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (step === 1) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
+        <div className="w-full max-w-sm">
+          <div className="mb-12">
+            <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+              Join.
+              <ShieldCheck className="w-8 h-8 text-black" />
+            </h1>
+            <p className="text-zinc-400 text-xs font-bold tracking-widest">Create your secure account.</p>
+          </div>
+
+          {error && (
+            <div className="bg-black text-white px-4 py-3 rounded-xl mb-8 text-[10px] font-bold text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSignup} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">First Name</label>
+                    <input
+                        type="text"
+                        required
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Last Name</label>
+                    <input
+                        type="text"
+                        required
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Email Address</label>
+              <input
+                type="email"
+                required
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                placeholder="name@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 pr-12 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 pr-12 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-black text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-2 hover:bg-zinc-800"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                  <>
+                    CREATE ACCOUNT
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+
+          <p className="mt-12 text-zinc-400 text-[10px] font-bold tracking-widest text-center">
+            ALREADY REGISTERED?{' '}
+            <Link href="/login" className="text-black hover:underline ml-1">LOG IN</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // OTP Verification Step
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
       <div className="w-full max-w-sm">
         <div className="mb-12">
-          <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
-            Join.
-            <ShieldCheck className="w-8 h-8 text-black" />
-          </h1>
-          <p className="text-zinc-400 text-xs font-bold tracking-widest">Create your secure account.</p>
+          <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
+            <Mail className="w-8 h-8 text-black" />
+          </div>
+          <h1 className="text-4xl font-black mb-2">Verify.</h1>
+          <p className="text-zinc-400 text-xs font-bold tracking-widest">We've sent a code to <span className="text-black normal-case">{formData.email}</span></p>
         </div>
 
         {error && (
@@ -65,88 +223,47 @@ export default function Signup() {
             {error}
           </div>
         )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Email Address</label>
-            <input
-              type="email"
-              required
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
-              placeholder="name@example.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            />
+        
+        {success && (
+          <div className="bg-emerald-50 text-emerald-600 px-4 py-3 rounded-xl mb-8 text-[10px] font-bold text-center">
+            {success}
           </div>
+        )}
 
+        <form onSubmit={handleVerify} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Password</label>
+            <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">6-Digit Code</label>
             <div className="relative">
+              <Key className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-300" />
               <input
-                type={showPassword ? "text" : "password"}
+                type="text"
                 required
-                minLength={6}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 pr-12 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                maxLength={6}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-5 px-16 text-center text-2xl font-black tracking-[0.5em] text-black focus:outline-none focus:border-black transition-all"
+                placeholder="000000"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Confirm Password</label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                required
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 pr-12 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
-                tabIndex={-1}
-              >
-                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-black text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-2 hover:bg-zinc-800"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                <>
-                  CREATE ACCOUNT
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading || otp.length < 6}
+            className="w-full bg-black text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-2 hover:bg-zinc-800 disabled:opacity-50 disabled:bg-zinc-100 disabled:text-zinc-400"
+          >
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+              <>
+                VERIFY NOW
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
+          </button>
         </form>
 
-        <p className="mt-12 text-zinc-400 text-[10px] font-bold tracking-widest text-center">
-          ALREADY REGISTERED?{' '}
-          <Link href="/login" className="text-black hover:underline ml-1">LOG IN</Link>
-        </p>
-
-        <div className="mt-8 pt-8 border-t border-zinc-100 italic text-[9px] text-zinc-300 normal-case leading-relaxed text-center">
-          By creating an account, you agree to our terms of service and acknowledge our privacy policy.
+        <div className="mt-12 text-center text-[10px] font-bold tracking-widest text-zinc-400">
+          DIDN'T RECEIVE IT?{' '}
+          <button onClick={handleResendOtp} disabled={loading} className="text-black hover:underline ml-1 uppercase">RESEND CODE</button>
         </div>
       </div>
     </div>

@@ -50,7 +50,7 @@ const Navbar = () => {
 
                             <div className="flex items-center gap-3 pl-6 border-l border-zinc-100">
                                 <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase">
-                                    {user?.email?.charAt(0) || 'U'}
+                                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                                 </div>
                                 <button
                                     onClick={handleLogout}
