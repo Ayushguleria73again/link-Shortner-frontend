@@ -9,7 +9,7 @@ export default function Footer() {
             <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="flex items-center gap-2 font-black tracking-tighter text-xl">
                     <Link2 className="w-6 h-6" />
-                    SHORTY.
+                    SUTRA.
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-400">

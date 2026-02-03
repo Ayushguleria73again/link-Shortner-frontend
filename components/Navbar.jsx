@@ -42,9 +42,11 @@ const Navbar = () => {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100/50">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight z-50 relative">
-                    <Link2 className="w-5 h-5" />
-                    <span>SHORTY</span>
+                <Link href="/" className="flex items-center gap-2 group">
+                    <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl tracking-tighter group-hover:scale-110 transition-transform shadow-lg shadow-black/20">
+                        S
+                    </div>
+                    <span className="font-black text-xl tracking-tighter text-black">SUTRA.</span>
                 </Link>
 
                 {/* Desktop Menu */}

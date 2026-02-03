@@ -15,6 +15,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import SettingsView from '@/components/SettingsView';
+import DestructiveModal from '@/components/DestructiveModal';
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
@@ -24,6 +25,8 @@ export default function Dashboard() {
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [activeView, setActiveView] = useState('links'); // 'links' or 'settings'
   const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [linkToDelete, setLinkToDelete] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -87,18 +90,25 @@ export default function Dashboard() {
     setUrls(urls.map(u => u._id === updatedUrl._id ? updatedUrl : u));
   };
 
-  const handleDelete = async (id) => {
-    if (confirm('Delete this link and its history?')) {
-      try {
-        await api.delete(`/url/${id}`);
-        setUrls(urls.filter(url => url._id !== id));
-        if (analytics && selectedShortCode === urls.find(u => u._id === id)?.shortCode) {
-          setSelectedShortCode(null);
-          setAnalytics(null);
-        }
-      } catch (err) {
-        alert('Action failed');
+  const handleDelete = (id) => {
+    setLinkToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!linkToDelete) return;
+
+    try {
+      await api.delete(`/url/${linkToDelete}`);
+      setUrls(urls.filter(url => url._id !== linkToDelete));
+      if (analytics && selectedShortCode === urls.find(u => u._id === linkToDelete)?.shortCode) {
+        setSelectedShortCode(null);
+        setAnalytics(null);
       }
+      setLinkToDelete(null);
+      setDeleteModalOpen(false);
+    } catch (err) {
+      alert('Action failed');
     }
   };
 

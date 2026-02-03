@@ -34,7 +34,7 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="mb-12">
           <h1 className="text-4xl font-black mb-2">Access.</h1>
-          <p className="text-zinc-400 text-xs font-bold tracking-widest">Welcome back to Shorty.</p>
+          <p className="text-zinc-400 text-xs font-bold tracking-widest">Welcome back to Sutra.</p>
         </div>
 
         {error && (
