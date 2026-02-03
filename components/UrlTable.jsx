@@ -20,7 +20,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5001';
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5001').replace(/\/$/, "");
 
     if (urls.length === 0) {
         return (
