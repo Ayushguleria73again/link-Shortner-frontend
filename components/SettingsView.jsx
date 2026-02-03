@@ -6,6 +6,8 @@ import {
     Save, RefreshCcw, Loader2, Link2,
     Terminal, Smartphone, Bell, PowerOff
 } from 'lucide-react';
+import { toast } from 'sonner';
+import DestructiveModal from './DestructiveModal';
 
 export default function SettingsView() {
     const [profile, setProfile] = useState({
@@ -17,6 +19,10 @@ export default function SettingsView() {
     const [apiKey, setApiKey] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
+    // Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetchSettings();
@@ -38,6 +44,7 @@ export default function SettingsView() {
             }
         } catch (err) {
             console.error('Error fetching settings:', err);
+            toast.error('Failed to sync settings.');
         } finally {
             setLoading(false);
         }
@@ -47,9 +54,9 @@ export default function SettingsView() {
         try {
             const { data } = await api.post('/auth/api-key');
             setApiKey(data.data);
-            alert('New API encryption key deployed.');
+            toast.success('New API encryption key deployed.');
         } catch (err) {
-            alert('Key generation failed.');
+            toast.error('Key generation failed.');
         }
     };
 
@@ -57,9 +64,9 @@ export default function SettingsView() {
         try {
             setSaving(true);
             await api.post('/profile', profile);
-            alert('Security clearance updated. Profile saved.');
+            toast.success('Security clearance updated. Profile saved.');
         } catch (err) {
-            alert('Protocol error. Failed to save.');
+            toast.error('Protocol error. Failed to save.');
         } finally {
             setSaving(false);
         }
@@ -71,22 +78,19 @@ export default function SettingsView() {
         window.location.href = '/login';
     };
 
-    const handleDeleteAccount = async () => {
-        const confirmDelete = window.confirm(
-            "⚠️ DANGER ZONE ⚠️\n\nAre you sure you want to delete your account?\nThis action will:\n- Wipe your proifle\n- Delete ALL your short links\n- Remove all analytics data\n\nThis cannot be undone."
-        );
-
-        if (confirmDelete) {
-            const doubleCheck = prompt("Type 'DELETE' to confirm destruction of your account.");
-            if (doubleCheck === 'DELETE') {
-                try {
-                    await api.delete('/auth/me');
-                    alert('Account terminated. Goodbye.');
-                    handleLogout();
-                } catch (err) {
-                    alert('Termination failed. Contact support.');
-                }
-            }
+    const confirmDeleteAccount = async () => {
+        try {
+            setIsDeleting(true);
+            await api.delete('/auth/me');
+            toast.success('Account terminated. Goodbye.');
+            // Add slight delay for toast to be seen
+            setTimeout(() => {
+                handleLogout();
+            }, 1500);
+        } catch (err) {
+            toast.error('Termination failed. Contact support.');
+            setIsDeleting(false);
+            setShowDeleteModal(false);
         }
     };
 
@@ -99,6 +103,18 @@ export default function SettingsView() {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Delete Confirmation Modal */}
+            <DestructiveModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDeleteAccount}
+                title="Self-Destruct Sequence"
+                description="This action will permanently wipe your user data, profile identity, and all active tracking links. This process is irreversible."
+                confirmText="Terminate Account"
+                verificationText="DELETE"
+                loading={isDeleting}
+            />
+
             {/* Link Hub Settings */}
             <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
@@ -232,7 +248,7 @@ export default function SettingsView() {
                     </button>
 
                     <button
-                        onClick={handleDeleteAccount}
+                        onClick={() => setShowDeleteModal(true)}
                         className="w-full flex items-center justify-center gap-3 bg-rose-50 text-rose-500 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all border border-rose-100 group"
                     >
                         <PowerOff className="w-4 h-4 group-hover:rotate-180 transition-transform" />
