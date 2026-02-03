@@ -1,7 +1,7 @@
 {
-  "name": "Sutra - Professional Link Intelligence",
-  "short_name": "Sutra",
-  "description": "Professional-grade link management with Matrix-style analytics.",
+  "name": "smol - tiny links, big data",
+  "short_name": "smol",
+  "description": "The internet's aesthetic link shortener.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

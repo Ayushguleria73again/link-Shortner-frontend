@@ -14,36 +14,36 @@ const spaceMono = Space_Mono({
 
 export const metadata = {
   title: {
-    default: "Sutra | Modern Link Intelligence",
-    template: "%s | Sutra"
+    default: "smol | tiny links, big data",
+    template: "%s | smol"
   },
-  description: "Enterprise-grade URL shortener with real-time analytics, city-level tracking, and audience intelligence. Scale your links with confidence.",
-  keywords: ["URL Shortener", "Link Management", "Analytics", "SaaS", "Marketing Tools", "React", "Next.js", "Sutra"],
-  authors: [{ name: "Sutra Team" }],
-  creator: "Sutra",
-  metadataBase: new URL('https://sutra.io'), // Replace with actual domain in production
+  description: "The internet's aesthetic link shortener. Tracking, analytics, and vibes included.",
+  keywords: ["url shortener", "smol", "link management", "analytics", "aesthetic", "gen z"],
+  authors: [{ name: "smol team" }],
+  creator: "smol",
+  metadataBase: new URL('https://smol.link'), // Replace with actual domain
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://sutra.io',
-    title: 'Sutra | Modern Link Intelligence',
-    description: 'Transform your links into powerful data assets. Real-time analytics, city-level tracking, and premium aesthetics.',
-    siteName: 'Sutra',
+    url: 'https://smol.link',
+    title: 'smol | tiny links, big data',
+    description: 'The aesthete\'s choice for link management. Minimalist, powerful, smol.',
+    siteName: 'smol',
     images: [
       {
-        url: '/og-image.png', // Needs to be added to public
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Sutra Dashboard Preview'
+        alt: 'smol dashboard'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sutra | Modern Link Intelligence',
-    description: 'Scalable link management with advanced click tracking and analytics.',
+    title: 'smol | tiny links, big data',
+    description: 'The aesthete\'s choice for link management.',
     images: ['/og-image.png'],
-    creator: '@sutralinks'
+    creator: '@smol_link'
   },
   manifest: "/manifest.json",
   themeColor: "#000000",
