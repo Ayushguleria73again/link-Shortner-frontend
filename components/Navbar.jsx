@@ -16,8 +16,10 @@ const Navbar = () => {
         setIsLoggedIn(!!token);
         if (userData) {
             setUser(JSON.parse(userData));
+        } else {
+            setUser(null);
         }
-    }, []);
+    }, [pathname]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
