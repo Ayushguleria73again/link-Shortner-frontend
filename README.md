@@ -6,6 +6,7 @@ A cinematic, high-fidelity management console for **Shorty Elite**. Built with N
 
 - **Matrix Aesthetics:** Cinematic "01" Binary Rain background, technical "Space Mono" typography, and scrambling text animations.
 - **Elite Dashboard:** Real-time analytics polling every 5 seconds with pulsing "LIVE" indicators.
+- **Secure Onboarding:** Multi-step signup flow collecting personal identifiers (First/Last Names) and mandatory 6-digit OTP email verification.
 - **PWA Support:** Installable as a Progressive Web App on iOS, Android, and Desktop.
 - **Link Hub:** Dynamic, public-facing creator profiles (`/u/username`) for consolidated link management.
 - **Intelligence Engine:** Interactive charts for traffic timelines, source attribution, and hourly engagement.
