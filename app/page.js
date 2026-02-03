@@ -84,6 +84,12 @@ import api from '@/lib/api';
 
 export default function Home() {
   const [stats, setStats] = React.useState({ totalClicks: 0, totalUniqueClicks: 0, totalMarkets: 0 });
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   React.useEffect(() => {
     const fetchGlobalStats = async () => {
@@ -163,17 +169,17 @@ export default function Home() {
               className="flex flex-col sm:flex-row items-center justify-center gap-6"
             >
               <Link 
-                href="/signup" 
+                href={isLoggedIn ? "/dashboard" : "/signup"} 
                 className="w-full sm:w-auto bg-black text-white px-12 py-5 rounded-2xl font-black text-xs tracking-[0.2em] hover:bg-zinc-800 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 shadow-xl shadow-black/10 group"
               >
-                CREATE ELITE LINK
+                {isLoggedIn ? "GO TO DASHBOARD" : "CREATE ELITE LINK"}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
-                href="/login" 
+                href={isLoggedIn ? "/dashboard" : "/login"} 
                 className="w-full sm:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black text-xs tracking-[0.2em] border-2 border-zinc-100 hover:border-black transition-all flex items-center justify-center gap-2"
               >
-                ACCESS CONSOLE
+                {isLoggedIn ? "VIEW ANALYTICS" : "ACCESS CONSOLE"}
               </Link>
             </motion.div>
 
@@ -235,10 +241,10 @@ export default function Home() {
              Ready for elite scale?
            </h2>
            <Link 
-              href="/signup" 
+              href={isLoggedIn ? "/dashboard" : "/signup"} 
               className="inline-flex items-center gap-3 bg-white text-black px-12 py-6 rounded-3xl font-black text-xs tracking-[0.2em] uppercase hover:scale-105 active:scale-95 transition-all relative z-10 shadow-lg"
             >
-              Sign up for free
+              {isLoggedIn ? "Go to Dashboard" : "Sign up for free"}
               <ChevronRight className="w-4 h-4" />
             </Link>
         </div>

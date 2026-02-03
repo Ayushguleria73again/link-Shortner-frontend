@@ -1,8 +1,9 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, Zap, Globe, Shield, Activity } from 'lucide-react';
+import { Check } from 'lucide-react';
 import Link from 'next/link';
+import { PLANS } from '@/lib/plans';
 
 export default function PricingSection() {
     const containerVariants = {
@@ -65,82 +66,35 @@ export default function PricingSection() {
                     viewport={{ once: true }}
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start"
                 >
-                    {/* FREE TIER */}
-                    <PricingCard
-                        variants={itemVariants}
-                        name="Spark"
-                        price="0"
-                        planId="free"
-                        description="For hobbyists helping friends."
-                        features={[
-                            "50 Active Links",
-                            "1,000 Monthly Clicks",
-                            "Basic Analytics",
-                            "QR Code Generation",
-                            "Community Support"
-                        ]}
-                        icon={<Zap className="w-5 h-5 text-zinc-400" />}
-                    />
+                    {['free', 'starter', 'pro', 'business'].map((planKey) => {
+                        const plan = PLANS[planKey];
+                        const isPro = planKey === 'pro';
 
-                    {/* STARTER TIER */}
-                    <PricingCard
-                        variants={itemVariants}
-                        name="Growth"
-                        price="399"
-                        planId="starter"
-                        description="For creators building an audience."
-                        features={[
-                            "500 Active Links",
-                            "15,000 Monthly Clicks",
-                            "Country & Device Data",
-                            "Custom Aliases",
-                            "CSV Data Export"
-                        ]}
-                        icon={<Activity className="w-5 h-5 text-emerald-500" />}
-                        accentColor="emerald"
-                    />
+                        const CardComponent = (
+                            <PricingCard
+                                key={planKey}
+                                variants={itemVariants}
+                                name={plan.name}
+                                price={plan.price.toString()}
+                                planId={planKey}
+                                description={plan.description}
+                                features={plan.includedFeatures.flatMap(f => f.items).slice(0, 5)} // Flatten features for card view
+                                icon={React.cloneElement(plan.icon, { className: `w-5 h-5 ${isPro ? 'text-indigo-500' : 'text-zinc-400'}` })} // Adjust icon size/color for card
+                                highlight={isPro}
+                                accentColor={plan.color}
+                            />
+                        );
 
-                    {/* PRO TIER (RECOMMENDED) */}
-                    <div className="relative group">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[34px] opacity-75 group-hover:opacity-100 blur transition duration-1000"></div>
-                        <PricingCard
-                            variants={itemVariants}
-                            name="Elite"
-                            price="899"
-                            planId="pro"
-                            description="For brands dominating markets."
-                            features={[
-                                "Unlimited Active Links",
-                                "150,000 Monthly Clicks",
-                                "City-Level Geo Data",
-                                "Real-time Analytics Stream",
-                                "Developer API Access",
-                                "Priority Email Support"
-                            ]}
-                            icon={<Shield className="w-5 h-5 text-indigo-500" />}
-                            highlight={true}
-                            accentColor="indigo"
-                        />
-                    </div>
-
-                    {/* BUSINESS TIER */}
-                    <PricingCard
-                        variants={itemVariants}
-                        name="Scale"
-                        price="2499"
-                        planId="business"
-                        description="For teams running operations."
-                        features={[
-                            "Unlimited Active Links",
-                            "2,000,000 Monthly Clicks",
-                            "White-label Dashboard",
-                            "Multiple Custom Domains",
-                            "Dedicated Account Manager",
-                            "SSO & Advanced Security"
-                        ]}
-                        icon={<Globe className="w-5 h-5 text-amber-500" />}
-                        accentColor="amber"
-                    />
+                        if (isPro) {
+                            return (
+                                <div key={planKey} className="relative group">
+                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[34px] opacity-75 group-hover:opacity-100 blur transition duration-1000"></div>
+                                    {CardComponent}
+                                </div>
+                            );
+                        }
+                        return CardComponent;
+                    })}
                 </motion.div>
             </div>
         </section>

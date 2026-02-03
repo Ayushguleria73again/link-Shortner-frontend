@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { useParams, useRouter } from 'next/navigation';
 import { Check, Shield, Zap, Activity, Globe, Loader2, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -10,40 +9,7 @@ import api from '@/lib/api';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-const PLANS = {
-    free: {
-        name: "Spark",
-        price: 0,
-        description: "Perfect for testing the waters.",
-        icon: <Zap className="w-8 h-8 text-zinc-400" />,
-        color: "zinc",
-        features: ["50 Active Links", "1,000 Monthly Clicks", "Basic Analytics"]
-    },
-    starter: {
-        name: "Growth",
-        price: 399,
-        description: "Essential tools for growing creators.",
-        icon: <Activity className="w-8 h-8 text-emerald-500" />,
-        color: "emerald",
-        features: ["500 Active Links", "15,000 Monthly Clicks", "Country & Device Data", "Custom Aliases", "CSV Export"]
-    },
-    pro: {
-        name: "Elite",
-        price: 899,
-        description: "Advanced power for serious brands.",
-        icon: <Shield className="w-8 h-8 text-indigo-500" />,
-        color: "indigo",
-        features: ["Unlimited Active Links", "150,000 Monthly Clicks", "City-Level Geo Data", "Real-time Analytics", "Developer API", "Smart Retargeting", "Priority Support"]
-    },
-    business: {
-        name: "Scale",
-        price: 2499,
-        description: "Enterprise-grade infrastructure.",
-        icon: <Globe className="w-8 h-8 text-amber-500" />,
-        color: "amber",
-        features: ["Unlimited Active Links", "2M Monthly Clicks", "White-label Dashboard", "Custom Domains", "Account Manager", "SSO"]
-    }
-};
+import { PLANS } from '@/lib/plans';
 
 export default function PlanDetailPage() {
     const { planId } = useParams();
@@ -135,23 +101,34 @@ export default function PlanDetailPage() {
 
                 <div className="bg-white rounded-[40px] shadow-2xl overflow-hidden grid md:grid-cols-2">
                     {/* Left: Plan Info */}
-                    <div className="p-10 md:p-14 flex flex-col justify-between">
+                    <div className="p-10 md:p-14 flex flex-col justify-between bg-white relative">
                         <div>
                             <div className={`w-16 h-16 rounded-2xl bg-${plan.color}-50 flex items-center justify-center mb-8`}>
                                 {plan.icon}
                             </div>
-                            <h1 className="text-4xl font-black mb-4">{plan.name}</h1>
-                            <p className="text-zinc-500 font-medium text-lg leading-relaxed mb-8">
-                                {plan.description}
+                            <div className="mb-6">
+                                <h1 className="text-4xl font-black mb-2">{plan.name}</h1>
+                                <p className={`text-sm font-bold uppercase tracking-widest text-${plan.color}-600`}>{plan.idealFor}</p>
+                            </div>
+                            
+                            <p className="text-zinc-500 font-medium text-lg leading-relaxed mb-10">
+                                {plan.longDescription}
                             </p>
                             
-                            <div className="space-y-4">
-                                {plan.features.map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <div className={`w-5 h-5 rounded-full bg-${plan.color}-100 flex items-center justify-center`}>
-                                            <Check className={`w-3 h-3 text-${plan.color}-600`} />
+                            <div className="space-y-6">
+                                {plan.includedFeatures.map((group, i) => (
+                                    <div key={i}>
+                                        <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">{group.category}</h4>
+                                        <div className="space-y-3">
+                                            {group.items.map((item, j) => (
+                                                <div key={j} className="flex items-start gap-3">
+                                                    <div className={`w-5 h-5 rounded-full bg-${plan.color}-50 flex items-center justify-center shrink-0`}>
+                                                        <Check className={`w-3 h-3 text-${plan.color}-600`} />
+                                                    </div>
+                                                    <span className="font-medium text-zinc-700 text-sm">{item}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                        <span className="font-medium text-zinc-700">{feature}</span>
                                     </div>
                                 ))}
                             </div>
@@ -159,7 +136,7 @@ export default function PlanDetailPage() {
                     </div>
 
                     {/* Right: Checkout Action */}
-                    <div className="bg-zinc-900 text-white p-10 md:p-14 flex flex-col justify-center relative overflow-hidden">
+                    <div className="bg-zinc-900 text-white p-10 md:p-14 flex flex-col justify-between relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800 rounded-full blur-[100px] opacity-50 pointer-events-none" />
                         
                         <div className="relative z-10">
@@ -176,13 +153,14 @@ export default function PlanDetailPage() {
                                 </div>
                                 <div className="flex justify-between items-center text-sm mb-4">
                                     <span className="text-zinc-400">Taxes</span>
-                                    <span className="font-mono">₹0.00</span>
+                                    <span className="font-mono">₹{Math.round(plan.price * 0.18)}.00</span>
                                 </div>
                                 <div className="h-px bg-zinc-700 mb-4" />
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span>Total</span>
-                                    <span>₹{plan.price}.00</span>
+                                    <span>₹{plan.price + Math.round(plan.price * 0.18)}.00</span>
                                 </div>
+                                <p className="text-xs text-zinc-500 mt-2 text-right">Includes 18% GST</p>
                             </div>
 
                             <button
@@ -199,8 +177,7 @@ export default function PlanDetailPage() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
+            
         </div>
     );
 }

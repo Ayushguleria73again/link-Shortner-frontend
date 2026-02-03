@@ -180,13 +180,29 @@ export default function Dashboard() {
               <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Synchronizing Data...</p>
             </div>
-          ) : (
+          ) : urls.length > 0 ? (
             <UrlTable 
               urls={urls} 
               onDelete={handleDelete} 
               onSelect={fetchAnalytics}
               onUpdate={handleUpdateUrl}
             />
+          ) : (
+            <div className="border border-dashed border-zinc-200 rounded-[32px] p-12 flex flex-col items-center text-center bg-zinc-50/50">
+               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-zinc-100">
+                  <Link2 className="w-8 h-8 text-zinc-300" />
+               </div>
+               <h3 className="text-xl font-black text-black mb-2">No active signals detected.</h3>
+               <p className="text-zinc-500 font-medium text-sm max-w-sm mb-8">
+                 Initialize your first redirect protocol to begin tracking audience intelligence.
+               </p>
+               <button 
+                  onClick={() => document.getElementById('url-input')?.focus()}
+                  className="bg-black text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg shadow-black/10"
+               >
+                 Create First Link
+               </button>
+            </div>
           )}
         </div>
       ) : (

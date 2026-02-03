@@ -39,6 +39,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Original URL</label>
                         <div className="relative">
                             <input
+                                id="url-input"
                                 type="url"
                                 required
                                 placeholder="https://example.com/very-long-path"

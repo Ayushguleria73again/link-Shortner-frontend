@@ -1,14 +1,29 @@
-"use client";
 import React from 'react';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import PricingSection from '@/components/PricingSection';
+import { ArrowLeft, Check, Minus } from 'lucide-react';
+import Link from 'next/link';
+
+export const metadata = {
+    title: 'Pricing & Plans',
+    description: 'Compare ShortySaaS plans. Start for free or scale with our Elite and Business tiers.',
+};
 
 export default function PricingPage() {
+    const renderCell = (value) => {
+        if (value === true) return <Check className="w-5 h-5 text-emerald-500 mx-auto" />;
+        if (value === false) return <Minus className="w-5 h-5 text-zinc-300 mx-auto" />;
+        return value;
+    };
+
     return (
         <div className="min-h-screen bg-white">
-            <Navbar />
             <div className="pt-24">
+                <div className="max-w-7xl mx-auto px-6 mb-8">
+                    <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-black transition-colors">
+                        <ArrowLeft className="w-4 h-4" /> Back to Home
+                    </Link>
+                </div>
                 <PricingSection />
                 
                 {/* Comparison Table */}
@@ -32,22 +47,22 @@ export default function PricingPage() {
                                         { name: "Monthly Links", free: "50", starter: "500", pro: "Unlimited", business: "Unlimited" },
                                         { name: "Monthly Clicks", free: "1K", starter: "15K", pro: "150K", business: "2M" },
                                         { name: "Data Retention", free: "30 Days", starter: "90 Days", pro: "1 Year", business: "Unlimited" },
-                                        { name: "Custom Aliases", free: "❌", starter: "✅", pro: "✅", business: "✅" },
-                                        { name: "QR Codes", free: "✅", starter: "✅", pro: "✅", business: "✅" },
+                                        { name: "Custom Aliases", free: false, starter: true, pro: true, business: true },
+                                        { name: "QR Codes", free: true, starter: true, pro: true, business: true },
                                         { name: "Geo Analytics", free: "Basic", starter: "Country", pro: "City-Level", business: "City-Level" },
                                         { name: "Device Analytics", free: "Basic", starter: "Detailed", pro: "Detailed", business: "Detailed" },
-                                        { name: "Export Data (CSV)", free: "❌", starter: "✅", pro: "✅", business: "✅" },
-                                        { name: "Developer API", free: "❌", starter: "❌", pro: "✅", business: "✅" },
-                                        { name: "Smart Retargeting", free: "❌", starter: "❌", pro: "✅", business: "✅" },
-                                        { name: "Account Manager", free: "❌", starter: "❌", pro: "❌", business: "✅" },
-                                        { name: "SSO", free: "❌", starter: "❌", pro: "❌", business: "✅" },
+                                        { name: "Export Data (CSV)", free: false, starter: true, pro: true, business: true },
+                                        { name: "Developer API", free: false, starter: false, pro: true, business: true },
+                                        { name: "Smart Retargeting", free: false, starter: false, pro: true, business: true },
+                                        { name: "Account Manager", free: false, starter: false, pro: false, business: true },
+                                        { name: "SSO", free: false, starter: false, pro: false, business: true },
                                     ].map((row, i) => (
                                         <tr key={i} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
                                             <td className="py-4 px-6 font-semibold">{row.name}</td>
-                                            <td className="py-4 px-6 text-center text-zinc-500">{row.free}</td>
-                                            <td className="py-4 px-6 text-center text-zinc-900">{row.starter}</td>
-                                            <td className="py-4 px-6 text-center text-zinc-900 bg-indigo-50/10">{row.pro}</td>
-                                            <td className="py-4 px-6 text-center text-zinc-900">{row.business}</td>
+                                            <td className="py-4 px-6 text-center text-zinc-500">{renderCell(row.free)}</td>
+                                            <td className="py-4 px-6 text-center text-zinc-900">{renderCell(row.starter)}</td>
+                                            <td className="py-4 px-6 text-center text-zinc-900 bg-indigo-50/10">{renderCell(row.pro)}</td>
+                                            <td className="py-4 px-6 text-center text-zinc-900">{renderCell(row.business)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -56,7 +71,6 @@ export default function PricingPage() {
                     </div>
                 </section>
             </div>
-            <Footer />
-        </div>
+            </div>
     );
 }

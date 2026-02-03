@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from 'react';
 
-const MatrixRain = () => {
+const MatrixRain = ({ color = '#f4f4f5' }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const MatrixRain = () => {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; // Fade effect
             ctx.fillRect(0, 0, width, height);
 
-            ctx.fillStyle = '#f4f4f5'; // Light zinc color for subtle effect
+            ctx.fillStyle = color; // Dynamic color
             ctx.font = `${fontSize}px var(--font-mono)`;
 
             for (let i = 0; i < drops.length; i++) {
