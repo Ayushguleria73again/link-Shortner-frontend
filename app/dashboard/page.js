@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import ShortenForm from '@/components/ShortenForm';
@@ -10,7 +10,8 @@ import {
   MousePointer2, Globe, Laptop, Smartphone,
   Zap, BarChart3, TrendingUp, Activity,
   Download, ExternalLink, Link2, Users, MapPin, Clock, Radio,
-  ArrowLeft, Settings, Database, User as UserIcon
+  ArrowLeft, Settings, Database, User as UserIcon,
+  Search, Filter, ArrowDownWideNarrow, X
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
@@ -27,6 +28,9 @@ export default function Dashboard() {
   const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
   const router = useRouter();
 
   useEffect(() => {
@@ -111,6 +115,34 @@ export default function Dashboard() {
       alert('Action failed');
     }
   };
+  
+  const filteredUrls = useMemo(() => {
+    return urls
+      .filter(url => {
+        const matchesSearch = 
+          url.shortCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          url.originalUrl.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        const now = new Date();
+        const isExpired = url.expiresAt && new Date(url.expiresAt) < now;
+        
+        const matchesStatus = 
+          statusFilter === 'all' ||
+          (statusFilter === 'active' && url.isActive && !isExpired) ||
+          (statusFilter === 'expired' && isExpired) ||
+          (statusFilter === 'inactive' && !url.isActive) ||
+          (statusFilter === 'onetime' && url.isOneTime);
+          
+        return matchesSearch && matchesStatus;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+        if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+        if (sortBy === 'hits') return b.totalClicks - a.totalClicks;
+        if (sortBy === 'reach') return b.uniqueClicks - a.uniqueClicks;
+        return 0;
+      });
+  }, [urls, searchQuery, statusFilter, sortBy]);
 
   const handleExport = async (shortCode) => {
     try {
@@ -196,10 +228,64 @@ export default function Dashboard() {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
           
-          <div className="flex items-center gap-3 mb-8">
-             <BarChart3 className="w-5 h-5 text-black" />
-             <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black">Link Inventory</h2>
-             <div className="h-px bg-zinc-100 flex-1" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div className="flex items-center gap-3">
+               <BarChart3 className="w-5 h-5 text-black" />
+               <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black">Link Inventory</h2>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Search */}
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-black transition-colors" />
+                <input 
+                  type="text"
+                  placeholder="Identify signal..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-11 pr-4 py-3 bg-zinc-50 border border-zinc-100 rounded-2xl text-[10px] font-black uppercase tracking-widest focus:ring-2 focus:ring-black focus:bg-white transition-all w-full md:w-64 outline-none"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-100 p-1.5 rounded-2xl">
+                <Filter className="w-3.5 h-3.5 text-zinc-400 ml-2" />
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-transparent text-[9px] font-black uppercase tracking-widest outline-none pr-4 py-1.5 cursor-pointer"
+                >
+                  <option value="all">Global (All)</option>
+                  <option value="active">Live Signals</option>
+                  <option value="expired">Expired</option>
+                  <option value="inactive">Suspended</option>
+                  <option value="onetime">One-Time</option>
+                </select>
+              </div>
+
+              {/* Sort Logic */}
+              <div className="flex items-center gap-2 bg-zinc-50 border border-zinc-100 p-1.5 rounded-2xl">
+                <ArrowDownWideNarrow className="w-3.5 h-3.5 text-zinc-400 ml-2" />
+                <select 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-transparent text-[9px] font-black uppercase tracking-widest outline-none pr-4 py-1.5 cursor-pointer"
+                >
+                  <option value="newest">Recent First</option>
+                  <option value="oldest">Historical</option>
+                  <option value="hits">Highest Traffic</option>
+                  <option value="reach">Unique Reach</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           {loading ? (
@@ -207,27 +293,27 @@ export default function Dashboard() {
               <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
               <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Synchronizing Data...</p>
             </div>
-          ) : urls.length > 0 ? (
+          ) : filteredUrls.length > 0 ? (
             <UrlTable 
-              urls={urls} 
+              urls={filteredUrls} 
               onDelete={handleDelete} 
               onSelect={fetchAnalytics}
               onUpdate={handleUpdateUrl}
             />
           ) : (
-            <div className="border border-dashed border-zinc-200 rounded-[32px] p-12 flex flex-col items-center text-center bg-zinc-50/50">
+            <div className="border border-dashed border-zinc-200 rounded-[32px] p-20 flex flex-col items-center text-center bg-zinc-50/50">
                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-zinc-100">
-                  <Link2 className="w-8 h-8 text-zinc-300" />
+                  <Search className="w-8 h-8 text-zinc-200" />
                </div>
-               <h3 className="text-xl font-black text-black mb-2">No active signals detected.</h3>
+               <h3 className="text-xl font-black text-black mb-2">Signal Not Found.</h3>
                <p className="text-zinc-500 font-medium text-sm max-w-sm mb-8">
-                 Initialize your first redirect protocol to begin tracking audience intelligence.
+                 Adjust your tracking filters or search parameters to locate the protocol.
                </p>
                <button 
-                  onClick={() => document.getElementById('url-input')?.focus()}
+                  onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
                   className="bg-black text-white px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-lg shadow-black/10"
                >
-                 Create First Link
+                 Reset Filters
                </button>
             </div>
           )}
