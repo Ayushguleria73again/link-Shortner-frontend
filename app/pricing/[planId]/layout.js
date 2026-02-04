@@ -1,7 +1,8 @@
 import { PLANS } from '@/lib/plans';
 
 export async function generateMetadata({ params }) {
-  const plan = PLANS[params.planId];
+  const { planId } = await params;
+  const plan = PLANS[planId];
   
   if (!plan) {
     return {

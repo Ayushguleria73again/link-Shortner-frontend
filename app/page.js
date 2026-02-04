@@ -225,7 +225,7 @@ export default function Home() {
                       setInputLink(e.target.value);
                     }
                   }}
-                  className="flex-grow bg-transparent border-none focus:ring-0 text-sm font-bold placeholder:text-zinc-300 py-4"
+                  className="flex-grow bg-transparent !border-none outline-none focus:outline-none focus:ring-0 text-sm font-bold placeholder:text-zinc-300 py-4"
                   readOnly={!!mockResult}
                 />
                 {mockResult ? (

@@ -1,5 +1,5 @@
 "use client";
-import React , {useState ,useEffect} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 const HeroSignalRain = () => {
@@ -10,7 +10,7 @@ const HeroSignalRain = () => {
     const bits = ['0', '1'];
 
     // Memoize the particle properties so they don't change on re-render
-    const particles = React.useMemo(() => {
+    const particles = useMemo(() => {
         return [...Array(100)].map((_, i) => ({
             id: i,
             duration: 4 + Math.random() * 6,
