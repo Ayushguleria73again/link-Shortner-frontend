@@ -122,6 +122,26 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                         </div>
                                     </td>
                                     <td className="px-8 py-8">
+                                        <div className="flex items-center gap-2">
+                                            <div className="relative group/camp items-center flex gap-2 bg-zinc-50 border border-zinc-100 px-3 py-2 rounded-xl transition-all hover:bg-white hover:border-zinc-200">
+                                                <Folder
+                                                    className="w-3 h-3 transition-colors"
+                                                    style={{ color: campaigns.find(c => c._id === url.campaignId)?.color || '#e4e4e7' }}
+                                                />
+                                                <select
+                                                    value={url.campaignId || ''}
+                                                    onChange={(e) => handleAssignCampaign(url._id, e.target.value)}
+                                                    className="bg-transparent text-[9px] font-black uppercase tracking-widest outline-none cursor-pointer appearance-none"
+                                                >
+                                                    <option value="">Ungrouped</option>
+                                                    {campaigns.map(c => (
+                                                        <option key={c._id} value={c._id}>{c.name}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-8">
                                         {!url.isActive ? (
                                             <div className="flex items-center gap-2 px-3 py-1 bg-rose-50 text-rose-600 rounded-full w-fit">
                                                 <PowerOff className="w-3 h-3" />
