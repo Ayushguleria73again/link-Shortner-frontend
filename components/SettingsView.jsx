@@ -5,7 +5,7 @@ import {
     Shield, Key, User, Globe,
     Save, RefreshCcw, Loader2, Link2,
     Terminal, Smartphone, Bell, PowerOff, Settings,
-    Palette, Layout, Image
+    Palette, Layout, Image, Database
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
