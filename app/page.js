@@ -108,10 +108,8 @@ export default function Home() {
       }
     } catch (err) {
       console.error('Shortening error:', err);
-      // Fallback to mock behavior on error to keep UI fluid
-      const code = Math.random().toString(36).substring(2, 7);
-      const host = typeof window !== 'undefined' ? window.location.host : 'smol.link';
-      setMockResult(`${host}/${code}`);
+      // No longer falling back to mock behavior
+      // This allows us to see if there is an actual API connectivity issue
     } finally {
       setIsShortening(false);
     }
