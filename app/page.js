@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import MatrixRain from '@/components/MatrixRain';
 import { 
@@ -124,6 +125,13 @@ export default function Home() {
       <MatrixRain />
       {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <Image 
+          src="/hero-bg.png" 
+          alt="Matrix Background" 
+          fill 
+          className="object-cover opacity-20 mix-blend-multiply"
+          priority
+        />
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-30" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-50 rounded-full blur-[120px] opacity-40" />
       </div>
