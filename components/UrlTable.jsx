@@ -45,7 +45,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
         setTimeout(() => setCopiedId(null), 2000);
     };
 
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5001').replace(/\/$/, "");
+    const baseUrl = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.host}` : '';
 
     if (urls.length === 0) {
         return (
@@ -87,12 +87,20 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                             <div className="flex items-center gap-3">
                                                 <span className="font-black text-black text-lg tracking-tight">{url.shortCode}</span>
                                                 <button
-                                                    onClick={() => copyToClipboard(`${baseUrl}/${url.shortCode}`, url._id)}
+                                                    onClick={() => {
+                                                        const link = url.customDomain ? `https://${url.customDomain}/${url.shortCode}` : `${baseUrl}/${url.shortCode}`;
+                                                        copyToClipboard(link, url._id);
+                                                    }}
                                                     className="text-zinc-300 hover:text-black transition-colors"
                                                 >
                                                     {copiedId === url._id ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
                                                 </button>
-                                                <a href={`${baseUrl}/${url.shortCode}`} target="_blank" rel="noreferrer" className="text-zinc-300 hover:text-indigo-500">
+                                                <a
+                                                    href={url.customDomain ? `https://${url.customDomain}/${url.shortCode}` : `${baseUrl}/${url.shortCode}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-zinc-300 hover:text-indigo-500"
+                                                >
                                                     <ExternalLink className="w-4 h-4" />
                                                 </a>
                                             </div>
@@ -198,7 +206,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                     <QrModal
                         isOpen={showQr}
                         onClose={() => setShowQr(false)}
-                        shortUrl={`${baseUrl}/${selectedUrl.shortCode}`}
+                        shortUrl={selectedUrl.customDomain ? `https://${selectedUrl.customDomain}/${selectedUrl.shortCode}` : `${baseUrl}/${selectedUrl.shortCode}`}
                         shortCode={selectedUrl.shortCode}
                     />
                     <SettingsModal
