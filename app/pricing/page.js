@@ -44,18 +44,22 @@ export default function PricingPage() {
                                 </thead>
                                 <tbody className="text-sm font-medium text-zinc-700">
                                     {[
-                                        { name: "Monthly Links", free: "50", starter: "500", pro: "Unlimited", business: "Unlimited" },
-                                        { name: "Monthly Clicks", free: "1K", starter: "15K", pro: "150K", business: "2M" },
-                                        { name: "Data Retention", free: "30 Days", starter: "90 Days", pro: "1 Year", business: "Unlimited" },
-                                        { name: "Custom Aliases", free: false, starter: true, pro: true, business: true },
+                                        { name: "Active Signal limit", free: "50", starter: "500", pro: "Unlimited", business: "50,000" },
+                                        { name: "Monthly Intel Pings (Clicks)", free: "1K", starter: "15K", pro: "150K", business: "2M" },
+                                        { name: "Data Retention", free: "7 Days", starter: "30 Days", pro: "1 Year", business: "Unlimited" },
+                                        { name: "Custom Domain", free: false, starter: "1 Domain", pro: "5 Domains", business: "25 Domains" },
+                                        { name: "Custom Aliases", free: true, starter: true, pro: true, business: true },
                                         { name: "QR Codes", free: true, starter: true, pro: true, business: true },
-                                        { name: "Geo Analytics", free: "Basic", starter: "Country", pro: "City-Level", business: "City-Level" },
-                                        { name: "Device Analytics", free: "Basic", starter: "Detailed", pro: "Detailed", business: "Detailed" },
+                                        { name: "Geo Intelligence", free: "Basic", starter: "Country-Level", pro: "City-Level", business: "City-Level" },
+                                        { name: "Device Targeting", free: false, starter: true, pro: true, business: true },
                                         { name: "Export Data (CSV)", free: false, starter: true, pro: true, business: true },
-                                        { name: "Developer API", free: false, starter: false, pro: true, business: true },
-                                        { name: "Smart Retargeting", free: false, starter: false, pro: true, business: true },
+                                        { name: "Campaign Management", free: false, starter: false, pro: true, business: true },
+                                        { name: "Retargeting Pixels", free: false, starter: false, pro: true, business: true },
+                                        { name: "Bulk Creation", free: false, starter: false, pro: true, business: true },
                                         { name: "Account Manager", free: false, starter: false, pro: false, business: true },
-                                        { name: "SSO", free: false, starter: false, pro: false, business: true },
+                                        { name: "White-label Dashboard", free: false, starter: false, pro: false, business: true },
+                                        { name: "99.99% Uptime SLA", free: false, starter: false, pro: false, business: true },
+                                        { name: "SSO / SAML", free: false, starter: false, pro: false, business: true },
                                     ].map((row, i) => (
                                         <tr key={i} className="border-b border-zinc-100 hover:bg-zinc-50 transition-colors">
                                             <td className="py-4 px-6 font-semibold">{row.name}</td>
