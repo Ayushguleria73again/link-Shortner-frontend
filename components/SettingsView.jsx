@@ -4,7 +4,8 @@ import api from '@/lib/api';
 import {
     Shield, Key, User, Globe,
     Save, RefreshCcw, Loader2, Link2,
-    Terminal, Smartphone, Bell, PowerOff, Settings
+    Terminal, Smartphone, Bell, PowerOff, Settings,
+    Palette, Layout, Image
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
@@ -34,6 +35,12 @@ export default function SettingsView({ urls, onUpdateUrl }) {
         weeklyInsights: false,
         bruteForceArmor: true
     });
+    const [branding, setBranding] = useState({
+        logo: '',
+        primaryColor: '#6366f1',
+        theme: 'glass',
+        companyName: ''
+    });
 
     useEffect(() => {
         fetchSettings();
@@ -60,12 +67,30 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                 if (userRes.data.data.settings) {
                     setSettings(userRes.data.data.settings);
                 }
+                if (userRes.data.data.branding) {
+                    setBranding({
+                        ...branding,
+                        ...userRes.data.data.branding
+                    });
+                }
             }
         } catch (err) {
             console.error('Error fetching settings:', err);
             toast.error('Failed to sync settings.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleUpdateBranding = async (key, value) => {
+        const newBranding = { ...branding, [key]: value };
+        setBranding(newBranding);
+        try {
+            await api.put('/auth/branding', newBranding);
+            toast.success('Aesthetic protocols updated.');
+        } catch (err) {
+            toast.error('Failed to update aesthetics.');
+            setBranding(branding);
         }
     };
 
@@ -278,6 +303,102 @@ export default function SettingsView({ urls, onUpdateUrl }) {
 
                 {/* Custom Domain Manager */}
                 <DomainManager userPlan={userPlan} />
+
+                {/* Personalization & Redirection Aesthetics */}
+                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm relative overflow-hidden">
+                    {/* Elite Gate */}
+                    {['free', 'starter'].includes(userPlan) && (
+                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8">
+                            <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
+                                <Palette className="w-6 h-6 text-indigo-400" />
+                            </div>
+                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Elite Customization</h3>
+                            <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to white-label your redirection bridge pages with custom branding.</p>
+                            <button className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                                Unlock Aesthetics
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="flex items-center gap-3 mb-8">
+                        <Palette className="w-5 h-5 text-indigo-500" />
+                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Redirection Aesthetics</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Company Name</label>
+                                <input
+                                    type="text"
+                                    value={branding.companyName}
+                                    onChange={(e) => handleUpdateBranding('companyName', e.target.value)}
+                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
+                                    placeholder="e.g. Acme Corp"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Logo URL</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={branding.logo}
+                                        onChange={(e) => handleUpdateBranding('logo', e.target.value)}
+                                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
+                                        placeholder="https://..."
+                                    />
+                                    {branding.logo && (
+                                        <div className="w-11 h-11 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center overflow-hidden shrink-0">
+                                            <img src={branding.logo} className="max-w-[80%] max-h-[80%] object-contain" />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Brand Accent Color</label>
+                                <div className="flex items-center gap-4 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                                    <input
+                                        type="color"
+                                        value={branding.primaryColor}
+                                        onChange={(e) => handleUpdateBranding('primaryColor', e.target.value)}
+                                        className="w-8 h-8 rounded-lg cursor-pointer border-none bg-transparent"
+                                    />
+                                    <span className="text-xs font-mono font-bold uppercase">{branding.primaryColor}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Bridge Theme</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {['glass', 'neo', 'dark', 'minimal'].map(t => (
+                                        <button
+                                            key={t}
+                                            onClick={() => handleUpdateBranding('theme', t)}
+                                            className={`py-2 px-3 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all ${branding.theme === t
+                                                    ? 'bg-black text-white border-black shadow-lg'
+                                                    : 'bg-white text-zinc-400 border-zinc-100 hover:border-zinc-300'
+                                                }`}
+                                        >
+                                            {t}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-8 border-t border-zinc-50 flex items-center gap-4">
+                        <div className="p-3 bg-indigo-50 rounded-2xl">
+                            <Layout className="w-5 h-5 text-indigo-500" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-black uppercase">Live Aesthetic Preview</p>
+                            <p className="text-[10px] text-zinc-400 font-medium">Changes are mirrored in real-time across your redirection cluster.</p>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Developer API Section */}
                 <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
