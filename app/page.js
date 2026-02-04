@@ -103,7 +103,8 @@ export default function Home() {
     // Simulate high-tech processing delay
     setTimeout(() => {
       const code = Math.random().toString(36).substring(2, 7);
-      setMockResult(`smol.link/${code}`);
+      const host = typeof window !== 'undefined' ? window.location.host : 'smol.link';
+      setMockResult(`${host}/${code}`);
       setIsShortening(false);
     }, 1200);
   };
