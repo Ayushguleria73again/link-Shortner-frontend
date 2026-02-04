@@ -37,53 +37,57 @@ const ShortenForm = ({ onUrlCreated }) => {
     return (
         <div className="border border-zinc-200 bg-white p-6 md:p-10 rounded-3xl mb-12">
             <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div className="md:col-span-12 lg:col-span-6 space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Original URL</label>
-                        <div className="relative">
+                <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                        <div className="md:col-span-12 lg:col-span-6 space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Original URL</label>
+                            <div className="relative">
+                                <input
+                                    id="url-input"
+                                    type="url"
+                                    required
+                                    placeholder="https://example.com/very-long-path"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-medium"
+                                    value={url}
+                                    onChange={(e) => setUrl(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-12 lg:col-span-4 space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Custom Alias (Optional)</label>
                             <input
-                                id="url-input"
-                                type="url"
-                                required
-                                placeholder="https://example.com/very-long-path"
+                                type="text"
+                                placeholder="alias"
                                 className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-medium"
-                                value={url}
-                                onChange={(e) => setUrl(e.target.value)}
+                                value={alias}
+                                onChange={(e) => setAlias(e.target.value)}
                             />
+                        </div>
+
+                        <div className="md:col-span-12 lg:col-span-2">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-black text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all h-[58px]"
+                            >
+                                {loading ? <Loader2 className="animate-spin w-4 h-4" /> : 'SHORTEN'}
+                            </button>
                         </div>
                     </div>
 
-                    <div className="md:col-span-12 lg:col-span-4 space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Custom Alias (Optional)</label>
+                    {/* Checkbox moved to a separate row for better alignment of the main inputs */}
+                    <div className="flex items-center gap-2 px-1">
                         <input
-                            type="text"
-                            placeholder="alias"
-                            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-medium"
-                            value={alias}
-                            onChange={(e) => setAlias(e.target.value)}
+                            type="checkbox"
+                            id="one-time"
+                            checked={isOneTime}
+                            onChange={(e) => setIsOneTime(e.target.checked)}
+                            className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
                         />
-                        <div className="flex items-center gap-2 mt-2 px-1">
-                            <input
-                                type="checkbox"
-                                id="one-time"
-                                checked={isOneTime}
-                                onChange={(e) => setIsOneTime(e.target.checked)}
-                                className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
-                            />
-                            <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
-                                Burn after read (One-time link)
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="md:col-span-12 lg:col-span-2 flex items-end">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-black text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all min-h-[58px]"
-                        >
-                            {loading ? <Loader2 className="animate-spin w-4 h-4" /> : 'SHORTEN'}
-                        </button>
+                        <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
+                            Burn after read (One-time link)
+                        </label>
                     </div>
                 </div>
 
