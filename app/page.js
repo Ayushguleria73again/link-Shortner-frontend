@@ -121,7 +121,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white min-h-screen selection:bg-black selection:text-white">
+    <div className="bg-transparent min-h-screen selection:bg-black selection:text-white">
       <MatrixRain />
       {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
@@ -129,7 +129,7 @@ export default function Home() {
           src="/hero-bg.png" 
           alt="Matrix Background" 
           fill 
-          className="object-cover opacity-20 mix-blend-multiply"
+          className="object-cover opacity-60"
           priority
         />
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-30" />
