@@ -23,8 +23,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedShortCode, setSelectedShortCode] = useState(null);
   const [analytics, setAnalytics] = useState(null);
+  const [overviewData, setOverviewData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  const [activeView, setActiveView] = useState('links'); // 'links' or 'settings'
+  const [activeView, setActiveView] = useState('links'); // 'links', 'settings', or 'overview'
   const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState(null);
@@ -79,16 +80,32 @@ export default function Dashboard() {
     }
   };
 
+  const fetchOverview = async (silent = false) => {
+    try {
+      if (!silent) setAnalyticsLoading(true);
+      const { data } = await api.get('/analytics/overview');
+      setOverviewData(data.data);
+    } catch (err) {
+      console.error('Error fetching overview:', err);
+    } finally {
+      if (!silent) setAnalyticsLoading(false);
+    }
+  };
+
   // Real-time polling effect
   useEffect(() => {
     let interval;
     if (selectedShortCode) {
       interval = setInterval(() => {
         fetchAnalytics(selectedShortCode, true);
-      }, 5000); // Poll every 5 seconds
+      }, 5000);
+    } else if (activeView === 'overview') {
+      interval = setInterval(() => {
+        fetchOverview(true);
+      }, 8000); // Polling overview less frequently
     }
     return () => clearInterval(interval);
-  }, [selectedShortCode]);
+  }, [selectedShortCode, activeView]);
 
   const handleUpdateUrl = (updatedUrl) => {
     setUrls(urls.map(u => u._id === updatedUrl._id ? updatedUrl : u));
@@ -203,6 +220,12 @@ export default function Dashboard() {
                 label="Inventory" 
              />
              <TabButton 
+                active={activeView === 'overview'} 
+                onClick={() => { setActiveView('overview'); fetchOverview(); setSelectedShortCode(null); }} 
+                icon={<Zap className={`w-3.5 h-3.5 ${activeView === 'overview' ? 'text-indigo-500' : ''}`} />} 
+                label="Command Center" 
+             />
+             <TabButton 
                 active={activeView === 'settings'} 
                 onClick={() => { setActiveView('settings'); setSelectedShortCode(null); }} 
                 icon={<Settings className="w-3.5 h-3.5" />} 
@@ -224,6 +247,132 @@ export default function Dashboard() {
 
       {activeView === 'settings' ? (
         <SettingsView urls={urls} onUpdateUrl={handleUpdateUrl} />
+      ) : activeView === 'overview' ? (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-12">
+           {/* COMMAND OVERVIEW STATS */}
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard 
+                 title="Total Signal Reach" 
+                 value={overviewData?.totalClicks || 0} 
+                 icon={<Zap className="w-5 h-5 text-indigo-500" />} 
+                 trend="+14% this week"
+              />
+              <StatCard 
+                 title="Unique Intelligence" 
+                 value={overviewData?.uniqueClicks || 0} 
+                 icon={<Users className="w-5 h-5 text-emerald-500" />} 
+                 trend="+8% this week"
+              />
+              <StatCard 
+                 title="Active Redirects" 
+                 value={overviewData?.totalLinks || 0} 
+                 icon={<Link2 className="w-5 h-5 text-amber-500" />} 
+              />
+              <StatCard 
+                 title="Markets Tracked" 
+                 value={overviewData?.countryStats?.length || 0} 
+                 icon={<Globe className="w-5 h-5 text-rose-500" />} 
+              />
+           </div>
+
+           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              <div className="lg:col-span-2 bg-white border border-zinc-100 rounded-[40px] p-10 shadow-sm relative overflow-hidden">
+                 <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-10">
+                       <div>
+                          <h3 className="text-xl font-black text-black">Global Traffic Pulse.</h3>
+                          <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time aggregate performance metrics</p>
+                       </div>
+                    </div>
+                    {overviewData ? (
+                       <AnalyticsChart data={overviewData.dailyClicks} />
+                    ) : (
+                       <div className="h-[300px] flex items-center justify-center">
+                          <Loader2 className="w-8 h-8 animate-spin text-zinc-200" />
+                       </div>
+                    )}
+                 </div>
+              </div>
+
+              <div className="bg-zinc-950 text-white rounded-[40px] p-10 relative overflow-hidden group">
+                 <div className="relative z-10 h-full flex flex-col">
+                    <div className="flex items-center justify-between mb-10">
+                        <h3 className="text-xl font-black text-white">Top 5 Performers.</h3>
+                        <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                            <ArrowUpRight className="w-4 h-4" />
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-6 flex-1">
+                        {overviewData?.topPerformers?.map((u, i) => (
+                            <div key={i} className="flex items-center justify-between group/item">
+                                <div className="flex items-center gap-4">
+                                    <span className="text-[10px] font-black font-mono text-zinc-600 group-hover/item:text-indigo-400 transition-colors">0{i+1}</span>
+                                    <div>
+                                        <p className="text-sm font-black text-white group-hover/item:text-indigo-400 transition-colors uppercase tracking-tight">{u.shortCode}</p>
+                                        <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest truncate max-w-[120px]">{u.originalUrl.replace(/^https?:\/\//, '')}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-sm font-black text-white font-mono">{u.hits}</p>
+                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Hits</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest mt-10 hover:bg-zinc-200 transition-all">
+                        Full Performers List
+                    </button>
+                 </div>
+              </div>
+           </div>
+
+           {/* REAL-TIME GLOBAL FEED */}
+           <div className="bg-white border border-zinc-100 rounded-[40px] p-10">
+              <div className="flex items-center justify-between mb-10">
+                 <div>
+                    <h3 className="text-xl font-black text-black">Live Pulse Stream.</h3>
+                    <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Satellite intelligence across the entire matrix</p>
+                 </div>
+                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Active Monitoring</span>
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 {overviewData?.recentClicks?.slice(0, 9).map((click, i) => (
+                    <div key={i} className="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 group hover:border-black transition-all">
+                       <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-3">
+                             <div className="w-8 h-8 bg-white rounded-xl shadow-sm flex items-center justify-center font-mono text-[10px] font-black text-zinc-400">
+                                {click.shortCode[0].toUpperCase()}
+                             </div>
+                             <div>
+                                <h4 className="text-xs font-black text-black uppercase">{click.shortCode}</h4>
+                                <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{format(new Date(click.createdAt), 'HH:mm:ss')}</p>
+                             </div>
+                          </div>
+                          <span className="text-[8px] font-black text-zinc-400 px-2 py-1 bg-white border border-zinc-100 rounded-md">
+                             {click.country || 'Global'}
+                          </span>
+                       </div>
+                       <div className="flex items-center gap-3 mt-4 pt-4 border-t border-zinc-100">
+                          <div className="flex items-center gap-1.5 grayscale opacity-50">
+                             <img src={`https://cdn-icons-png.flaticon.com/512/0/191.png`} className="w-3 h-3" />
+                             <span className="text-[8px] font-black uppercase tracking-tighter">{click.browser || 'Web'}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 grayscale opacity-50 ml-auto">
+                             <Smartphone className="w-3 h-3" />
+                             <span className="text-[8px] font-black uppercase tracking-tighter">{click.device || 'Mobile'}</span>
+                          </div>
+                       </div>
+                    </div>
+                 ))}
+              </div>
+           </div>
+        </div>
       ) : !selectedShortCode ? (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
