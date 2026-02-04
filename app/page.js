@@ -1,7 +1,9 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 import MouseFollower from '@/components/MouseFollower';
-import MatrixRain from '@/components/MatrixRain';
 import HeroSignalRain from '@/components/HeroSignalRain';
 import { 
   ArrowRight, Link2, BarChart2, Shield, Zap, 
