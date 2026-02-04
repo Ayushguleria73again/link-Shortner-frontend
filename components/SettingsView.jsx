@@ -9,8 +9,9 @@ import {
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
 import DomainManager from './DomainManager';
+import CampaignManager from './CampaignManager';
 
-export default function SettingsView() {
+export default function SettingsView({ urls, onUpdateUrl }) {
     const [profile, setProfile] = useState({
         username: '',
         displayName: '',
@@ -271,6 +272,9 @@ export default function SettingsView() {
                         </div>
                     </div>
                 </div>
+
+                {/* Operational Campaign Manager */}
+                <CampaignManager urls={urls} onUpdateUrl={onUpdateUrl} />
 
                 {/* Custom Domain Manager */}
                 <DomainManager userPlan={userPlan} />

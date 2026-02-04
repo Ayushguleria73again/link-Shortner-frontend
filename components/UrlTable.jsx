@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import {
     Copy, Trash2, BarChart2, CheckCircle2,
-    Settings, QrCode, ExternalLink, Shield, CalendarOff, PowerOff
+    Settings, QrCode, ExternalLink, Shield, CalendarOff, PowerOff,
+    Folder
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
+import api from '@/lib/api';
 import QrModal from './QrModal';
 import SettingsModal from './SettingsModal';
 
@@ -13,6 +16,28 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
     const [selectedUrl, setSelectedUrl] = useState(null);
     const [showQr, setShowQr] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    const [campaigns, setCampaigns] = useState([]);
+
+    React.useEffect(() => {
+        fetchCampaigns();
+    }, []);
+
+    const fetchCampaigns = async () => {
+        try {
+            const { data } = await api.get('/campaigns');
+            setCampaigns(data.data);
+        } catch (err) { }
+    };
+
+    const handleAssignCampaign = async (urlId, campaignId) => {
+        try {
+            const { data } = await api.put(`/url/${urlId}`, { campaignId: campaignId || null });
+            onUpdate(data.data);
+            toast.success('Assignment updated');
+        } catch (err) {
+            toast.error('Assignment failed');
+        }
+    };
 
     const copyToClipboard = (text, id) => {
         navigator.clipboard.writeText(text);
@@ -49,6 +74,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                             <tr className="border-b border-zinc-50 bg-zinc-50/30">
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Short Link</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Security / Metrics</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Campaign</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Status</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">Actions</th>
                             </tr>

@@ -223,7 +223,7 @@ export default function Dashboard() {
       </div>
 
       {activeView === 'settings' ? (
-        <SettingsView />
+        <SettingsView urls={urls} onUpdateUrl={handleUpdateUrl} />
       ) : !selectedShortCode ? (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
