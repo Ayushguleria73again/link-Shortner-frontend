@@ -47,7 +47,10 @@ export default function SettingsView() {
             ]);
 
             if (profileRes.data.data) {
-                setProfile(profileRes.data.data);
+                setProfile({
+                    ...profile,
+                    ...profileRes.data.data
+                });
             }
             if (userRes.data.data) {
                 setApiKey(userRes.data.data.apiKey);
@@ -82,6 +85,11 @@ export default function SettingsView() {
     const handleSaveProfile = async () => {
         try {
             setSaving(true);
+            if (!profile.username) {
+                toast.error('Identity Protocol Error: Username is required.');
+                setSaving(false);
+                return;
+            }
             await api.post('/profile', profile);
             toast.success('Security clearance updated. Profile saved.');
         } catch (err) {
