@@ -586,8 +586,7 @@ export default function Dashboard() {
                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
                             <span className="text-[9px] font-black uppercase text-zinc-400">{formatDistanceToNow(new Date(click.createdAt))} ago</span>
                          </div>
-                         <p className="text-xs font-black text-black mb-1">{click.city}, {click.country}</p>
-                         <p className="text-[9px] text-zinc-400 uppercase font-bold tracking-widest">{click.browser} on {click.os}</p>
+                         <p className="text-sm font-black text-black">{click.city || 'Unknown'}</p>
                       </div>
                     )) : (
                       <div className="col-span-full py-10 text-center text-[10px] font-black uppercase tracking-widest text-zinc-300">
