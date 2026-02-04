@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
+import DomainManager from './DomainManager';
 
 export default function SettingsView() {
     const [profile, setProfile] = useState({
@@ -19,6 +20,7 @@ export default function SettingsView() {
     const [apiKey, setApiKey] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [showUsage, setShowUsage] = useState(false);
 
     // Modal State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -127,67 +129,120 @@ export default function SettingsView() {
                         <h2 className="text-sm font-black uppercase tracking-[0.2em]">Link Hub Identity</h2>
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-mono text-sm">smol.link/u/</span>
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+                        {/* Left: Editor */}
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Username</label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-mono text-sm font-medium">smol.link/</span>
+                                    <input
+                                        type="text"
+                                        value={profile.username}
+                                        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                                        className="w-full pl-24 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
+                                        placeholder="username"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
                                 <input
                                     type="text"
-                                    value={profile.username}
-                                    onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                                    className="w-full pl-24 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                    placeholder="username"
+                                    value={profile.displayName}
+                                    onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
+                                    placeholder="e.g. Ayush Guleria"
                                 />
                             </div>
+
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Bio</label>
+                                <textarea
+                                    value={profile.bio}
+                                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all h-24 resize-none"
+                                    placeholder="Tell your story..."
+                                />
+                            </div>
+
+                            <div className="pt-6 border-t border-zinc-50">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">Social Links</h3>
+                                <div className="space-y-3">
+                                    <SocialInput
+                                        label="Twitter"
+                                        value={profile.socialLinks.twitter}
+                                        onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
+                                    />
+                                    <SocialInput
+                                        label="Github"
+                                        value={profile.socialLinks.github}
+                                        onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleSaveProfile}
+                                disabled={saving}
+                                className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4"
+                            >
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                Save Identity
+                            </button>
                         </div>
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
-                            <input
-                                type="text"
-                                value={profile.displayName}
-                                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                placeholder="Your Name"
-                            />
+
+                        {/* Right: Live Preview */}
+                        <div className="bg-zinc-900 rounded-[40px] p-4 border-4 border-zinc-100 shadow-2xl relative overflow-hidden h-fit transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                            {/* Phone Notion */}
+                            <div className="absolute top-0 inset-x-0 h-6 bg-black/20 z-10 mx-auto w-32 rounded-b-xl backdrop-blur-md" />
+
+                            <div className="bg-white rounded-[32px] h-full min-h-[500px] p-6 flex flex-col items-center text-center pt-16 relative overflow-hidden">
+                                {/* Decor Background */}
+                                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-indigo-50 to-white" />
+
+                                {/* Avatar Mock */}
+                                <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-2xl font-black mb-4 shadow-xl z-10 border-4 border-white">
+                                    {profile.displayName ? profile.displayName[0].toUpperCase() : <User className="w-8 h-8" />}
+                                </div>
+
+                                <h3 className="text-lg font-black text-black z-10 mb-1">{profile.displayName || 'Your Name'}</h3>
+                                <p className="text-xs font-bold text-zinc-400 z-10 mb-4 bg-zinc-50 px-3 py-1 rounded-full font-mono">
+                                    @{profile.username || 'username'}
+                                </p>
+
+                                <p className="text-sm text-zinc-600 font-medium z-10 mb-8 max-w-[200px] leading-relaxed">
+                                    {profile.bio || 'Your simplified bio will appear here...'}
+                                </p>
+
+                                <div className="flex items-center gap-3 z-10">
+                                    {[1, 2, 3].map(i => (
+                                        <div key={i} className="w-10 h-10 bg-zinc-50 rounded-full flex items-center justify-center border border-zinc-100 text-zinc-300">
+                                            <Globe className="w-4 h-4" />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-auto w-full pt-8 space-y-3 z-10">
+                                    <div className="w-full h-12 bg-black text-white rounded-xl flex items-center justify-center text-xs font-bold shadow-lg">
+                                        Latest Link
+                                    </div>
+                                    <div className="w-full h-12 bg-zinc-50 rounded-xl border border-zinc-100" />
+                                </div>
+
+                                {/* Footer Brand */}
+                                <div className="mt-6 flex items-center gap-1 opacity-50">
+                                    <div className="w-3 h-3 bg-black rounded-full" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-800">smol.link</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div>
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Identity Bio</label>
-                        <textarea
-                            value={profile.bio}
-                            onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                            className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all h-32 resize-none"
-                            placeholder="Tell the world who you are..."
-                        />
-                    </div>
-
-                    <div className="pt-6 border-t border-zinc-50">
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Social Integration</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <SocialInput
-                                label="Twitter"
-                                value={profile.socialLinks.twitter}
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
-                            />
-                            <SocialInput
-                                label="Github"
-                                value={profile.socialLinks.github}
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={handleSaveProfile}
-                        disabled={saving}
-                        className="w-full flex items-center justify-center gap-3 bg-black text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
-                    >
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                        Update Global Identity
-                    </button>
                 </div>
 
+                {/* Custom Domain Manager */}
+                <DomainManager userPlan={userPlan} />
 
                 {/* Developer API Section */}
                 <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
@@ -219,58 +274,97 @@ export default function SettingsView() {
 
             <div className="space-y-8">
                 {/* Usage & Plan Card */}
-                <div className="bg-black text-white rounded-[32px] p-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[40px] -mr-16 -mt-16" />
+                {/* Usage & Plan Card */}
+                <div className="relative group">
+                    {/* Animated Border Gradient */}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-[34px] opacity-75 blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
 
-                    <div className="flex items-center justify-between mb-6">
-                        <Shield className="w-8 h-8 text-indigo-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full">
-                            {userPlan} Tier
-                        </span>
-                    </div>
+                    <div className="relative bg-zinc-950 text-white rounded-[32px] p-8 overflow-hidden border border-zinc-800">
+                        {/* Texture/Pattern */}
+                        {/* <div className="absolute inset-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div> */}
 
-                    <h3 className="text-xl font-black tracking-tight mb-2 uppercase">
-                        {userPlan === 'business' ? 'Scale Protocol' : userPlan === 'pro' ? 'Elite Protocol' : userPlan === 'starter' ? 'Growth Protocol' : 'Spark Protocol'}
-                    </h3>
-                    <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-8">
-                        {userPlan === 'free' ? 'Upgrade to unlock advanced analytics and more links.' : 'All advanced systems active.'}
-                    </p>
-
-                    {userUsage && (
-                        <div className="space-y-6 mb-8">
-                            {/* Link Limit */}
-                            <div>
-                                <div className="flex justify-between text-[10px] uppercase font-black tracking-widest mb-2">
-                                    <span className="text-zinc-400">Links Created</span>
-                                    <span>{userUsage.linksCreated} / {userPlan === 'free' ? '50' : userPlan === 'starter' ? '500' : '∞'}</span>
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-sm">
+                                    <Shield className={`w-6 h-6 ${userPlan === 'business' ? 'text-amber-400' :
+                                        userPlan === 'pro' ? 'text-indigo-400' :
+                                            'text-emerald-400'
+                                        }`} />
                                 </div>
-                                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-indigo-500 rounded-full transition-all duration-1000"
-                                        style={{ width: `${Math.min((userUsage.linksCreated / (userPlan === 'free' ? 50 : userPlan === 'starter' ? 500 : 10000)) * 100, 100)}%` }}
-                                    />
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-1">Current Protocol</p>
+                                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${userPlan === 'business' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
+                                        userPlan === 'pro' ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' :
+                                            'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                        }`}>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                                        {userPlan} Tier
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Click Limit */}
-                            <div>
-                                <div className="flex justify-between text-[10px] uppercase font-black tracking-widest mb-2">
-                                    <span className="text-zinc-400">Monthly Clicks</span>
-                                    <span>{userUsage.clicksRecorded.toLocaleString()} / {userPlan === 'free' ? '1k' : userPlan === 'starter' ? '15k' : userPlan === 'pro' ? '150k' : '2M'}</span>
+                            <h3 className="text-2xl font-black tracking-tight mb-2 text-white">
+                                {userPlan === 'business' ? 'Scale Protocol' : userPlan === 'pro' ? 'Elite Protocol' : userPlan === 'starter' ? 'Growth Protocol' : 'Spark Protocol'}
+                            </h3>
+                            <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-8 border-l-2 border-white/10 pl-3">
+                                {userPlan === 'free' ? 'Restricted access. Upgrade to unlock full telemetry.' : 'All advanced systems operational. Unlimited bandwidth available.'}
+                            </p>
+
+                            {showUsage && userUsage && (
+                                <div className="space-y-6 mb-8 bg-white/5 p-6 rounded-2xl border border-white/5 animate-in fade-in zoom-in-95 duration-300">
+                                    {/* Link Limit */}
+                                    <div>
+                                        <div className="flex justify-between text-[9px] uppercase font-black tracking-widest mb-2">
+                                            <span className="text-zinc-400">Database Entries</span>
+                                            <span className="text-white">{userUsage.linksCreated} / {userPlan === 'free' ? '50' : userPlan === 'starter' ? '500' : '∞'}</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
+                                            <div
+                                                className="h-full bg-gradient-to-r from-indigo-600 to-violet-500 rounded-full transition-all duration-1000"
+                                                style={{ width: `${Math.min((userUsage.linksCreated / (userPlan === 'free' ? 50 : userPlan === 'starter' ? 500 : 10000)) * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Click Limit */}
+                                    <div>
+                                        <div className="flex justify-between text-[9px] uppercase font-black tracking-widest mb-2">
+                                            <span className="text-zinc-400">Traffic Throughput</span>
+                                            <span className="text-white">{userUsage.clicksRecorded.toLocaleString()} / {userPlan === 'free' ? '1k' : userPlan === 'starter' ? '15k' : userPlan === 'pro' ? '150k' : '2M'}</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-1000 bg-gradient-to-r ${userUsage.clicksRecorded > (userPlan === 'free' ? 1000 : 15000) ? 'from-rose-600 to-orange-500' : 'from-emerald-600 to-teal-500'}`}
+                                                style={{ width: `${Math.min((userUsage.clicksRecorded / (userPlan === 'free' ? 1000 : userPlan === 'starter' ? 15000 : userPlan === 'pro' ? 150000 : 2000000)) * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between">
+                                        <span className="text-[9px] uppercase font-black tracking-widest text-zinc-500">Domains Active</span>
+                                        <span className="text-[10px] uppercase font-bold text-white">Check Manager Below</span>
+                                    </div>
                                 </div>
-                                <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                                    <div
-                                        className={`h-full rounded-full transition-all duration-1000 ${userUsage.clicksRecorded > (userPlan === 'free' ? 1000 : 15000) ? 'bg-rose-500' : 'bg-emerald-500'}`}
-                                        style={{ width: `${Math.min((userUsage.clicksRecorded / (userPlan === 'free' ? 1000 : userPlan === 'starter' ? 15000 : userPlan === 'pro' ? 150000 : 2000000)) * 100, 100)}%` }}
-                                    />
-                                </div>
+                            )}
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowUsage(!showUsage)}
+                                    className="flex-1 py-4 bg-white hover:bg-zinc-200 text-black rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group/btn shadow-[0_0_20px_-10px_rgba(255,255,255,0.5)]"
+                                >
+                                    {showUsage ? 'Hide Telemetry' : 'Check Usage'}
+                                    <Shield className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = '/pricing'}
+                                    className="px-4 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl border border-white/10 transition-all font-bold"
+                                    title="Manage Plan"
+                                >
+                                    <Settings className="w-4 h-4" />
+                                </button>
                             </div>
                         </div>
-                    )}
-
-                    <button className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-200 transition-all">
-                        {userPlan === 'business' ? 'Manage Subscription' : 'Upgrade Plan'}
-                    </button>
+                    </div>
                 </div>
 
                 <div className="bg-zinc-50 border border-zinc-100 rounded-[32px] p-8">
