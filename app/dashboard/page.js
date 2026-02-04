@@ -11,9 +11,9 @@ import {
   Zap, BarChart3, TrendingUp, Activity,
   Download, ExternalLink, Link2, Users, MapPin, Clock, Radio,
   ArrowLeft, Settings, Database, User as UserIcon,
-  Search, Filter, ArrowDownWideNarrow, X
+  Search, Filter, ArrowDownWideNarrow, X, ArrowUpRight
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import SettingsView from '@/components/SettingsView';
 import DestructiveModal from '@/components/DestructiveModal';
