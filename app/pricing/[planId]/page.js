@@ -16,6 +16,14 @@ export default function PlanDetailPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const { Razorpay } = useRazorpay();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
 
     const plan = PLANS[planId];
 
@@ -59,6 +67,11 @@ export default function PlanDetailPage() {
                 name: "Shorty SaaS",
                 description: `Upgrade to ${plan.name} Plan`,
                 order_id: orderData.order.id,
+                prefill: {
+                    name: user ? `${user.firstName} ${user.lastName}` : undefined,
+                    email: user ? user.email : undefined,
+                    contact: user ? user.phoneNumber : undefined
+                },
                 handler: async function (response) {
                     try {
                         const verifyRes = await api.post('/payment/verify', {
@@ -149,18 +162,18 @@ export default function PlanDetailPage() {
                             <div className="bg-zinc-800/50 rounded-xl p-6 mb-8 border border-zinc-700/50">
                                 <div className="flex justify-between items-center text-sm mb-2">
                                     <span className="text-zinc-400">Subtotal</span>
-                                    <span className="font-mono">₹{plan.price}.00</span>
+                                    <span className="font-mono">₹{Math.round(plan.price / 1.18)}.00</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm mb-4">
-                                    <span className="text-zinc-400">Taxes</span>
-                                    <span className="font-mono">₹{Math.round(plan.price * 0.18)}.00</span>
+                                    <span className="text-zinc-400">GST (18%)</span>
+                                    <span className="font-mono">₹{plan.price - Math.round(plan.price / 1.18)}.00</span>
                                 </div>
                                 <div className="h-px bg-zinc-700 mb-4" />
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span>Total</span>
-                                    <span>₹{plan.price + Math.round(plan.price * 0.18)}.00</span>
+                                    <span>₹{plan.price}.00</span>
                                 </div>
-                                <p className="text-xs text-zinc-500 mt-2 text-right">Includes 18% GST</p>
+                                <p className="text-xs text-zinc-500 mt-2 text-right">Inclusive of GST</p>
                             </div>
 
                             <button

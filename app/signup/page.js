@@ -11,6 +11,7 @@ export default function Signup() {
     firstName: '',
     lastName: '',
     email: '', 
+    phoneNumber: '',
     password: '', 
     confirmPassword: '' 
   });
@@ -37,7 +38,9 @@ export default function Signup() {
       await api.post('/auth/register', {
         firstName: formData.firstName,
         lastName: formData.lastName,
+        lastName: formData.lastName,
         email: formData.email,
+        phoneNumber: formData.phoneNumber,
         password: formData.password
       });
       setStep(2); // Move to OTP step
@@ -122,6 +125,18 @@ export default function Signup() {
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     />
                 </div>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Phone Number</label>
+              <input
+                type="tel"
+                required
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-medium normal-case"
+                placeholder="+91 98765 43210"
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+              />
             </div>
 
             <div className="space-y-2">
