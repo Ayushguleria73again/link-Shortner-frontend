@@ -389,6 +389,16 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      {/* MODALS */}
+      <DestructiveModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Destroy Signal?"
+        description="This will permanently terminate this redirect protocol and all its intelligence data. This action cannot be undone."
+        confirmText="Confirm Destruction"
+      />
     </div>
   );
 }
