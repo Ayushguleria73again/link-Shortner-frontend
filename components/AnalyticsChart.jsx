@@ -46,7 +46,7 @@ const AnalyticsChart = ({ data, title, type = "line" }) => {
                 <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                 {title}
             </h3>
-            <div className="h-64 w-full">
+            <div className="h-64 w-full min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                     {type === 'line' ? (
                         <AreaChart data={data}>
