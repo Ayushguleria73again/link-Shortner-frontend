@@ -240,7 +240,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 bg-zinc-50 hover:bg-zinc-100 px-6 py-3 rounded-2xl transition-all border border-zinc-100 font-bold text-xs uppercase tracking-widest text-zinc-600 group"
           >
             <RefreshCcw className={`w-4 h-4 text-zinc-400 group-hover:text-black transition-colors ${loading ? 'animate-spin' : ''}`} />
-            Refresh Registry
+            Refresh Library
           </button>
         )}
       </div>
@@ -273,7 +273,7 @@ export default function Dashboard() {
                      onClick={() => setActiveView('links')}
                      className="text-zinc-400 hover:text-black font-black text-[10px] uppercase tracking-widest transition-colors py-4 px-8"
                   >
-                     Return to Registry
+                     Return to Library
                   </button>
                </div>
             </div>

@@ -1,8 +1,10 @@
 "use client";
-import React from 'react';
+import React , {useState ,useEffect} from 'react';
 import { motion } from 'framer-motion';
 
 const HeroSignalRain = () => {
+    const [mounted, setMounted] = useState(false);
+
     // Branded colors
     const colors = ['#6366f1', '#10b981', '#f43f5e', '#a855f7'];
     const bits = ['0', '1'];
@@ -21,10 +23,14 @@ const HeroSignalRain = () => {
         }));
     }, []);
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
             <div className="relative w-full h-full">
-                {particles.map((p) => (
+                {mounted && particles.map((p) => (
                     <motion.div
                         key={p.id}
                         initial={{ y: -100, opacity: 0 }}

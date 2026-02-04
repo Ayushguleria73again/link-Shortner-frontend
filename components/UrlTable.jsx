@@ -50,7 +50,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
     if (urls.length === 0) {
         return (
             <div className="border border-dashed border-zinc-200 rounded-[32px] p-24 text-center bg-zinc-50/30">
-                <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs">No entries found in your registry</p>
+                <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs">No entries found in your collection</p>
             </div>
         );
     }
