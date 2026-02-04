@@ -310,7 +310,7 @@ export default function Dashboard() {
                                     <span className="text-[10px] font-black font-mono text-zinc-600 group-hover/item:text-indigo-400 transition-colors">0{i+1}</span>
                                     <div>
                                         <p className="text-sm font-black text-white group-hover/item:text-indigo-400 transition-colors uppercase tracking-tight">{u.shortCode}</p>
-                                        <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest truncate max-w-[120px]">{u.originalUrl.replace(/^https?:\/\//, '')}</p>
+                                        <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest truncate max-w-[120px]">{(u.originalUrl || '').replace(/^https?:\/\//, '')}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
@@ -347,7 +347,7 @@ export default function Dashboard() {
                        <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-3">
                              <div className="w-8 h-8 bg-white rounded-xl shadow-sm flex items-center justify-center font-mono text-[10px] font-black text-zinc-400">
-                                {click.shortCode[0].toUpperCase()}
+                                {(click.shortCode || '?')[0].toUpperCase()}
                              </div>
                              <div>
                                 <h4 className="text-xs font-black text-black uppercase">{click.shortCode}</h4>
