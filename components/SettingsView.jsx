@@ -103,7 +103,8 @@ export default function SettingsView() {
             await api.post('/profile', profile);
             toast.success('Security clearance updated. Profile saved.');
         } catch (err) {
-            toast.error('Protocol error. Failed to save.');
+            const message = err.response?.data?.error || 'Protocol error. Failed to save.';
+            toast.error(message);
         } finally {
             setSaving(false);
         }
