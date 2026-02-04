@@ -308,7 +308,24 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                 </div>
 
                 {/* Operational Campaign Manager */}
-                <CampaignManager urls={urls} onUpdateUrl={onUpdateUrl} />
+                <div className="relative overflow-hidden rounded-[32px]">
+                    {['free', 'starter'].includes(userPlan) && (
+                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8 rounded-[32px] border border-zinc-100">
+                            <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
+                                <Database className="w-6 h-6 text-indigo-400" />
+                            </div>
+                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Campaign Intelligence</h3>
+                            <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to organize your signals into grouped campaigns and folders.</p>
+                            <button
+                                onClick={() => window.location.href = '/pricing'}
+                                className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+                            >
+                                Unlock Campaigns
+                            </button>
+                        </div>
+                    )}
+                    <CampaignManager urls={urls} onUpdateUrl={onUpdateUrl} />
+                </div>
 
                 {/* Custom Domain Manager */}
                 <DomainManager userPlan={userPlan} />

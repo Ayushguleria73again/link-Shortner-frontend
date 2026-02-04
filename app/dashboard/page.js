@@ -11,7 +11,7 @@ import {
   Zap, BarChart3, TrendingUp, Activity,
   Download, ExternalLink, Link2, Users, MapPin, Clock, Radio,
   ArrowLeft, Settings, Database, User as UserIcon,
-  Search, Filter, ArrowDownWideNarrow, X, ArrowUpRight
+  Search, Filter, ArrowDownWideNarrow, X, ArrowUpRight, Lock
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
@@ -248,7 +248,38 @@ export default function Dashboard() {
       {activeView === 'settings' ? (
         <SettingsView urls={urls} onUpdateUrl={handleUpdateUrl} />
       ) : activeView === 'overview' ? (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-12">
+        <div className="relative">
+          {/* ELITE GATE OVERLAY */}
+          {['free', 'starter'].includes(userPlan) && (
+            <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center text-center p-12 rounded-[40px] border-2 border-dashed border-zinc-200 animate-in fade-in duration-1000">
+               <div className="w-20 h-20 bg-zinc-950 text-white rounded-full flex items-center justify-center mb-8 shadow-2xl relative">
+                  <Lock className="w-8 h-8" />
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center border-4 border-white animate-pulse">
+                     <Zap className="w-3 h-3 fill-white text-white" />
+                  </div>
+               </div>
+               <h2 className="text-4xl font-black text-black mb-4 tracking-tighter">Satellite Intelligence Locked.</h2>
+               <p className="text-zinc-500 font-medium max-w-md mb-10 leading-relaxed">
+                  The Command Center protocol is reserved for <span className="text-indigo-600 font-black">Elite & Scale</span> registries. Upgrade to unlock account-wide signal monitoring, top-performer leaderboards, and geo-intelligence.
+               </p>
+               <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link 
+                     href="/pricing"
+                     className="bg-zinc-950 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-xl shadow-black/10"
+                  >
+                     Initiate Upgrade
+                  </Link>
+                  <button 
+                     onClick={() => setActiveView('links')}
+                     className="text-zinc-400 hover:text-black font-black text-[10px] uppercase tracking-widest transition-colors py-4 px-8"
+                  >
+                     Return to Registry
+                  </button>
+               </div>
+            </div>
+          )}
+          
+          <div className={`animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-12 ${['free', 'starter'].includes(userPlan) ? 'blur-[8px] pointer-events-none select-none grayscale opacity-40' : ''}`}>
            {/* COMMAND OVERVIEW STATS */}
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard 
@@ -373,6 +404,7 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
+      </div>
       ) : !selectedShortCode ? (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
