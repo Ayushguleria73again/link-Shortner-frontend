@@ -1,5 +1,5 @@
 export default function sitemap() {
-    const baseUrl = 'https://shorty-saas.com'; // Replace with actual domain
+    const baseUrl = 'https://smol-saas.com'; // Replace with actual domain
 
     // Static Routes
     const routes = [

@@ -20,7 +20,7 @@ export default function About() {
               We are obsessed with <span className="text-zinc-400">Data.</span>
             </h1>
             <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-8">
-              Shorty was built for marketers, developers, and creators who demand more than just a redirect. We believe that every click tells a story, and you deserve to read it.
+              smol was built for marketers, developers, and creators who demand more than just a redirect. We believe that every click tells a story, and you deserve to read it.
             </p>
           </div>
           <div className="relative">

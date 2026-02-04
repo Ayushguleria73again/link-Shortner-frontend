@@ -65,7 +65,7 @@ export default function PasswordGate({ params: paramsPromise }) {
         <div className="mt-12 pt-12 border-t border-zinc-50 flex flex-col items-center gap-4">
            <div className="flex items-center gap-2 text-zinc-300">
               <ShieldAlert className="w-4 h-4" />
-              <span className="text-[9px] font-black uppercase tracking-widest">Secured by ShortyCloud</span>
+              <span className="text-[9px] font-black uppercase tracking-widest">Secured by smolCloud</span>
            </div>
            <p className="text-[9px] text-zinc-200 font-bold text-center max-w-[240px] uppercase leading-relaxed">
              This link is encrypted. we do not store your password or session data.

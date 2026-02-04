@@ -1,26 +1,42 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { Link2, LogOut, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '@/lib/api';
 
 const Navbar = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [user, setUser] = React.useState(null);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    React.useEffect(() => {
+
+
+    useEffect(() => {
         const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
         setIsLoggedIn(!!token);
-        if (userData) {
-            setUser(JSON.parse(userData));
-        } else {
-            setUser(null);
-        }
+
+        const fetchUserData = async () => {
+            if (token) {
+                try {
+                    const { data } = await api.get('/auth/me');
+                    if (data.data) {
+                        setUser(data.data);
+                        localStorage.setItem('user', JSON.stringify(data.data));
+                    }
+                } catch (err) {
+                    console.error("Failed to sync user data", err);
+                    // Fallback to local storage if API fails
+                    const localUser = localStorage.getItem('user');
+                    if (localUser) setUser(JSON.parse(localUser));
+                }
+            }
+        };
+
+        fetchUserData();
     }, [pathname]);
 
     // Close mobile menu on route change
@@ -61,6 +77,20 @@ const Navbar = () => {
                             </Link>
 
                             <div className="flex items-center gap-3 pl-6 border-l border-zinc-100">
+                                {user?.plan && (
+                                    <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
+                                        user.plan === 'pro' ? 'bg-indigo-100 text-indigo-600' :
+                                            user.plan === 'business' ? 'bg-amber-100 text-amber-600' :
+                                                'bg-zinc-100 text-zinc-500' // Free/Spark style
+                                        }`}>
+                                        {
+                                            user.plan === 'starter' ? 'Growth' :
+                                                user.plan === 'pro' ? 'Elite' :
+                                                    user.plan === 'business' ? 'Scale' :
+                                                        'Spark' // Free plan name
+                                        }
+                                    </span>
+                                )}
                                 <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase">
                                     {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                                 </div>
@@ -116,7 +146,23 @@ const Navbar = () => {
                                                 {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-sm">{user?.firstName} {user?.lastName}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-bold text-sm">{user?.firstName} {user?.lastName}</p>
+                                                    {user?.plan && (
+                                                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
+                                                            user.plan === 'pro' ? 'bg-indigo-100 text-indigo-600' :
+                                                                user.plan === 'business' ? 'bg-amber-100 text-amber-600' :
+                                                                    'bg-zinc-100 text-zinc-500'
+                                                            }`}>
+                                                            {
+                                                                user.plan === 'starter' ? 'Growth' :
+                                                                    user.plan === 'pro' ? 'Elite' :
+                                                                        user.plan === 'business' ? 'Scale' :
+                                                                            'Spark'
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p className="text-xs text-zinc-500">{user?.email}</p>
                                             </div>
                                         </div>

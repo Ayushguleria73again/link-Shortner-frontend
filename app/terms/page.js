@@ -12,7 +12,7 @@ export default function Terms() {
 
         <div className="prose prose-zinc prose-sm md:prose-base font-medium text-zinc-600">
           <h3>1. Acceptance of Terms</h3>
-          <p>By accessing and using Shorty ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.</p>
+          <p>By accessing and using smol ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.</p>
 
           <h3>2. Usage Limits</h3>
           <p>The Service is provided in tiers (Free, Growth, Elite, Scale). You agree to abide by the usage limits of your selected tier. We reserve the right to throttle or suspend accounts that excessively exceed their limits to protect the integrity of the platform.</p>

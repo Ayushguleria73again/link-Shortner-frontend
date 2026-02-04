@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
     title: `${plan.name} Plan Pricing`,
     description: plan.longDescription,
     openGraph: {
-        title: `${plan.name} Plan | ShortySaaS`,
+        title: `${plan.name} Plan | smolSaaS`,
         description: plan.description,
     }
   };

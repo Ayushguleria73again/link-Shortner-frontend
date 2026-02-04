@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export const metadata = {
     title: 'Pricing & Plans',
-    description: 'Compare ShortySaaS plans. Start for free or scale with our Elite and Business tiers.',
+    description: 'Compare smolSaaS plans. Start for free or scale with our Elite and Business tiers.',
 };
 
 export default function PricingPage() {

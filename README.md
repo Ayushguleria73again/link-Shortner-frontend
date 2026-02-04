@@ -1,6 +1,6 @@
-# 🎨 Shorty Elite Insight Interface
+# 🎨 smol Elite Insight Interface
 
-A cinematic, high-fidelity management console for **Shorty Elite**. Built with Next.js 14, this interface transforms raw click data into a pulsing "Matrix-style" visual experience.
+A cinematic, high-fidelity management console for **smol Elite**. Built with Next.js 14, this interface transforms raw click data into a pulsing "Matrix-style" visual experience.
 
 ## 🚀 Key Features
 

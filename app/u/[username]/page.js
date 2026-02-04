@@ -119,10 +119,10 @@ export default function PublicProfile() {
         <div className="mt-24 text-center">
            <div className="flex items-center gap-2 font-black tracking-tighter text-xl mb-2 opacity-20">
              <Link2 className="w-5 h-5" />
-             SHORTY.
+             smol.
            </div>
            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-300">
-             Engineered by Shorty Elite Intelligence.
+             Engineered by smol Elite Intelligence.
            </p>
         </div>
       </div>

@@ -64,7 +64,7 @@ export default function PlanDetailPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: orderData.order.amount,
                 currency: "INR",
-                name: "Shorty SaaS",
+                name: "smol SaaS",
                 description: `Upgrade to ${plan.name} Plan`,
                 order_id: orderData.order.id,
                 prefill: {

@@ -105,7 +105,6 @@ export default function SettingsView() {
             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Syncing Settings...</p>
         </div>
     );
-
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Delete Confirmation Modal */}
@@ -130,67 +129,65 @@ export default function SettingsView() {
 
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Matrix Username</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-mono text-sm">shorty.me/u/</span>
-                                    <input
-                                        type="text"
-                                        value={profile.username}
-                                        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                                        className="w-full pl-24 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                        placeholder="username"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-mono text-sm">smol.link/u/</span>
                                 <input
                                     type="text"
-                                    value={profile.displayName}
-                                    onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                                    className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                    placeholder="Your Name"
+                                    value={profile.username}
+                                    onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                                    className="w-full pl-24 pr-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
+                                    placeholder="username"
                                 />
                             </div>
                         </div>
-
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Identity Bio</label>
-                            <textarea
-                                value={profile.bio}
-                                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all h-32 resize-none"
-                                placeholder="Tell the world who you are..."
+                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
+                            <input
+                                type="text"
+                                value={profile.displayName}
+                                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                                className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
+                                placeholder="Your Name"
                             />
                         </div>
-
-                        <div className="pt-6 border-t border-zinc-50">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Social Integration</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <SocialInput
-                                    label="Twitter"
-                                    value={profile.socialLinks.twitter}
-                                    onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
-                                />
-                                <SocialInput
-                                    label="Github"
-                                    value={profile.socialLinks.github}
-                                    onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
-                                />
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={handleSaveProfile}
-                            disabled={saving}
-                            className="w-full flex items-center justify-center gap-3 bg-black text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
-                        >
-                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            Update Global Identity
-                        </button>
                     </div>
+
+                    <div>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Identity Bio</label>
+                        <textarea
+                            value={profile.bio}
+                            onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                            className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all h-32 resize-none"
+                            placeholder="Tell the world who you are..."
+                        />
+                    </div>
+
+                    <div className="pt-6 border-t border-zinc-50">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Social Integration</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <SocialInput
+                                label="Twitter"
+                                value={profile.socialLinks.twitter}
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
+                            />
+                            <SocialInput
+                                label="Github"
+                                value={profile.socialLinks.github}
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleSaveProfile}
+                        disabled={saving}
+                        className="w-full flex items-center justify-center gap-3 bg-black text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                        Update Global Identity
+                    </button>
                 </div>
+
 
                 {/* Developer API Section */}
                 <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
@@ -220,7 +217,6 @@ export default function SettingsView() {
                 </div>
             </div>
 
-            {/* Sidebar Settings */}
             <div className="space-y-8">
                 {/* Usage & Plan Card */}
                 <div className="bg-black text-white rounded-[32px] p-8 relative overflow-hidden">

@@ -138,10 +138,27 @@ export default function Dashboard() {
             <span className="text-[10px] font-black uppercase tracking-widest">Back to Front</span>
           </Link>
           <div className="flex items-center gap-2 mb-2">
-            <div className="p-2 bg-indigo-50 rounded-lg">
-              <Zap className="w-5 h-5 text-indigo-600 fill-indigo-600" />
+            <div className={`p-2 rounded-lg ${
+              userPlan === 'starter' ? 'bg-emerald-50' : 
+              userPlan === 'pro' ? 'bg-indigo-50' : 
+              userPlan === 'business' ? 'bg-amber-50' : 
+              'bg-zinc-100'
+            }`}>
+              <Zap className={`w-5 h-5 ${
+                userPlan === 'starter' ? 'text-emerald-600 fill-emerald-600' : 
+                userPlan === 'pro' ? 'text-indigo-600 fill-indigo-600' : 
+                userPlan === 'business' ? 'text-amber-600 fill-amber-600' : 
+                'text-zinc-400 fill-zinc-400'
+              }`} />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Elite Analytics Suite</span>
+            <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+                userPlan === 'starter' ? 'text-emerald-500' : 
+                userPlan === 'pro' ? 'text-indigo-500' : 
+                userPlan === 'business' ? 'text-amber-500' : 
+                'text-zinc-400'
+            }`}>
+              {userPlan === 'starter' ? 'Growth Analytics' : userPlan === 'pro' ? 'Elite Analytics' : userPlan === 'business' ? 'Scale Analytics' : 'Basic Analytics'}
+            </span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black">Manage Center.</h1>
           <p className="text-zinc-400 font-medium text-sm mt-2 max-w-md">Professional-grade link management and audience intelligence.</p>
