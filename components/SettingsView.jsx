@@ -427,31 +427,7 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                 </div>
 
                 {/* Developer API Section */}
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-8">
-                        <Terminal className="w-5 h-5 text-emerald-500" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Developer Access Port</h2>
-                    </div>
 
-                    <div className="bg-zinc-50 rounded-2xl p-6 border border-zinc-100">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Master API Key</span>
-                            <span className="text-[9px] font-black text-emerald-500 uppercase px-2 py-1 bg-emerald-50 rounded-md">Alpha Access</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <div className="flex-1 bg-white border border-zinc-200 rounded-xl px-4 py-3 font-mono text-xs text-zinc-800 overflow-hidden text-ellipsis whitespace-nowrap">
-                                {apiKey ? apiKey : '••••••••••••••••••••••••••••••••'}
-                            </div>
-                            <button
-                                onClick={handleGenerateKey}
-                                className="bg-black text-white px-4 py-3 rounded-xl hover:bg-zinc-800 transition-colors"
-                            >
-                                <RefreshCcw className="w-4 h-4" />
-                            </button>
-                        </div>
-                        <p className="mt-4 text-[10px] text-zinc-400 font-medium">Use this key to automate link creation via our Terminal API. Keep it secure.</p>
-                    </div>
-                </div>
             </div>
 
             <div className="space-y-8">
