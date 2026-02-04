@@ -79,8 +79,8 @@ const Navbar = () => {
     if (isAuthPage || isErrorPage) return null;
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100/50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto md:min-w-[700px] max-w-5xl bg-white/90 backdrop-blur-xl border border-zinc-200/50 rounded-full shadow-2xl shadow-zinc-500/10 transition-all duration-500 ease-in-out ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-[150%] opacity-0'}`}>
+            <div className="px-6 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl tracking-tighter group-hover:scale-110 transition-transform shadow-lg shadow-black/20 lowercase">
                         s
@@ -159,7 +159,7 @@ const Navbar = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-16 left-0 right-0 bg-white border-b border-zinc-100 p-6 md:hidden shadow-xl"
+                            className="absolute top-20 left-0 right-0 bg-white border border-zinc-100 p-6 md:hidden shadow-xl rounded-3xl"
                         >
                             <div className="flex flex-col gap-4">
                                 {isLoggedIn ? (
