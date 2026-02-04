@@ -1,10 +1,8 @@
 "use client";
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
 import MouseFollower from '@/components/MouseFollower';
 import MatrixRain from '@/components/MatrixRain';
+import HeroSignalRain from '@/components/HeroSignalRain';
 import { 
   ArrowRight, Link2, BarChart2, Shield, Zap, 
   Globe, Activity, MousePointer2, Users, ChevronRight,
@@ -159,7 +157,8 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative pt-40 pb-32 px-6 overflow-hidden z-10">
-        <div className="max-w-7xl mx-auto">
+        <HeroSignalRain />
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             variants={containerVariants}
             initial="hidden"
