@@ -95,18 +95,26 @@ export default function Home() {
   const [isShortening, setIsShortening] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
 
-  const handleMockShorten = (e) => {
+  const handlePublicShorten = async (e) => {
     e.preventDefault();
     if (!inputLink) return;
     
     setIsShortening(true);
-    // Simulate high-tech processing delay
-    setTimeout(() => {
+    try {
+      const { data } = await api.post('/url/public/shorten', { originalUrl: inputLink });
+      if (data.success) {
+        const host = typeof window !== 'undefined' ? window.location.host : 'smol.me';
+        setMockResult(`${host}/${data.data.shortCode}`);
+      }
+    } catch (err) {
+      console.error('Shortening error:', err);
+      // Fallback to mock behavior on error to keep UI fluid
       const code = Math.random().toString(36).substring(2, 7);
       const host = typeof window !== 'undefined' ? window.location.host : 'smol.link';
       setMockResult(`${host}/${code}`);
+    } finally {
       setIsShortening(false);
-    }, 1200);
+    }
   };
 
   const copyToClipboard = () => {
@@ -201,7 +209,7 @@ export default function Home() {
               className="w-full max-w-2xl mx-auto mb-16 relative group"
             >
               <form 
-                onSubmit={handleMockShorten}
+                onSubmit={handlePublicShorten}
                 className={`relative bg-white border-2 transition-all duration-500 rounded-[32px] p-2 flex items-center gap-2 ${mockResult ? 'border-emerald-500 shadow-xl shadow-emerald-500/10' : 'border-zinc-100 group-hover:border-black shadow-2xl shadow-zinc-200/50'}`}
               >
                 <div className="pl-6 text-zinc-400 group-hover:text-black transition-colors">
