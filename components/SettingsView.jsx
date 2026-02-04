@@ -4,7 +4,7 @@ import api from '@/lib/api';
 import {
     Shield, Key, User, Globe,
     Save, RefreshCcw, Loader2, Link2,
-    Terminal, Smartphone, Bell, PowerOff
+    Terminal, Smartphone, Bell, PowerOff, Settings
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
