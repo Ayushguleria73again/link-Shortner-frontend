@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
 import {
     Shield, Key, User, Globe,
@@ -41,6 +41,7 @@ export default function SettingsView({ urls, onUpdateUrl }) {
         theme: 'glass',
         companyName: ''
     });
+    const timeoutRef = useRef(null);
 
     useEffect(() => {
         fetchSettings();
@@ -82,16 +83,24 @@ export default function SettingsView({ urls, onUpdateUrl }) {
         }
     };
 
-    const handleUpdateBranding = async (key, value) => {
-        const newBranding = { ...branding, [key]: value };
-        setBranding(newBranding);
+    const syncBranding = async (data) => {
         try {
-            await api.put('/auth/branding', newBranding);
-            toast.success('Aesthetic protocols updated.');
+            await api.put('/auth/branding', data);
+            toast.success('Aesthetic protocols updated.', { id: 'branding-sync' });
         } catch (err) {
             toast.error('Failed to update aesthetics.');
-            setBranding(branding);
         }
+    };
+
+    const handleUpdateBranding = (key, value) => {
+        const newBranding = { ...branding, [key]: value };
+        setBranding(newBranding);
+
+        // Debounce sync for color and text inputs
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            syncBranding(newBranding);
+        }, 1200);
     };
 
     const handleUpdateSetting = async (key, value) => {
@@ -377,8 +386,8 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                                             key={t}
                                             onClick={() => handleUpdateBranding('theme', t)}
                                             className={`py-2 px-3 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all ${branding.theme === t
-                                                    ? 'bg-black text-white border-black shadow-lg'
-                                                    : 'bg-white text-zinc-400 border-zinc-100 hover:border-zinc-300'
+                                                ? 'bg-black text-white border-black shadow-lg'
+                                                : 'bg-white text-zinc-400 border-zinc-100 hover:border-zinc-300'
                                                 }`}
                                         >
                                             {t}
