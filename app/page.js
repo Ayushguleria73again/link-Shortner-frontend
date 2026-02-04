@@ -3,10 +3,12 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import MouseFollower from '@/components/MouseFollower';
 import MatrixRain from '@/components/MatrixRain';
 import { 
   ArrowRight, Link2, BarChart2, Shield, Zap, 
-  Globe, Activity, MousePointer2, Users, ChevronRight
+  Globe, Activity, MousePointer2, Users, ChevronRight,
+  Check, Copy, RotateCcw
 } from 'lucide-react';
 import PricingSection from '@/components/PricingSection';
 
@@ -87,6 +89,31 @@ export default function Home() {
   const [stats, setStats] = React.useState({ totalClicks: 0, totalUniqueClicks: 0, totalMarkets: 0 });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
+  // Instant Utility States
+  const [inputLink, setInputLink] = React.useState("");
+  const [mockResult, setMockResult] = React.useState("");
+  const [isShortening, setIsShortening] = React.useState(false);
+  const [isCopied, setIsCopied] = React.useState(false);
+
+  const handleMockShorten = (e) => {
+    e.preventDefault();
+    if (!inputLink) return;
+    
+    setIsShortening(true);
+    // Simulate high-tech processing delay
+    setTimeout(() => {
+      const code = Math.random().toString(36).substring(2, 7);
+      setMockResult(`smol.link/${code}`);
+      setIsShortening(false);
+    }, 1200);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(mockResult);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
@@ -121,23 +148,17 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-transparent min-h-screen selection:bg-black selection:text-white">
-      <MatrixRain />
+    <div className="bg-white min-h-screen selection:bg-black selection:text-white">
+      <MouseFollower />
+      
       {/* Background Decor */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <Image 
-          src="/hero-bg.png" 
-          alt="Matrix Background" 
-          fill 
-          className="object-cover opacity-60"
-          priority
-        />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-20">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-30" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-50 rounded-full blur-[120px] opacity-40" />
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32 px-6 overflow-hidden">
+      <section className="relative pt-40 pb-32 px-6 overflow-hidden z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             variants={containerVariants}
@@ -166,11 +187,85 @@ export default function Home() {
 
             <motion.p 
               variants={itemVariants}
-              className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-16 font-medium leading-relaxed"
+              className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
             >
               The professional-grade link shortener with real-time audience intelligence, 
               city-level tracking, and automated reporting.
             </motion.p>
+
+            {/* Instant Utility Input */}
+            <motion.div 
+              variants={itemVariants}
+              className="w-full max-w-2xl mx-auto mb-16 relative group"
+            >
+              <form 
+                onSubmit={handleMockShorten}
+                className={`relative bg-white border-2 transition-all duration-500 rounded-[32px] p-2 flex items-center gap-2 ${mockResult ? 'border-emerald-500 shadow-xl shadow-emerald-500/10' : 'border-zinc-100 group-hover:border-black shadow-2xl shadow-zinc-200/50'}`}
+              >
+                <div className="pl-6 text-zinc-400 group-hover:text-black transition-colors">
+                  <Link2 className="w-5 h-5" />
+                </div>
+                <input 
+                  type="text"
+                  placeholder="Paste long link to shorten instantly..."
+                  value={mockResult || inputLink}
+                  onChange={(e) => {
+                    if (mockResult) {
+                      setMockResult("");
+                      setInputLink(e.target.value);
+                    } else {
+                      setInputLink(e.target.value);
+                    }
+                  }}
+                  className="flex-grow bg-transparent border-none focus:ring-0 text-sm font-bold placeholder:text-zinc-300 py-4"
+                  readOnly={!!mockResult}
+                />
+                {mockResult ? (
+                  <div className="flex items-center gap-1 pr-2">
+                    <button
+                      type="button"
+                      onClick={copyToClipboard}
+                      className="bg-emerald-500 text-white px-6 py-3 rounded-full font-black text-[10px] tracking-widest uppercase hover:bg-emerald-600 transition-all flex items-center gap-2"
+                    >
+                      {isCopied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      {isCopied ? "COPIED" : "COPY"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setMockResult(""); setInputLink(""); }}
+                      className="p-3 text-zinc-400 hover:text-black transition-colors"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    disabled={isShortening || !inputLink}
+                    className="bg-black text-white px-8 py-4 rounded-[24px] font-black text-[10px] tracking-[0.2em] uppercase hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2"
+                  >
+                    {isShortening ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" />
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.4s]" />
+                      </span>
+                    ) : (
+                      <>
+                        SHORTEN
+                        <Zap className="w-3 h-3 fill-current" />
+                      </>
+                    )}
+                  </button>
+                )}
+              </form>
+              {!mockResult && (
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 text-[9px] font-black tracking-widest text-zinc-300 uppercase whitespace-nowrap">
+                   <span>No card required</span>
+                   <span className="w-1 h-1 rounded-full bg-zinc-200" />
+                   <span>Instant activation</span>
+                </div>
+              )}
+            </motion.div>
             
             <motion.div 
               variants={itemVariants}
@@ -216,7 +311,13 @@ export default function Home() {
       {/* Features Grid */}
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
             <FeatureCard 
               icon={<Zap className="w-6 h-6 text-indigo-500" />}
               title="Instant Routing"
@@ -232,17 +333,22 @@ export default function Home() {
               title="Enterprise Armor"
               text="Password protection, link expiration, and brute-force protection out of the box."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Use Cases Section */}
       <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="text-3xl font-black tracking-tight mb-4">Target Protocols.</h2>
             <p className="text-zinc-500 font-medium">Engineered for high-velocity signal transmission.</p>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <UseCaseCard 
               category="Creators"
@@ -269,10 +375,15 @@ export default function Home() {
       {/* FAQ Section */}
       <section className="py-32 px-6">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="text-3xl font-black tracking-tight mb-4">System FAQs.</h2>
             <p className="text-zinc-500 font-medium">Common queries regarding the protocol.</p>
-          </div>
+          </motion.div>
           <div className="space-y-4">
             <FAQItem 
               question="Does the free plan expire?" 
@@ -295,7 +406,40 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <PricingSection />
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ type: 'spring', damping: 30 }}
+      >
+        <PricingSection />
+      </motion.div>
+
+      {/* Signal Rain Transition Decor */}
+      <div className="py-24 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-100 to-transparent" />
+        <div className="max-w-7xl mx-auto relative flex flex-col items-center">
+            {/* Animated Data Particles */}
+            <div className="flex gap-16 mb-8">
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ y: [0, 40], opacity: [0, 1, 0] }}
+                  transition={{ 
+                    duration: 2 + i * 0.5, 
+                    repeat: Infinity, 
+                    ease: "linear",
+                    delay: i * 0.3
+                  }}
+                  className="w-px h-8 bg-gradient-to-b from-transparent to-indigo-500"
+                />
+              ))}
+            </div>
+            <div className="text-[10px] font-black tracking-[0.4em] text-zinc-300 uppercase">
+              Encrypted Data Transmission Active
+            </div>
+        </div>
+      </div>
 
       {/* Final CTA */}
       <section className="pb-32 px-6">
