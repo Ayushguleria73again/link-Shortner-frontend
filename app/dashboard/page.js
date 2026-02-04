@@ -352,7 +352,10 @@ export default function Dashboard() {
                         ))}
                     </div>
 
-                    <button className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest mt-10 hover:bg-zinc-200 transition-all">
+                    <button 
+                        onClick={() => router.push('/dashboard/performers')}
+                        className="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest mt-10 hover:bg-zinc-200 transition-all"
+                    >
                         Full Performers List
                     </button>
                  </div>
