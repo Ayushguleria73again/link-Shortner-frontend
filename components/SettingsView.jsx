@@ -82,6 +82,16 @@ export default function SettingsView() {
         }
     };
 
+    const handleGenerateKey = async () => {
+        try {
+            const { data } = await api.post('/auth/api-key');
+            setApiKey(data.data);
+            toast.success('New API encryption key deployed.');
+        } catch (err) {
+            toast.error('Key generation failed.');
+        }
+    };
+
     const handleSaveProfile = async () => {
         try {
             setSaving(true);
