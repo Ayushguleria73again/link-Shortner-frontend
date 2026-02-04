@@ -51,12 +51,35 @@ const Navbar = () => {
         router.push('/login');
     };
 
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    // Smart Scroll Logic
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY < 10) {
+                setIsVisible(true); // Always show at top
+            } else if (currentScrollY > lastScrollY) {
+                setIsVisible(false); // Hide on scroll down
+            } else {
+                setIsVisible(true); // Show on scroll up
+            }
+
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [lastScrollY]);
+
     const isAuthPage = pathname === '/login' || pathname === '/signup';
     const isErrorPage = pathname.startsWith('/p/') || pathname === '/suspended';
     if (isAuthPage || isErrorPage) return null;
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100/50">
+        <nav className={`fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-100/50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl tracking-tighter group-hover:scale-110 transition-transform shadow-lg shadow-black/20 lowercase">

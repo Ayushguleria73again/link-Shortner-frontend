@@ -228,6 +228,64 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Use Cases Section */}
+      <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-black tracking-tight mb-4">Target Protocols.</h2>
+            <p className="text-zinc-500 font-medium">Engineered for high-velocity signal transmission.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <UseCaseCard 
+              category="Creators"
+              title="Audience Intelligence"
+              description="Track fan engagement across platforms. Know exactly which content drives traffic."
+              color="indigo"
+            />
+            <UseCaseCard 
+              category="Brands"
+              title="Campaign Attribution"
+              description="Measure ROI with precision. Retarget users who clicked but didn't convert."
+              color="emerald"
+            />
+            <UseCaseCard 
+              category="Developers"
+              title="API & Webhooks"
+              description="Integrate short links programmatically. Webhooks for real-time click events."
+              color="rose"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-32 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-black tracking-tight mb-4">System FAQs.</h2>
+            <p className="text-zinc-500 font-medium">Common queries regarding the protocol.</p>
+          </div>
+          <div className="space-y-4">
+            <FAQItem 
+              question="Does the free plan expire?" 
+              answer="No. The Spark plan is free forever. You get 50 active links and 1,000 monthly clicks with no credit card required." 
+            />
+            <FAQItem 
+              question="Can I use my own domain?" 
+              answer="Yes. Custom domains are available on Growth, Elite, and Scale plans. Verification is instant via DNS." 
+            />
+            <FAQItem 
+              question="What happens if I exceed my click limit?" 
+              answer="Your links will continue to work. We never break your redirects. You'll just lose access to analytics until the next cycle or upgrade." 
+            />
+            <FAQItem 
+              question="Is data GDPR compliant?" 
+              answer="Absolutely. We anonymize IP addresses and offer a strict 'Burn-on-Read' protocol for sensitive data." 
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <PricingSection />
 
@@ -277,3 +335,32 @@ function FeatureCard({ icon, title, text }) {
     </div>
   );
 }
+const UseCaseCard = ({ category, title, description, color = "indigo" }) => (
+  <div className={`bg-white p-8 rounded-[32px] border border-zinc-100 hover:shadow-xl hover:shadow-${color}-500/10 transition-all group hover:-translate-y-1`}>
+    <div className={`inline-block px-3 py-1 rounded-full bg-${color}-50 text-[10px] font-black uppercase tracking-widest text-${color}-600 mb-6 group-hover:bg-${color}-500 group-hover:text-white transition-colors`}>
+      {category}
+    </div>
+    <h3 className="text-xl font-black mb-3">{title}</h3>
+    <p className="text-zinc-500 text-sm leading-relaxed font-medium">{description}</p>
+  </div>
+);
+
+const FAQItem = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <div 
+      onClick={() => setIsOpen(!isOpen)}
+      className={`bg-zinc-50 border border-zinc-100 rounded-2xl p-6 cursor-pointer hover:bg-white hover:shadow-md transition-all group ${isOpen ? 'bg-white shadow-md border-indigo-100' : ''}`}
+    >
+      <div className="flex items-center justify-between">
+        <h4 className={`font-bold text-sm transition-colors ${isOpen ? 'text-indigo-600' : 'text-zinc-900 group-hover:text-black'}`}>{question}</h4>
+        <ChevronRight className={`w-4 h-4 text-zinc-400 transition-transform ${isOpen ? 'rotate-90 text-indigo-500' : 'group-hover:text-black'}`} />
+      </div>
+      <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0'}`}>
+        <div className="overflow-hidden">
+          <p className="text-sm text-zinc-500 font-medium leading-relaxed">{answer}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
