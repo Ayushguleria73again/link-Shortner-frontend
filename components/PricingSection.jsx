@@ -107,7 +107,7 @@ function PricingCard({ name, price, planId, description, features, icon, highlig
     return (
         <motion.div
             variants={variants}
-            className={`relative h-full bg-white p-8 rounded-[32px] border ${highlight ? 'border-transparent' : 'border-zinc-100'} shadow-xl shadow-zinc-200/50 flex flex-col`}
+            className={`relative h-full bg-white p-8 rounded-[32px] border ${highlight ? 'border-transparent' : 'border-zinc-100 hover:border-black/10'} shadow-xl shadow-zinc-200/50 flex flex-col transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10`}
         >
             {highlight && (
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black text-white px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg whitespace-nowrap z-10">
