@@ -28,6 +28,11 @@ export default function SettingsView() {
 
     const [userUsage, setUserUsage] = useState(null); // New state for usage
     const [userPlan, setUserPlan] = useState('free'); // New state for plan
+    const [settings, setSettings] = useState({
+        emailNotifications: true,
+        weeklyInsights: false,
+        bruteForceArmor: true
+    });
 
     useEffect(() => {
         fetchSettings();
@@ -48,6 +53,9 @@ export default function SettingsView() {
                 setApiKey(userRes.data.data.apiKey);
                 setUserUsage(userRes.data.data.usage);
                 setUserPlan(userRes.data.data.plan);
+                if (userRes.data.data.settings) {
+                    setSettings(userRes.data.data.settings);
+                }
             }
         } catch (err) {
             console.error('Error fetching settings:', err);
@@ -57,13 +65,17 @@ export default function SettingsView() {
         }
     };
 
-    const handleGenerateKey = async () => {
+    const handleUpdateSetting = async (key, value) => {
+        const newSettings = { ...settings, [key]: value };
+        // Optimistic UI update
+        setSettings(newSettings);
         try {
-            const { data } = await api.post('/auth/api-key');
-            setApiKey(data.data);
-            toast.success('New API encryption key deployed.');
+            await api.put('/auth/settings', newSettings);
+            toast.success('System configuration updated.');
         } catch (err) {
-            toast.error('Key generation failed.');
+            toast.error('Failed to update system config.');
+            // Revert on error
+            setSettings(settings);
         }
     };
 
@@ -373,9 +385,21 @@ export default function SettingsView() {
                         System Config
                     </h3>
                     <div className="space-y-4">
-                        <ConfigToggle label="Email Notifications" active={true} />
-                        <ConfigToggle label="Weekly Insight Logs" active={false} />
-                        <ConfigToggle label="Brute-Force Armor" active={true} />
+                        <ConfigToggle
+                            label="Email Notifications"
+                            active={settings.emailNotifications}
+                            onToggle={() => handleUpdateSetting('emailNotifications', !settings.emailNotifications)}
+                        />
+                        <ConfigToggle
+                            label="Weekly Insight Logs"
+                            active={settings.weeklyInsights}
+                            onToggle={() => handleUpdateSetting('weeklyInsights', !settings.weeklyInsights)}
+                        />
+                        <ConfigToggle
+                            label="Brute-Force Armor"
+                            active={settings.bruteForceArmor}
+                            onToggle={() => handleUpdateSetting('bruteForceArmor', !settings.bruteForceArmor)}
+                        />
                     </div>
                 </div>
 
@@ -417,13 +441,16 @@ function SocialInput({ label, value, onChange }) {
     );
 }
 
-function ConfigToggle({ label, active }) {
+function ConfigToggle({ label, active, onToggle }) {
     return (
         <div className="flex items-center justify-between">
             <span className="text-[10px] font-black uppercase text-zinc-600">{label}</span>
-            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${active ? 'bg-black' : 'bg-zinc-200'}`}>
+            <button
+                onClick={onToggle}
+                className={`w-10 h-6 rounded-full p-1 transition-colors ${active ? 'bg-black' : 'bg-zinc-200'}`}
+            >
                 <div className={`w-4 h-4 bg-white rounded-full transition-transform ${active ? 'translate-x-4' : ''}`} />
-            </div>
+            </button>
         </div>
     );
 }
