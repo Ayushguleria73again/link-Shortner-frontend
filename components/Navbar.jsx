@@ -121,42 +121,44 @@ const Navbar = () => {
                                         </div>
                                     </div>
 
-                                    {/* Dropdown Menu */}
-                                    <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white border border-zinc-100 rounded-[24px] shadow-2xl opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100] overflow-hidden">
-                                        <div className="p-4 border-b border-zinc-50 bg-zinc-50/50">
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1 text-right">Authenticated as</p>
-                                            <p className="text-sm font-bold text-black truncate text-right">{user?.firstName} {user?.lastName}</p>
-                                            <p className="text-[10px] font-medium text-zinc-500 truncate text-right">{user?.email}</p>
-                                        </div>
+                                    {/* Dropdown Menu - Bridged to prevent gap flickering */}
+                                    <div className="absolute top-1/2 right-0 w-64 pt-12 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
+                                        <div className="bg-white border border-zinc-100 rounded-[24px] shadow-2xl overflow-hidden ring-1 ring-black/5">
+                                            <div className="p-4 border-b border-zinc-50 bg-zinc-50/50">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1 text-right">Authenticated as</p>
+                                                <p className="text-sm font-bold text-black truncate text-right">{user?.firstName} {user?.lastName}</p>
+                                                <p className="text-[10px] font-medium text-zinc-500 truncate text-right">{user?.email}</p>
+                                            </div>
 
-                                        <div className="p-2">
-                                            <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 transition-colors group/item">
-                                                <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
-                                                    <Link2 className="w-4 h-4 text-zinc-500" />
-                                                </div>
-                                                <span className="text-sm font-bold text-zinc-700">Command Center</span>
-                                            </Link>
-
-                                            {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
-                                                <Link href="/admin/god-mode" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors group/item">
-                                                    <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
-                                                        <Activity className="w-4 h-4 text-red-500" />
+                                            <div className="p-2">
+                                                <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 transition-colors group/item">
+                                                    <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
+                                                        <Link2 className="w-4 h-4 text-zinc-500" />
                                                     </div>
-                                                    <span className="text-sm font-bold text-red-600">Mission Control</span>
+                                                    <span className="text-sm font-bold text-zinc-700">Command Center</span>
                                                 </Link>
-                                            )}
 
-                                            <div className="h-px bg-zinc-50 my-2 mx-2" />
+                                                {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
+                                                    <Link href="/admin/god-mode" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 hover:bg-red-500 transition-all group/admin">
+                                                        <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/admin:bg-white transition-colors">
+                                                            <Activity className="w-4 h-4 text-red-500" />
+                                                        </div>
+                                                        <span className="text-sm font-bold text-red-600 group-hover/admin:text-white transition-colors">Mission Control</span>
+                                                    </Link>
+                                                )}
 
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 transition-colors group/item text-left"
-                                            >
-                                                <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
-                                                    <LogOut className="w-4 h-4 text-zinc-500" />
-                                                </div>
-                                                <span className="text-sm font-bold text-zinc-700">Secure Logout</span>
-                                            </button>
+                                                <div className="h-px bg-zinc-50 my-2 mx-2" />
+
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors group/logout text-left"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/logout:bg-white transition-colors text-red-500">
+                                                        <LogOut className="w-4 h-4" />
+                                                    </div>
+                                                    <span className="text-sm font-bold text-red-600">Secure Logout</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
