@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Link2, LogOut, Menu, X } from 'lucide-react';
+import { Link2, LogOut, Menu, X, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 
@@ -99,39 +99,67 @@ const Navbar = () => {
                                 Dashboard
                             </Link>
 
-                            <div className="flex items-center gap-3 pl-6 border-l border-zinc-100 relative group">
-                                {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
-                                    <Link
-                                        href="/admin/god-mode"
-                                        className="absolute right-[calc(100%+12px)] opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-[10px] font-black uppercase tracking-widest bg-red-500 text-white px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg shadow-red-500/20 pointer-events-none group-hover:pointer-events-auto"
-                                    >
-                                        Mission Control 🛰️
-                                    </Link>
-                                )}
+                            <div className="flex items-center gap-6 pl-6 border-l border-zinc-100 relative group">
+                                <div className="flex flex-col items-end">
+                                    <div className="flex items-center gap-3">
+                                        {user?.plan && (
+                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
+                                                user.plan === 'pro' ? 'bg-indigo-100 text-indigo-600' :
+                                                    user.plan === 'business' ? 'bg-amber-100 text-amber-600' :
+                                                        'bg-zinc-100 text-zinc-500' // Free/Spark style
+                                                }`}>
+                                                {
+                                                    user.plan === 'starter' ? 'Growth' :
+                                                        user.plan === 'pro' ? 'Elite' :
+                                                            user.plan === 'business' ? 'Scale' :
+                                                                'Spark' // Free plan name
+                                                }
+                                            </span>
+                                        )}
+                                        <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase cursor-pointer ring-4 ring-transparent group-hover:ring-black/5 transition-all relative">
+                                            {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                                        </div>
+                                    </div>
 
-                                {user?.plan && (
-                                    <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
-                                        user.plan === 'pro' ? 'bg-indigo-100 text-indigo-600' :
-                                            user.plan === 'business' ? 'bg-amber-100 text-amber-600' :
-                                                'bg-zinc-100 text-zinc-500' // Free/Spark style
-                                        }`}>
-                                        {
-                                            user.plan === 'starter' ? 'Growth' :
-                                                user.plan === 'pro' ? 'Elite' :
-                                                    user.plan === 'business' ? 'Scale' :
-                                                        'Spark' // Free plan name
-                                        }
-                                    </span>
-                                )}
-                                <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase cursor-pointer ring-4 ring-transparent group-hover:ring-black/5 transition-all">
-                                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                                    {/* Dropdown Menu */}
+                                    <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white border border-zinc-100 rounded-[24px] shadow-2xl opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100] overflow-hidden">
+                                        <div className="p-4 border-b border-zinc-50 bg-zinc-50/50">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1 text-right">Authenticated as</p>
+                                            <p className="text-sm font-bold text-black truncate text-right">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-[10px] font-medium text-zinc-500 truncate text-right">{user?.email}</p>
+                                        </div>
+
+                                        <div className="p-2">
+                                            <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 transition-colors group/item">
+                                                <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
+                                                    <Link2 className="w-4 h-4 text-zinc-500" />
+                                                </div>
+                                                <span className="text-sm font-bold text-zinc-700">Command Center</span>
+                                            </Link>
+
+                                            {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
+                                                <Link href="/admin/god-mode" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 transition-colors group/item">
+                                                    <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
+                                                        <Activity className="w-4 h-4 text-red-500" />
+                                                    </div>
+                                                    <span className="text-sm font-bold text-red-600">Mission Control</span>
+                                                </Link>
+                                            )}
+
+                                            <div className="h-px bg-zinc-50 my-2 mx-2" />
+
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 transition-colors group/item text-left"
+                                            >
+                                                <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
+                                                    <LogOut className="w-4 h-4 text-zinc-500" />
+                                                </div>
+                                                <span className="text-sm font-bold text-zinc-700">Secure Logout</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="text-sm font-medium hover:text-zinc-500 transition-colors"
-                                >
-                                    Logout
-                                </button>
                             </div>
                         </>
                     ) : (
