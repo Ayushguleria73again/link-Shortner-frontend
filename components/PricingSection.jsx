@@ -78,7 +78,7 @@ export default function PricingSection() {
                                 price={plan.price.toString()}
                                 planId={planKey}
                                 description={plan.description}
-                                features={plan.includedFeatures.flatMap(f => f.items).slice(0, 5)} // Flatten features for card view
+                                features={plan.includedFeatures.flatMap(f => f.items).slice(0, 8)} // Show more features to highlight Intelligence
                                 icon={React.cloneElement(plan.icon, { className: `w-5 h-5 ${isPro ? 'text-indigo-500' : 'text-zinc-400'}` })} // Adjust icon size/color for card
                                 highlight={isPro}
                                 accentColor={plan.color}
