@@ -156,9 +156,20 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                                 <span className="text-[9px] font-black uppercase">Offline</span>
                                             </div>
                                         ) : (
-                                            <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full w-fit">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                <span className="text-[9px] font-black uppercase">Live</span>
+                                            <div className="flex flex-col gap-2">
+                                                <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full w-fit">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                    <span className="text-[9px] font-black uppercase">Live</span>
+                                                </div>
+                                                {url.health && (
+                                                    <div className={`flex items-center gap-2 px-2 py-0.5 rounded-md w-fit border ${url.health.status === 'online' ? 'bg-emerald-50/50 border-emerald-100 text-emerald-600' :
+                                                            url.health.status === 'offline' ? 'bg-rose-50/50 border-rose-100 text-rose-600' :
+                                                                'bg-zinc-50 border-zinc-100 text-zinc-400'
+                                                        }`}>
+                                                        <Activity className="w-2.5 h-2.5" />
+                                                        <span className="text-[8px] font-black uppercase tracking-tighter">{url.health.status} Heartbeat</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </td>

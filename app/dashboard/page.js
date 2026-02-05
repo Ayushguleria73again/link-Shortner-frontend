@@ -295,6 +295,18 @@ export default function Dashboard() {
                  trend="+8% this week"
               />
               <StatCard 
+                 title="Human Signals" 
+                 value={overviewData?.humanClicks || 0} 
+                 icon={<Activity className="w-5 h-5 text-indigo-500" />} 
+                 trend={`${Math.round((overviewData?.humanClicks / (overviewData?.totalClicks || 1)) * 100)}% ratio`}
+              />
+              <StatCard 
+                 title="Bot Filtering" 
+                 value={overviewData?.botClicks || 0} 
+                 icon={<Database className="w-5 h-5 text-zinc-400" />} 
+                 trend="Cleaned traffic"
+              />
+              <StatCard 
                  title="Active Redirects" 
                  value={overviewData?.totalLinks || 0} 
                  icon={<Link2 className="w-5 h-5 text-amber-500" />} 
@@ -405,7 +417,57 @@ export default function Dashboard() {
                     </div>
                  ))}
               </div>
-           </div>
+               
+               {/* Advanced Geo-Intelligence Heatmap (Scale Exclusive) */}
+               {userPlan === 'business' && (
+                  <div className="mt-12 pt-12 border-t border-zinc-50">
+                     <div className="flex items-center justify-between mb-10">
+                        <div>
+                           <h3 className="text-xl font-black text-black">Satellite Market Heatmap.</h3>
+                           <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Global signal density and market saturation</p>
+                        </div>
+                        <div className="flex items-center gap-2 px-4 py-1.5 bg-amber-50 text-amber-600 rounded-full border border-amber-100">
+                           <Globe className="w-3.5 h-3.5" />
+                           <span className="text-[9px] font-black uppercase tracking-widest">Scale Protocol Active</span>
+                        </div>
+                     </div>
+                     
+                     <div className="h-[400px] bg-zinc-50 rounded-[32px] border border-zinc-100 p-8 flex flex-col items-center justify-center relative overflow-hidden group">
+                        {/* A premium, abstract representation of a map since we don't have a map library */}
+                         <div className="absolute inset-0 opacity-[0.03] pointer-events-none grayscale group-hover:opacity-[0.06] transition-opacity">
+                            <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=2000" className="w-full h-full object-cover" />
+                         </div>
+                         
+                         <div className="relative z-10 w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            {overviewData?.countryStats?.slice(0, 12).map((market, i) => (
+                               <div key={i} className="bg-white p-6 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center text-center">
+                                  <div className={`w-3 h-3 rounded-full mb-3 ${i === 0 ? 'bg-indigo-500 animate-ping' : i < 3 ? 'bg-indigo-500' : 'bg-zinc-200'}`} />
+                                  <h4 className="text-[10px] font-black text-black uppercase tracking-tighter mb-1 truncate w-full">{market.name}</h4>
+                                  <p className="text-lg font-black text-black font-mono">{market.value}</p>
+                                  <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest">Signal Hits</span>
+                               </div>
+                            ))}
+                            {(!overviewData?.countryStats || overviewData.countryStats.length === 0) && (
+                               <div className="col-span-full py-20 text-center text-zinc-300 font-black text-[10px] uppercase tracking-widest">
+                                  Awaiting global signal synchronisation...
+                               </div>
+                            )}
+                         </div>
+                         
+                         <div className="absolute bottom-8 right-8 flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                               <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                               <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">High Saturation</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                               <div className="w-2 h-2 rounded-full bg-zinc-200" />
+                               <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Emerging Markets</span>
+                            </div>
+                         </div>
+                     </div>
+                  </div>
+               )}
+            </div>
         </div>
       </div>
       ) : !selectedShortCode ? (
@@ -519,9 +581,23 @@ export default function Dashboard() {
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-[8px] font-black bg-rose-500 text-white animate-pulse uppercase tracking-[0.2em]">Live</span>
                   Insights
                 </h2>
-                <div className="flex items-center gap-2 text-zinc-400 text-[10px] font-bold uppercase tracking-widest mt-1">
-                   <Activity className="w-3 h-3 text-emerald-500" />
-                   Real-time Traffic stream active
+                <div className="flex items-center gap-4 mt-1">
+                   <div className="flex items-center gap-2 text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
+                      <Activity className="w-3 h-3 text-emerald-500" />
+                      Real-time Traffic stream active
+                   </div>
+                   {analytics.health && (
+                      <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${
+                         analytics.health.status === 'online' ? 'text-emerald-500' : 
+                         analytics.health.status === 'offline' ? 'text-rose-500' : 'text-amber-500'
+                      }`}>
+                         <span className={`w-1.5 h-1.5 rounded-full ${
+                            analytics.health.status === 'online' ? 'bg-emerald-500' : 
+                            analytics.health.status === 'offline' ? 'bg-rose-500' : 'bg-amber-500'
+                         }`} />
+                         Health: {analytics.health.status}
+                      </div>
+                   )}
                 </div>
               </div>
             </div>
@@ -577,8 +653,29 @@ export default function Dashboard() {
                        <Radio className="w-4 h-4 text-rose-500 animate-pulse" />
                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-black">Live Activity Stream</h3>
                     </div>
-                    <span className="text-[9px] font-black text-rose-500 uppercase px-2 py-1 bg-rose-50 rounded-md">Real-time</span>
-                 </div>
+                     <span className="text-[9px] font-black text-rose-500 uppercase px-2 py-1 bg-rose-50 rounded-md">Real-time</span>
+                  </div>
+                  
+                  {/* Human vs Bot breakdown (Elite+) */}
+                  <div className="flex items-center gap-6 mb-8 p-4 bg-white border border-zinc-100 rounded-2xl w-fit">
+                      <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Human: <span className="text-black">{analytics.humanClicks}</span></span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-zinc-300" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Bot: <span className="text-black">{analytics.botClicks}</span></span>
+                      </div>
+                      <div className="h-4 w-px bg-zinc-100" />
+                      <div className="flex items-center gap-2">
+                          <div className="w-32 h-2 bg-zinc-100 rounded-full overflow-hidden flex">
+                              <div className="h-full bg-indigo-500" style={{ width: `${(analytics.humanClicks / (analytics.totalClicks || 1)) * 100}%` }} />
+                              <div className="h-full bg-zinc-300" style={{ width: `${(analytics.botClicks / (analytics.totalClicks || 1)) * 100}%` }} />
+                          </div>
+                          <span className="text-[9px] font-black text-indigo-500">{Math.round((analytics.humanClicks / (analytics.totalClicks || 1)) * 100)}% Human</span>
+                      </div>
+                  </div>
+
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {analytics.recentClicks.length > 0 ? analytics.recentClicks.map((click, i) => (
                       <div key={i} className="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm animate-in fade-in slide-in-from-right-4 duration-500">
@@ -619,6 +716,32 @@ export default function Dashboard() {
               
               <div className="md:col-span-3">
                 <AnalyticsChart data={analytics.hourlyEngagement} title="HOURLY ENGAGEMENT" type="bar" />
+              </div>
+
+              {/* UTM Campaign Intelligence (Elite+) */}
+              <div className="md:col-span-6 bg-white border border-zinc-100 p-8 rounded-[32px] shadow-sm">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8 flex items-center gap-2">
+                      <Search className="w-3 h-3 text-indigo-500" />
+                      UTM CAMPAIGN INTELLIGENCE
+                  </h3>
+                  
+                  {['free', 'starter'].includes(userPlan) ? (
+                      <div className="py-12 flex flex-col items-center justify-center text-center">
+                          <Lock className="w-6 h-6 text-zinc-300 mb-4" />
+                          <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Campaign Deep-Search feature is locked for Spark and Growth plans.</p>
+                          <Link href="/pricing" className="text-indigo-500 text-[10px] font-black uppercase tracking-widest mt-2 hover:underline">Initiate Protocol Upgrade</Link>
+                      </div>
+                  ) : analytics.utmStats ? (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                          <UtmList title="Source" data={analytics.utmStats.sources} />
+                          <UtmList title="Medium" data={analytics.utmStats.mediums} />
+                          <UtmList title="Campaign" data={analytics.utmStats.campaigns} />
+                      </div>
+                  ) : (
+                      <div className="py-12 text-center text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                          No UTM parameters detected in signal stream.
+                      </div>
+                  )}
               </div>
 
               {/* City & Market Reach */}
@@ -683,6 +806,23 @@ export default function Dashboard() {
       />
     </div>
   );
+}
+
+function UtmList({ title, data }) {
+    const cleanData = (data || []).filter(d => d.name !== 'None');
+    return (
+        <div className="space-y-4">
+            <h4 className="text-[9px] font-black text-black uppercase tracking-widest mb-4 pb-2 border-b border-zinc-50">{title}</h4>
+            {cleanData.length > 0 ? cleanData.map((item, i) => (
+                <div key={i} className="flex justify-between items-center group">
+                    <span className="text-[10px] font-bold text-zinc-600 truncate max-w-[150px] uppercase tracking-tighter">{item.name}</span>
+                    <span className="text-[10px] font-black font-mono text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">{item.value}</span>
+                </div>
+            )) : (
+                <p className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest italic">No {title} data captured</p>
+            )}
+        </div>
+    );
 }
 
 function TabButton({ active, onClick, icon, label }) {
