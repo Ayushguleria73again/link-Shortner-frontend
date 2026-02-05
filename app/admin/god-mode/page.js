@@ -2,20 +2,26 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { Shield, Users, Link2, DollarSign, Activity, Zap, Lock } from 'lucide-react';
+import { Shield, Users, Link2, DollarSign, Activity, Zap, Lock, Bug, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function GodModePage() {
     const [stats, setStats] = useState(null);
+    const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('overview');
     const router = useRouter();
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             try {
-                const { data } = await api.get('/admin/stats');
-                setStats(data.data);
+                const [statsRes, reportsRes] = await Promise.all([
+                    api.get('/admin/stats'),
+                    api.get('/reports')
+                ]);
+                setStats(statsRes.data.data);
+                setReports(reportsRes.data.data);
             } catch (err) {
                 console.error("Access Denied", err);
                 setError("Access Restricted. Redirecting...");
@@ -24,7 +30,7 @@ export default function GodModePage() {
                 setLoading(false);
             }
         };
-        fetchStats();
+        fetchData();
     }, [router]);
 
     if (loading) return (
@@ -59,86 +65,185 @@ export default function GodModePage() {
                             <p className="text-zinc-500 text-xs font-mono">System Administrator Console</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 rounded-lg border border-zinc-800">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-mono text-emerald-500 uppercase">System Operational</span>
+                    <div className="flex items-center bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
+                        <button 
+                            onClick={() => setActiveTab('overview')}
+                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'overview' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                            Overview
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('reports')}
+                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reports' ? 'bg-red-500 text-white' : 'text-zinc-500 hover:text-white'}`}
+                        >
+                            <Bug className="w-3 h-3" />
+                            Reports
+                            {reports.filter(r => r.status === 'Open').length > 0 && (
+                                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                            )}
+                        </button>
                     </div>
                 </header>
 
-                {/* KPI Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    <StatCard 
-                        label="Total Users" 
-                        value={stats.users.total} 
-                        icon={<Users className="w-5 h-5" />} 
-                        subtext={`${stats.users.distribution?.pro + stats.users.distribution?.business} Premium`}
-                    />
-                    <StatCard 
-                        label="Total Links" 
-                        value={stats.links} 
-                        icon={<Link2 className="w-5 h-5" />} 
-                        color="indigo"
-                    />
-                    <StatCard 
-                        label="Global Clicks" 
-                        value={stats.clicks} 
-                        icon={<Activity className="w-5 h-5" />} 
-                        color="emerald"
-                    />
-                    <StatCard 
-                        label="Est. Revenue" 
-                        value={`₹${stats.revenue.toLocaleString()}`} 
-                        icon={<DollarSign className="w-5 h-5" />} 
-                        color="amber"
-                        isMoney
-                    />
-                </div>
-
-                {/* Split View */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* User Distribution */}
-                    <div className="lg:col-span-1 bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
-                        <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">Plan Distribution</h3>
-                        <div className="space-y-6">
-                            <DistributionItem label="Free (Spark)" value={stats.users.distribution?.free} total={stats.users.total} color="zinc" />
-                            <DistributionItem label="Growth (Starter)" value={stats.users.distribution?.starter} total={stats.users.total} color="emerald" />
-                            <DistributionItem label="Elite (Pro)" value={stats.users.distribution?.pro} total={stats.users.total} color="indigo" />
-                            <DistributionItem label="Scale (Business)" value={stats.users.distribution?.business} total={stats.users.total} color="amber" />
+                {activeTab === 'overview' ? (
+                    <>
+                        {/* KPI Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                            <StatCard 
+                                label="Total Users" 
+                                value={stats.users.total} 
+                                icon={<Users className="w-5 h-5" />} 
+                                subtext={`${stats.users.distribution?.pro + stats.users.distribution?.business} Premium`}
+                            />
+                            <StatCard 
+                                label="Total Links" 
+                                value={stats.links} 
+                                icon={<Link2 className="w-5 h-5" />} 
+                                color="indigo"
+                            />
+                            <StatCard 
+                                label="Global Clicks" 
+                                value={stats.clicks} 
+                                icon={<Activity className="w-5 h-5" />} 
+                                color="emerald"
+                            />
+                            <StatCard 
+                                label="Est. Revenue" 
+                                value={`₹${stats.revenue.toLocaleString()}`} 
+                                icon={<DollarSign className="w-5 h-5" />} 
+                                color="amber"
+                                isMoney
+                            />
                         </div>
-                    </div>
 
-                    {/* Recent Signups */}
-                    <div className="lg:col-span-2 bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
-                         <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">Recent Signups</h3>
-                         <div className="overflow-x-auto">
+                        {/* Split View */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            {/* User Distribution */}
+                            <div className="lg:col-span-1 bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
+                                <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">Plan Distribution</h3>
+                                <div className="space-y-6">
+                                    <DistributionItem label="Free (Spark)" value={stats.users.distribution?.free} total={stats.users.total} color="zinc" />
+                                    <DistributionItem label="Growth (Starter)" value={stats.users.distribution?.starter} total={stats.users.total} color="emerald" />
+                                    <DistributionItem label="Elite (Pro)" value={stats.users.distribution?.pro} total={stats.users.total} color="indigo" />
+                                    <DistributionItem label="Scale (Business)" value={stats.users.distribution?.business} total={stats.users.total} color="amber" />
+                                </div>
+                            </div>
+
+                            {/* Recent Signups */}
+                            <div className="lg:col-span-2 bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
+                                <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">Recent Signups</h3>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="border-b border-zinc-800 text-zinc-500 text-[10px] uppercase font-bold tracking-widest">
+                                                <th className="pb-4">User</th>
+                                                <th className="pb-4">Plan</th>
+                                                <th className="pb-4">Joined</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="text-sm font-mono text-zinc-300">
+                                            {stats.recentUsers.map((user, i) => (
+                                                <tr key={i} className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-800/50 transition-colors">
+                                                    <td className="py-4 font-medium text-white">
+                                                        {user.firstName} {user.lastName}
+                                                        <div className="text-xs text-zinc-500">{user.email}</div>
+                                                    </td>
+                                                    <td className="py-4">
+                                                        <Badge plan={user.plan} />
+                                                    </td>
+                                                    <td className="py-4 text-zinc-500">
+                                                        {new Date(user.createdAt).toLocaleDateString()}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8"
+                    >
+                        <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">System Reports ({reports.length})</h3>
+                        <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="border-b border-zinc-800 text-zinc-500 text-[10px] uppercase font-bold tracking-widest">
-                                        <th className="pb-4">User</th>
-                                        <th className="pb-4">Plan</th>
-                                        <th className="pb-4">Joined</th>
+                                        <th className="pb-4">Report Info</th>
+                                        <th className="pb-4">Category</th>
+                                        <th className="pb-4">Status</th>
+                                        <th className="pb-4">Evidence</th>
+                                        <th className="pb-4">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-sm font-mono text-zinc-300">
-                                    {stats.recentUsers.map((user, i) => (
+                                <tbody className="text-sm font-mono">
+                                    {reports.map((report, i) => (
                                         <tr key={i} className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-800/50 transition-colors">
-                                            <td className="py-4 font-medium text-white">
-                                                {user.firstName} {user.lastName}
-                                                <div className="text-xs text-zinc-500">{user.email}</div>
+                                            <td className="py-6">
+                                                <div className="font-bold text-white mb-1">{report.title}</div>
+                                                <div className="text-xs text-zinc-500 line-clamp-1 max-w-xs">{report.description}</div>
+                                                <div className="text-[10px] text-zinc-600 mt-2 uppercase">By: {report.userId?.name} ({report.userId?.email})</div>
                                             </td>
-                                            <td className="py-4">
-                                                <Badge plan={user.plan} />
+                                            <td className="py-6">
+                                                <span className="bg-zinc-800 text-zinc-400 px-2 py-1 rounded text-[10px] uppercase font-black">
+                                                    {report.category}
+                                                </span>
                                             </td>
-                                            <td className="py-4 text-zinc-500">
-                                                {new Date(user.createdAt).toLocaleDateString()}
+                                            <td className="py-6">
+                                                <StatusBadge status={report.status} />
+                                            </td>
+                                            <td className="py-6">
+                                                {report.imageUrl ? (
+                                                    <a 
+                                                        href={report.imageUrl} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors"
+                                                    >
+                                                        <ImageIcon className="w-4 h-4" />
+                                                        <span className="text-xs uppercase font-black tracking-widest underline decoration-indigo-400/30">View Image</span>
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-zinc-600 text-xs italic">No Photo</span>
+                                                )}
+                                            </td>
+                                            <td className="py-6">
+                                                <select 
+                                                    className="bg-black border border-zinc-800 rounded-lg px-3 py-1 text-[10px] outline-none cursor-pointer"
+                                                    value={report.status}
+                                                    onChange={async (e) => {
+                                                        const newStatus = e.target.value;
+                                                        try {
+                                                            await api.put(`/reports/${report._id}`, { status: newStatus });
+                                                            setReports(reports.map(r => r._id === report._id ? { ...r, status: newStatus } : r));
+                                                        } catch (err) {
+                                                            console.error("Status update failed", err);
+                                                        }
+                                                    }}
+                                                >
+                                                    <option>Open</option>
+                                                    <option>Investigating</option>
+                                                    <option>In Progress</option>
+                                                    <option>Resolved</option>
+                                                    <option>Closed</option>
+                                                </select>
                                             </td>
                                         </tr>
                                     ))}
+                                    {reports.length === 0 && (
+                                        <tr>
+                                            <td colSpan="5" className="py-12 text-center text-zinc-500 italic">No reports found in the intelligence stream.</td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
-                         </div>
-                    </div>
-                </div>
+                        </div>
+                    </motion.div>
+                )}
             </div>
         </div>
     );
@@ -184,6 +289,21 @@ const Badge = ({ plan }) => {
     return (
         <span className={`px-3 py-1 rounded-md text-[10px] uppercase font-black tracking-widest ${colors[plan] || colors.free}`}>
             {plan}
+        </span>
+    );
+};
+
+const StatusBadge = ({ status }) => {
+    const colors = {
+        'Open': 'bg-red-500/10 text-red-500 border-red-500/20',
+        'Investigating': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+        'In Progress': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+        'Resolved': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+        'Closed': 'bg-zinc-800 text-zinc-500 border-zinc-700'
+    };
+    return (
+        <span className={`px-2 py-1 rounded border text-[10px] font-black uppercase tracking-widest ${colors[status] || colors.Open}`}>
+            {status}
         </span>
     );
 };
