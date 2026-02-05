@@ -97,6 +97,64 @@ export default function About() {
              </div>
          </div>
 
+         {/* Meet the Crew */}
+         <div className="mb-32">
+            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-400 mb-12 text-center">Meet the Crew</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <TeamMember 
+                    name="Ayush Guleria" 
+                    role="Founder / Lead Architect" 
+                    initials="AG"
+                    color="bg-indigo-500"
+                />
+                <TeamMember 
+                    name="Sarah Chen" 
+                    role="Head of Product" 
+                    initials="SC"
+                    color="bg-emerald-500"
+                />
+                <TeamMember 
+                    name="Marcus Thorne" 
+                    role="Security Protocol Lead" 
+                    initials="MT"
+                    color="bg-rose-500"
+                />
+                <TeamMember 
+                    name="Inaya Malik" 
+                    role="Intelligence Analyst" 
+                    initials="IM"
+                    color="bg-amber-500"
+                />
+            </div>
+         </div>
+
+         {/* The Future */}
+         <div className="mb-32 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="order-2 md:order-1">
+                <div className="bg-zinc-900 rounded-[40px] p-12 aspect-video flex flex-col justify-end relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+                    <div className="relative z-20">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">Internal Memo: Phase 7</div>
+                        <h4 className="text-2xl font-black text-white mb-4">AI Predictive Analytics</h4>
+                        <p className="text-zinc-500 text-sm font-medium">Coming Q3 2026: Forecasting click spikes before they happen through neural network ingestion. <span className="text-white">Join the waitlist.</span></p>
+                    </div>
+                    {/* Abstract Grid Decor */}
+                    <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+                    </div>
+                </div>
+            </div>
+            <div className="order-1 md:order-2">
+                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-400 mb-8">The Horizon</h2>
+                <h3 className="text-4xl font-black tracking-tight mb-8 leading-[1.1]">
+                    We aren't just building a tool. We are building the <span className="text-indigo-500 underline decoration-indigo-500/30">Future of Traffic.</span>
+                </h3>
+                <p className="text-zinc-600 font-medium leading-relaxed mb-6">
+                    Our roadmap includes deep AI integration, decentralized redirection nodes, and cross-platform identity resolution. We are moving towards a web where every signal is intentional and every interaction is measured.
+                </p>
+            </div>
+         </div>
+
         {/* Join CTA */}
         <div className="text-center bg-indigo-600 rounded-[40px] p-20 relative overflow-hidden">
              <div className="relative z-10">
@@ -148,6 +206,18 @@ function TechItem({ name, label }) {
         <div className="border border-white/10 bg-white/5 rounded-2xl p-6 backdrop-blur-sm">
             <div className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">{label}</div>
             <div className="text-lg font-bold text-white">{name}</div>
+        </div>
+    );
+}
+
+function TeamMember({ name, role, initials, color }) {
+    return (
+        <div className="flex flex-col items-center text-center p-8 rounded-3xl border border-zinc-100 hover:border-zinc-200 transition-all group">
+            <div className={`w-20 h-20 ${color} text-white rounded-full flex items-center justify-center font-black text-xl mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                {initials}
+            </div>
+            <h4 className="text-sm font-black uppercase tracking-tight text-black">{name}</h4>
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{role}</p>
         </div>
     );
 }

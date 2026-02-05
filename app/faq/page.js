@@ -16,11 +16,27 @@ export default function FAQ() {
     },
     {
       question: "Can I use my own domain?",
-      answer: "Custom domains are available on the Scale plan. You can connect unlimited domains to maintain complete brand consistency."
+      answer: "Custom domains are available on Growth, Elite, and Scale plans. You can connect and verify domains via CNAME records to maintain brand consistency."
     },
     {
       question: "Do you offer API access?",
       answer: "Yes, the Elite and Scale plans include full access to our Developer API, allowing you to programmatically shorten links and retrieve metrics."
+    },
+    {
+      question: "Can I create custom aliases?",
+      answer: "Absolutely. Advanced tiers allow you to set custom short codes (e.g., smol.link/summer-sale) to maximize click-through rates and brand recognition."
+    },
+    {
+      question: "What are 'Burn-on-Read' links?",
+      answer: "This is a security feature where a link automatically deactivates after the first click. It's perfect for sharing sensitive documents or one-time codes."
+    },
+    {
+      question: "How do QR codes work?",
+      answer: "Every link you create automatically generates a high-resolution QR code identity. You can download these as SVG or PNG for print and digital marketing."
+    },
+    {
+      question: "Is there a refund policy?",
+      answer: "We offer a 14-day 'No Questions Asked' refund policy for all paid tiers if you're not satisfied with the intelligence depth of our Protocol."
     },
     {
       question: "Is my data secure?",
