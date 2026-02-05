@@ -99,16 +99,16 @@ const Navbar = () => {
                                 Dashboard
                             </Link>
 
-                            {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
-                                <Link
-                                    href="/admin/god-mode"
-                                    className="text-[10px] font-black uppercase tracking-widest bg-red-500/10 text-red-600 px-3 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
-                                >
-                                    Mission Control
-                                </Link>
-                            )}
+                            <div className="flex items-center gap-3 pl-6 border-l border-zinc-100 relative group">
+                                {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
+                                    <Link
+                                        href="/admin/god-mode"
+                                        className="absolute right-[calc(100%+12px)] opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-[10px] font-black uppercase tracking-widest bg-red-500 text-white px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg shadow-red-500/20 pointer-events-none group-hover:pointer-events-auto"
+                                    >
+                                        Mission Control 🛰️
+                                    </Link>
+                                )}
 
-                            <div className="flex items-center gap-3 pl-6 border-l border-zinc-100">
                                 {user?.plan && (
                                     <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
                                         user.plan === 'pro' ? 'bg-indigo-100 text-indigo-600' :
@@ -123,7 +123,7 @@ const Navbar = () => {
                                         }
                                     </span>
                                 )}
-                                <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase">
+                                <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-black uppercase cursor-pointer ring-4 ring-transparent group-hover:ring-black/5 transition-all">
                                     {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                                 </div>
                                 <button
