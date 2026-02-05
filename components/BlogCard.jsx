@@ -5,6 +5,9 @@ import { Calendar, User, MessageSquare, Heart, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BlogCard = ({ post }) => {
+    const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+    const isLiked = user.id && post.likes?.includes(user.id);
+
     return (
         <Link href={`/blog/${post.slug}`} className="group h-full">
             <div className="bg-white border border-zinc-100 rounded-[32px] overflow-hidden h-full flex flex-col transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-2 group">
@@ -46,8 +49,8 @@ const BlogCard = ({ post }) => {
 
                     <div className="mt-auto pt-6 border-t border-zinc-50 flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-1.5 text-[10px] font-black uppercase text-zinc-400">
-                                <Heart className="w-3 h-3 text-rose-500" />
+                            <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase ${isLiked ? 'text-rose-500' : 'text-zinc-400'}`}>
+                                <Heart className={`w-3 h-3 ${isLiked ? 'fill-rose-500' : ''}`} />
                                 {post.likes?.length || 0}
                             </div>
                             <div className="flex items-center gap-1.5 text-[10px] font-black uppercase text-zinc-400">

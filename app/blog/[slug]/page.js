@@ -30,6 +30,8 @@ export default function BlogDetail({ params }) {
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
                 if (user.id && data.data.likes?.includes(user.id)) {
                     setIsLiked(true);
+                } else {
+                    setIsLiked(false);
                 }
             } catch (err) {
                 console.error('Failed to load article:', err);
