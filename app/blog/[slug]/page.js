@@ -33,8 +33,8 @@ export default function BlogDetail({ params }) {
                     setIsLiked(true);
                 }
             } catch (err) {
-                console.error('Failed to load intel report:', err);
-                toast.error('Protocol Error: Signal lost or restricted.');
+                console.error('Failed to load article:', err);
+                toast.error('Article not found or restricted.');
             } finally {
                 setLoading(false);
             }
@@ -60,10 +60,10 @@ export default function BlogDetail({ params }) {
             setIsLiked(data.data.isLiked);
             setLikesCount(data.data.likesCount);
             if (data.data.isLiked) {
-                toast.success('Pulse Received.', { icon: <Heart className="w-4 h-4 text-rose-500 fill-rose-500" /> });
+                toast.success('Interest recorded.', { icon: <Heart className="w-4 h-4 text-rose-500 fill-rose-500" /> });
             }
         } catch (err) {
-            toast.error('Identity required to Pulse signals.');
+            toast.error('Identity required to interact with posts.');
         }
     };
 
@@ -76,9 +76,9 @@ export default function BlogDetail({ params }) {
             const { data } = await api.post(`/blog/${post._id}/comment`, { content: comment });
             setPost({ ...post, comments: data.data });
             setComment('');
-            toast.success('Signal deployed to Intel Stream.');
+            toast.success('Comment posted to the conversation.');
         } catch (err) {
-            toast.error('Failed to deploy signal.');
+            toast.error('Failed to post comment.');
         } finally {
             setSubmittingComment(false);
         }
@@ -87,11 +87,11 @@ export default function BlogDetail({ params }) {
     if (loading) return (
         <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
             <div className="w-12 h-12 border-4 border-zinc-100 border-t-black rounded-full animate-spin" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Decrypting Report...</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Loading Article...</p>
         </div>
     );
 
-    if (!post) return <div className="min-h-screen bg-white flex items-center justify-center font-black uppercase tracking-widest text-zinc-300">Signal Lost.</div>;
+    if (!post) return <div className="min-h-screen bg-white flex items-center justify-center font-black uppercase tracking-widest text-zinc-300">Not Found.</div>;
 
     return (
         <main className="min-h-screen bg-white pb-32">
@@ -111,7 +111,7 @@ export default function BlogDetail({ params }) {
                         className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors mb-12 group"
                     >
                         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-                        Back to Feed
+                        Back to Articles
                     </button>
 
                     <div className="flex items-center gap-4 mb-8">
@@ -124,6 +124,17 @@ export default function BlogDetail({ params }) {
                             {format(new Date(post.createdAt), 'MMMM dd, yyyy')}
                         </span>
                     </div>
+
+                    {post.coverImage && (
+                        <div className="mb-12 rounded-[40px] overflow-hidden aspect-[21/9] border border-zinc-200 shadow-2xl relative group">
+                            <img 
+                                src={post.coverImage} 
+                                alt={post.title}
+                                className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                        </div>
+                    )}
 
                     <h1 className="text-5xl md:text-7xl font-black text-black tracking-tight mb-12 leading-[1] max-w-3xl">
                         {post.title}
@@ -146,11 +157,11 @@ export default function BlogDetail({ params }) {
                                 className={`flex flex-col items-center gap-1 transition-all hover:scale-110 ${isLiked ? 'text-rose-500' : 'text-zinc-300 hover:text-black'}`}
                             >
                                 <Heart className={`w-6 h-6 ${isLiked ? 'fill-rose-500' : ''}`} />
-                                <span className="text-[9px] font-black">{likesCount} Pulse</span>
+                                <span className="text-[9px] font-black">{likesCount} Likes</span>
                             </button>
                             <div className="flex flex-col items-center gap-1 text-zinc-300">
                                 <MessageSquare className="w-6 h-6" />
-                                <span className="text-[9px] font-black">{post.comments?.length || 0} Intel</span>
+                                <span className="text-[9px] font-black">{post.comments?.length || 0} Comments</span>
                             </div>
                         </div>
                     </div>
@@ -173,19 +184,19 @@ export default function BlogDetail({ params }) {
                 {/* Interaction Footer */}
                 <div className="mt-24 pt-12 border-t border-zinc-100 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Signal Interaction</h4>
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Interaction</h4>
                         <div className="flex items-center gap-2">
                              <button 
                                 onClick={handleLike}
                                 className={`p-4 rounded-2xl border transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest ${isLiked ? 'bg-rose-50 border-rose-100 text-rose-500' : 'bg-white border-zinc-100 text-zinc-400 hover:border-black hover:text-black'}`}
                             >
                                 <Heart className={`w-4 h-4 ${isLiked ? 'fill-rose-500' : ''}`} />
-                                {isLiked ? 'Pulse Encrypted' : 'Send Pulse'}
+                                {isLiked ? 'Liked' : 'Like Post'}
                             </button>
                             <button 
                                 onClick={() => {
                                     navigator.clipboard.writeText(window.location.href);
-                                    toast.success('Signal coordinate copied to clipboard.');
+                                    toast.success('Link copied to clipboard.');
                                 }}
                                 className="p-4 bg-white border border-zinc-100 rounded-2xl text-zinc-400 hover:border-black hover:text-black transition-all"
                             >
@@ -202,8 +213,8 @@ export default function BlogDetail({ params }) {
                             <Terminal className="w-5 h-5 text-indigo-500" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-black">Intel Stream.</h3>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Secure message cluster</p>
+                            <h3 className="text-xl font-black text-black">Conversation.</h3>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Community Discussion</p>
                         </div>
                     </div>
 
@@ -213,11 +224,11 @@ export default function BlogDetail({ params }) {
                             <Database className="w-20 h-20 text-black" />
                         </div>
                         <form onSubmit={handleComment} className="relative z-10">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-black mb-4 block">Deploy New Signal</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-black mb-4 block">Add a Comment</label>
                             <div className="relative">
                                 <textarea 
                                     className="w-full bg-white border border-zinc-200 rounded-2xl py-6 px-6 text-black text-sm font-medium focus:outline-none focus:border-black transition-all min-h-[120px] resize-none shadow-sm"
-                                    placeholder="Enter encrypted message..."
+                                    placeholder="Write your thoughts..."
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
                                 />
@@ -227,7 +238,7 @@ export default function BlogDetail({ params }) {
                                     className="absolute bottom-4 right-4 bg-black text-white px-6 py-3 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-xl transition-all hover:-translate-y-1 active:translate-y-0 disabled:opacity-50"
                                 >
                                     {submittingComment ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Send className="w-4 h-4" />}
-                                    Deploy
+                                    Post
                                 </button>
                             </div>
                         </form>
@@ -256,7 +267,7 @@ export default function BlogDetail({ params }) {
                             </div>
                         )) : (
                             <div className="text-center py-20 border border-dashed border-zinc-100 rounded-[40px]">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Intel stream is currently silent.</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">No comments yet.</p>
                             </div>
                         )}
                     </div>

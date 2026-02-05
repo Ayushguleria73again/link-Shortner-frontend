@@ -197,7 +197,7 @@ export default function Home() {
               variants={itemVariants}
               className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
             >
-              The professional-grade link shortener with real-time audience intelligence, 
+              The professional-grade link shortener with real-time audience analytics, 
               city-level tracking, and automated reporting.
             </motion.p>
 
@@ -354,8 +354,8 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-black tracking-tight mb-4">Target Protocols.</h2>
-            <p className="text-zinc-500 font-medium">Engineered for high-velocity signal transmission.</p>
+            <h2 className="text-3xl font-black tracking-tight mb-4">Master Every Link.</h2>
+            <p className="text-zinc-500 font-medium">Engineered for high-volume data redirection.</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <UseCaseCard 
@@ -444,7 +444,7 @@ export default function Home() {
               ))}
             </div>
             <div className="text-[10px] font-black tracking-[0.4em] text-zinc-300 uppercase">
-              Encrypted Data Transmission Active
+              Secure Link Transmission Active
             </div>
         </div>
       </div>

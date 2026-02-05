@@ -21,7 +21,7 @@ export default function RedirectPage({ params: paramsPromise }) {
           <Loader2 className="w-6 h-6 text-black animate-spin" />
         </div>
         <h1 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
-          Syncing Signal Protocol...
+          Redirecting to destination...
         </h1>
       </div>
     </div>

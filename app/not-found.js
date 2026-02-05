@@ -20,7 +20,7 @@ export default function NotFound() {
            className="inline-flex items-center gap-3 px-4 py-2 border border-rose-500/30 rounded-full bg-rose-500/10 backdrop-blur-md mb-8"
         >
             <Radio className="w-4 h-4 text-rose-500 animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.3em] text-rose-500 uppercase">Signal Lost</span>
+            <span className="text-[10px] font-black tracking-[0.3em] text-rose-500 uppercase">Page Not Found</span>
         </motion.div>
 
         <h1 className="text-[150px] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-black mix-blend-overlay glitch-text mb-4">
@@ -32,7 +32,7 @@ export default function NotFound() {
         </h2>
 
         <p className="text-zinc-500 max-w-md mx-auto mb-12 font-mono text-sm leading-relaxed">
-            [ERROR_CODE_404]: The requested vector cannot be located in the current quadrant. The link may have been intercepted or decayed.
+            [ERROR_CODE_404]: The requested page cannot be located. The link may have been broken or removed from our system.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

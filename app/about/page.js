@@ -14,7 +14,7 @@ export default function About() {
           className="flex items-center gap-2 text-zinc-400 hover:text-black mb-12 transition-colors group w-fit"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-black uppercase tracking-widest">Return to Matrix</span>
+          <span className="text-[10px] font-black uppercase tracking-widest">Return to Home</span>
         </button>
         
         {/* Hero */}
@@ -145,7 +145,7 @@ export default function About() {
                     We aren't just building a tool. We are building the <span className="text-indigo-500 underline decoration-indigo-500/30">Future of Traffic.</span>
                 </h3>
                 <p className="text-zinc-600 font-medium leading-relaxed mb-6">
-                    Our roadmap includes deep AI integration, decentralized redirection nodes, and cross-platform identity resolution. We are moving towards a web where every signal is intentional and every interaction is measured.
+                    Our roadmap includes deep AI integration, decentralized redirection nodes, and cross-platform identity resolution. We are moving towards a web where every link is intentional and every interaction is measured.
                 </p>
             </div>
          </div>

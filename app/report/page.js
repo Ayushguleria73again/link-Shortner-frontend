@@ -57,7 +57,7 @@ export default function ReportBug() {
                 }
             });
             setSubmitted(true);
-            toast.success("Intelligence received. We are investigating.");
+            toast.success("Details received. Our team is investigating.");
         } catch (err) {
             console.error('Report submission error:', err);
             toast.error(err.response?.data?.error || "Shield Alert: Connection failed");
@@ -77,8 +77,8 @@ export default function ReportBug() {
                     <div className="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto ring-8 ring-indigo-500/5 items-center">
                         <CheckCircle2 className="w-12 h-12 text-indigo-500" />
                     </div>
-                    <h1 className="text-4xl font-black text-white tracking-tighter">Signal Received.</h1>
-                    <p className="text-zinc-500 font-medium">Your report has been ingested into our intelligence stream. Our engineers are decoding the issue now.</p>
+                    <h1 className="text-4xl font-black text-white tracking-tighter">Report Received.</h1>
+                    <p className="text-zinc-500 font-medium">Your report has been received. Our team will review the details and resolve the issue shortly.</p>
                     <button 
                         onClick={() => window.location.href = '/dashboard'}
                         className="w-full bg-white text-black py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-zinc-200 transition-all"
@@ -97,10 +97,10 @@ export default function ReportBug() {
                 <div className="mb-12">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 text-red-600 text-[10px] font-black tracking-widest uppercase mb-4">
                         <AlertCircle className="w-3 h-3" />
-                        Bug Intelligence
+                        Bug Report
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">Report a <span className="text-zinc-400">Glitch.</span></h1>
-                    <p className="text-zinc-500 font-medium max-w-2xl">Found a crack in the simulation? Submit details and photos below to help us harden the Protocol.</p>
+                    <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">Report an <span className="text-zinc-400">Issue.</span></h1>
+                    <p className="text-zinc-500 font-medium max-w-2xl">Found a problem with the platform? Submit details and photos below to help us improve the system.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -132,7 +132,7 @@ export default function ReportBug() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">Detailed Intel</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-4">Detailed Description</label>
                         <textarea 
                             required
                             rows={5}
