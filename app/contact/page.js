@@ -38,8 +38,8 @@ export default function Contact() {
           <div className="inline-flex items-center justify-center p-3 bg-zinc-100 rounded-2xl mb-6">
             <Mail className="w-6 h-6 text-black" />
           </div>
-          <h1 className="text-4xl font-black tracking-tight mb-4 text-black">Encrypted <span className="text-zinc-400">Desk.</span></h1>
-          <p className="text-zinc-500 font-medium">Transmit support requests or Enterprise inquiries directly to our security team.</p>
+          <h1 className="text-4xl font-black tracking-tight mb-4 text-black">Contact <span className="text-zinc-400">Support.</span></h1>
+          <p className="text-zinc-500 font-medium">Need help with your Enterprise plan? Get in touch.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-50 p-8 md:p-12 rounded-[32px] border border-zinc-100">

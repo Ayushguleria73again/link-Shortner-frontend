@@ -49,8 +49,8 @@ export default function FAQ() {
       <Navbar />
       <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">Intel <span className="text-zinc-400">base.</span></h1>
-          <p className="text-zinc-500 font-medium">Commonly requested protocols and platform specifications.</p>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">Frequently Asked <span className="text-zinc-400">Questions.</span></h1>
+          <p className="text-zinc-500 font-medium">Everything you need to know about the platform.</p>
         </div>
 
         <div className="space-y-4">

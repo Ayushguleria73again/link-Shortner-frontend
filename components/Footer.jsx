@@ -59,9 +59,9 @@ export default function Footer() {
                     <div className="space-y-6">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-black">Operation</h4>
                         <ul className="space-y-4">
-                            <FooterLink href="/about">The Mission</FooterLink>
-                            <FooterLink href="/contact">Encrypted Desk</FooterLink>
-                            <FooterLink href="/faq">Intel base</FooterLink>
+                            <FooterLink href="/about">About Us</FooterLink>
+                            <FooterLink href="/contact">Contact</FooterLink>
+                            <FooterLink href="/faq">FAQ</FooterLink>
                             <FooterLink href="/report" className="text-red-500">Report Bug</FooterLink>
                         </ul>
                     </div>
