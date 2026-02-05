@@ -3,10 +3,12 @@
 The user-facing intelligence portal for **smol.**, built with Next.js 14 and high-fidelity animations.
 
 ## 🎨 Key Visual Features
+- **Intelligence Matrix**: Real-time dashboard for human-vs-bot ratios and UTM campaign deep-dives.
+- **Satellite Geo-Heatmaps**: Cinematic global market density visualization for enterprise registries.
+- **Uptime Indicators**: Real-time health heartbeat status for all signals within the inventory.
 - **Dynamic Island Navbar**: Responsive, floating navigation with smart scroll detection.
 - **Hero Bit-Rain**: Immersive Matrix-style binary animation background.
 - **Modular Cursor**: Interactive following dot with spring-physics.
-- **Scroll Reveals**: Section-based `whileInView` animations for an elite feel.
 
 ## 🏗️ Technical Implementation
 - **Next.js 14**: Utilizing the App Router for fast, server-side optimized rendering.

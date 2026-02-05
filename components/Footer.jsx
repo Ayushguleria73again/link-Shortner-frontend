@@ -52,6 +52,7 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <FooterLink href="/dashboard">Dashboard</FooterLink>
                             <FooterLink href="/pricing">Pricing</FooterLink>
+                            <FooterLink href="/blog">Intel Feed (Blog)</FooterLink>
                             <FooterLink href="/dashboard/performers">Top Signals</FooterLink>
                         </ul>
                     </div>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { ArrowRight, LinkIcon, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowRight, LinkIcon, Sparkles, Loader2, Database } from 'lucide-react';
 import api from '@/lib/api';
 
 const ShortenForm = ({ onUrlCreated }) => {
@@ -10,21 +10,27 @@ const ShortenForm = ({ onUrlCreated }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Custom Domain Logic
+    // Custom Domain & Campaign Logic
     const [domains, setDomains] = useState([]);
     const [selectedDomain, setSelectedDomain] = useState('');
+    const [campaigns, setCampaigns] = useState([]);
+    const [selectedCampaign, setSelectedCampaign] = useState('');
 
     React.useEffect(() => {
-        const fetchDomains = async () => {
+        const fetchData = async () => {
             try {
-                const { data } = await api.get('/domains');
-                const verifiedDefaults = data.data.filter(d => d.verified);
+                const [domainRes, campaignRes] = await Promise.all([
+                    api.get('/domains'),
+                    api.get('/campaigns')
+                ]);
+                const verifiedDefaults = domainRes.data.data.filter(d => d.verified);
                 setDomains(verifiedDefaults);
+                setCampaigns(campaignRes.data.data);
             } catch (err) {
-                console.error('Failed to load domains');
+                console.error('Failed to load metadata');
             }
         };
-        fetchDomains();
+        fetchData();
     }, []);
 
     const handleSubmit = async (e) => {
@@ -39,11 +45,13 @@ const ShortenForm = ({ onUrlCreated }) => {
                 originalUrl: url,
                 customAlias: alias,
                 isOneTime,
-                customDomain: selectedDomain || null
+                customDomain: selectedDomain || null,
+                campaignId: selectedCampaign || null
             });
             setUrl('');
             setAlias('');
             setIsOneTime(false);
+            setSelectedCampaign('');
             onUrlCreated(data.data);
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to shorten URL');
@@ -101,6 +109,26 @@ const ShortenForm = ({ onUrlCreated }) => {
                                 value={alias}
                                 onChange={(e) => setAlias(e.target.value)}
                             />
+                        </div>
+
+                        {/* Campaign Selector */}
+                        <div className="md:col-span-12 lg:col-span-3 space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Campaign</label>
+                            <div className="relative">
+                                <select
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-bold text-sm appearance-none"
+                                    value={selectedCampaign}
+                                    onChange={(e) => setSelectedCampaign(e.target.value)}
+                                >
+                                    <option value="">No Campaign</option>
+                                    {campaigns.map(c => (
+                                        <option key={c._id} value={c._id}>{c.name}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <Database className="w-4 h-4 text-zinc-400" />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="md:col-span-12 lg:col-span-2">

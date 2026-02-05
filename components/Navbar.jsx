@@ -98,6 +98,9 @@ const Navbar = () => {
                             <Link href="/dashboard" className="text-sm font-medium hover:text-zinc-500 transition-colors">
                                 Dashboard
                             </Link>
+                            <Link href="/blog" className="text-sm font-medium hover:text-zinc-500 transition-colors">
+                                Blog
+                            </Link>
 
                             <div className="flex items-center gap-6 pl-6 border-l border-zinc-100 relative group">
                                 <div className="flex flex-col items-end">
@@ -172,6 +175,9 @@ const Navbar = () => {
                             <Link href="/pricing" className="text-sm font-medium hover:text-zinc-500 transition-colors">
                                 Pricing
                             </Link>
+                            <Link href="/blog" className="text-sm font-medium hover:text-zinc-500 transition-colors">
+                                Blog
+                            </Link>
                             <Link
                                 href="/signup"
                                 className="bg-black text-white px-5 py-2 rounded-full text-xs font-bold transition-all hover:bg-zinc-800"
@@ -239,6 +245,9 @@ const Navbar = () => {
                                         <Link href="/pricing" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
                                             Pricing
                                         </Link>
+                                        <Link href="/blog" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
+                                            Blog
+                                        </Link>
                                         <button
                                             onClick={handleLogout}
                                             className="text-lg font-medium py-2 text-left text-red-500 hover:translate-x-2 transition-transform"
@@ -253,6 +262,9 @@ const Navbar = () => {
                                         </Link>
                                         <Link href="/pricing" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
                                             Pricing
+                                        </Link>
+                                        <Link href="/blog" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
+                                            Blog
                                         </Link>
                                         <Link href="/signup" className="mt-4 bg-black text-white py-4 rounded-xl text-center font-bold text-sm uppercase tracking-widest">
                                             Get Started

@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Save, Shield, Calendar, Power, Loader2 } from 'lucide-react';
+import { X, Save, Shield, Calendar, Power, Loader2, Folder } from 'lucide-react';
 import api from '@/lib/api';
 
-const SettingsModal = ({ isOpen, onClose, url, onUpdate }) => {
+const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
     const [formData, setFormData] = useState({
         isActive: url?.isActive ?? true,
         password: url?.password || '',
-        expiresAt: url?.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : ''
+        expiresAt: url?.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : '',
+        campaignId: url?.campaignId || ''
     });
     const [loading, setLoading] = useState(false);
 
@@ -98,6 +99,29 @@ const SettingsModal = ({ isOpen, onClose, url, onUpdate }) => {
                             value={formData.expiresAt}
                             onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
                         />
+                    </div>
+
+                    {/* Campaign Association */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-4 mb-2">
+                            <div className="p-3 rounded-2xl bg-zinc-50 text-indigo-600">
+                                <Folder className="w-5 h-5" style={{ color: campaigns.find(c => c._id === formData.campaignId)?.color || '#6366f1' }} />
+                            </div>
+                            <div>
+                                <p className="text-xs font-black uppercase tracking-widest">Campaign Cluster</p>
+                                <p className="text-[10px] text-zinc-400 font-bold uppercase">Associate with marketing unit</p>
+                            </div>
+                        </div>
+                        <select
+                            className="w-full bg-zinc-50 border border-zinc-100 rounded-2xl py-4 px-6 text-sm font-bold focus:outline-none focus:border-black transition-all appearance-none"
+                            value={formData.campaignId}
+                            onChange={(e) => setFormData({ ...formData, campaignId: e.target.value })}
+                        >
+                            <option value="">No Campaign (Ungrouped)</option>
+                            {campaigns.map(c => (
+                                <option key={c._id} value={c._id}>{c.name}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <button

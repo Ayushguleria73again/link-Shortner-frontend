@@ -164,8 +164,8 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                                 </div>
                                                 {url.health && (
                                                     <div className={`flex items-center gap-2 px-2 py-0.5 rounded-md w-fit border ${url.health.status === 'online' ? 'bg-emerald-50/50 border-emerald-100 text-emerald-600' :
-                                                            url.health.status === 'offline' ? 'bg-rose-50/50 border-rose-100 text-rose-600' :
-                                                                'bg-zinc-50 border-zinc-100 text-zinc-400'
+                                                        url.health.status === 'offline' ? 'bg-rose-50/50 border-rose-100 text-rose-600' :
+                                                            'bg-zinc-50 border-zinc-100 text-zinc-400'
                                                         }`}>
                                                         <Activity className="w-2.5 h-2.5" />
                                                         <span className="text-[8px] font-black uppercase tracking-tighter">{url.health.status} Heartbeat</span>
@@ -225,6 +225,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                         isOpen={showSettings}
                         onClose={() => setShowSettings(false)}
                         url={selectedUrl}
+                        campaigns={campaigns}
                         onUpdate={(updated) => {
                             onUpdate(updated);
                             setSelectedUrl(updated);
