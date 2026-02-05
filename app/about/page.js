@@ -100,7 +100,7 @@ export default function About() {
          {/* Meet the Crew */}
          <div className="mb-32">
             <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-400 mb-12 text-center">Meet the Crew</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
                 <TeamMember 
                     name="Ayush Guleria" 
                     role="Founder / Lead Architect" 
@@ -108,22 +108,10 @@ export default function About() {
                     color="bg-indigo-500"
                 />
                 <TeamMember 
-                    name="Sarah Chen" 
-                    role="Head of Product" 
-                    initials="SC"
-                    color="bg-emerald-500"
-                />
-                <TeamMember 
-                    name="Marcus Thorne" 
-                    role="Security Protocol Lead" 
-                    initials="MT"
-                    color="bg-rose-500"
-                />
-                <TeamMember 
-                    name="Inaya Malik" 
-                    role="Intelligence Analyst" 
-                    initials="IM"
-                    color="bg-amber-500"
+                    name="Antigravity" 
+                    role="AI Intelligence / Co-Pilot" 
+                    initials="AI"
+                    color="bg-black"
                 />
             </div>
          </div>
