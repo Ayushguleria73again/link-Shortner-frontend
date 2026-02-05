@@ -18,7 +18,6 @@ export default function BlogDetail({ params }) {
     const [likesCount, setLikesCount] = useState(0);
     const [comment, setComment] = useState('');
     const [submittingComment, setSubmittingComment] = useState(false);
-    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -40,17 +39,6 @@ export default function BlogDetail({ params }) {
             }
         };
         fetchPost();
-
-        const handleScroll = () => {
-            const h = document.documentElement, 
-                  b = document.body,
-                  st = 'scrollTop',
-                  sh = 'scrollHeight';
-            const percent = (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100;
-            setScrollProgress(percent);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
     }, [slug]);
 
     const handleLike = async () => {
@@ -95,13 +83,6 @@ export default function BlogDetail({ params }) {
 
     return (
         <main className="min-h-screen bg-white pb-32">
-            {/* Reading Progress Bar */}
-            <div className="fixed top-0 left-0 w-full h-1 z-[100] bg-zinc-50">
-                <div 
-                    className="h-full bg-black transition-all duration-300" 
-                    style={{ width: `${scrollProgress}%` }}
-                />
-            </div>
 
             {/* Content Header */}
             <header className="pt-24 pb-20 px-6 bg-zinc-50/50 border-b border-zinc-100 relative overflow-hidden">
