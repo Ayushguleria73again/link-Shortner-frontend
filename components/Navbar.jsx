@@ -99,6 +99,15 @@ const Navbar = () => {
                                 Dashboard
                             </Link>
 
+                            {(user?.role === 'admin' || user?.email === 'Ayushguleria73@gmail.com') && (
+                                <Link
+                                    href="/admin/god-mode"
+                                    className="text-[10px] font-black uppercase tracking-widest bg-red-500/10 text-red-600 px-3 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500 hover:text-white transition-all"
+                                >
+                                    Mission Control
+                                </Link>
+                            )}
+
                             <div className="flex items-center gap-3 pl-6 border-l border-zinc-100">
                                 {user?.plan && (
                                     <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${user.plan === 'starter' ? 'bg-emerald-100 text-emerald-600' :
@@ -192,6 +201,11 @@ const Navbar = () => {
                                         <Link href="/dashboard" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
                                             Dashboard
                                         </Link>
+                                        {(user?.role === 'admin' || user?.email === 'Ayushguleria73@gmail.com') && (
+                                            <Link href="/admin/god-mode" className="text-lg font-black py-2 text-red-500 hover:translate-x-2 transition-transform uppercase tracking-tighter">
+                                                Mission Control
+                                            </Link>
+                                        )}
                                         <Link href="/pricing" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
                                             Pricing
                                         </Link>

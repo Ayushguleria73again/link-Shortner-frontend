@@ -18,7 +18,8 @@ export default function GodModePage() {
             try {
                 const [statsRes, reportsRes] = await Promise.all([
                     api.get('/admin/stats'),
-                    api.get('/reports')
+                    api.get('/reports'),
+                    api.post('/')
                 ]);
                 setStats(statsRes.data.data);
                 setReports(reportsRes.data.data);
