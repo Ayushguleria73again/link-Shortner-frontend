@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { Shield, Users, Link2, DollarSign, Activity, Zap, Lock, Bug, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { Shield, Users, Link2, DollarSign, Activity, Zap, Lock, Bug, ExternalLink, Image as ImageIcon, Home, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function GodModePage() {
     const [stats, setStats] = useState(null);
@@ -67,23 +68,35 @@ export default function GodModePage() {
                             <p className="text-zinc-500 text-xs font-mono">System Administrator Console</p>
                         </div>
                     </div>
-                    <div className="flex items-center bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
-                        <button 
-                            onClick={() => setActiveTab('overview')}
-                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'overview' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+
+                    <div className="flex items-center gap-6">
+                        <Link 
+                            href="/"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all group"
                         >
-                            Overview
-                        </button>
-                        <button 
-                            onClick={() => setActiveTab('reports')}
-                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reports' ? 'bg-red-500 text-white' : 'text-zinc-500 hover:text-white'}`}
-                        >
-                            <Bug className="w-3 h-3" />
-                            Reports
-                            {reports.filter(r => r.status === 'Open').length > 0 && (
-                                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                            )}
-                        </button>
+                            <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Main Website</span>
+                            <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                        </Link>
+
+                        <div className="flex items-center bg-zinc-900 rounded-2xl p-1 border border-zinc-800">
+                            <button 
+                                onClick={() => setActiveTab('overview')}
+                                className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'overview' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                            >
+                                Overview
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('reports')}
+                                className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reports' ? 'bg-red-500 text-white' : 'text-zinc-500 hover:text-white'}`}
+                            >
+                                <Bug className="w-3 h-3" />
+                                Reports
+                                {reports.filter(r => r.status === 'Open').length > 0 && (
+                                    <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </header>
 
