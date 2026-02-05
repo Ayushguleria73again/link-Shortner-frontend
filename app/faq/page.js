@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDown, MessageCircle, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
