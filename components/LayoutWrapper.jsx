@@ -6,14 +6,15 @@ import Footer from "@/components/Footer";
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
     const isAdminPage = pathname.startsWith('/admin');
+    const isStandalonePage = ['/about', '/faq', '/contact'].includes(pathname);
 
     return (
         <>
-            {!isAdminPage && <Navbar />}
+            {(!isAdminPage && !isStandalonePage) && <Navbar />}
             <main className={`flex-grow ${isAdminPage ? 'bg-black' : ''}`}>
                 {children}
             </main>
-            {!isAdminPage && <Footer />}
+            {(!isAdminPage && !isStandalonePage) && <Footer />}
         </>
     );
 }

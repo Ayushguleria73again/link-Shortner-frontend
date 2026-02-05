@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from 'react';
-import Navbar from '@/components/Navbar';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, MessageCircle } from 'lucide-react';
+import { ChevronDown, MessageCircle, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function FAQ() {
+  const router = useRouter();
   const faqs = [
     {
       question: "Is the tracking real-time?",
@@ -46,8 +47,14 @@ export default function FAQ() {
 
   return (
     <div className="bg-white min-h-screen">
-      <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+      <div className="pt-16 pb-20 px-6 max-w-4xl mx-auto">
+        <button 
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-zinc-400 hover:text-black mb-12 transition-colors group w-fit"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Back</span>
+        </button>
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">Frequently Asked <span className="text-zinc-400">Questions.</span></h1>
           <p className="text-zinc-500 font-medium">Everything you need to know about the platform.</p>

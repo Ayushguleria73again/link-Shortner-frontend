@@ -1,14 +1,21 @@
 "use client";
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import { Github, Twitter, Linkedin } from 'lucide-react';
+import { Github, Twitter, Linkedin, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function About() {
+  const router = useRouter();
   return (
     <div className="bg-white min-h-screen">
-      <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+      <div className="pt-16 pb-20 px-6 max-w-7xl mx-auto">
+        <button 
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-zinc-400 hover:text-black mb-12 transition-colors group w-fit"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Return to Matrix</span>
+        </button>
         
         {/* Hero */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-32">

@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from 'react';
-import Navbar from '@/components/Navbar';
-import { Mail, Send, Loader2 } from 'lucide-react';
+import { Mail, Send, Loader2, ArrowLeft } from 'lucide-react';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function Contact() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,9 +32,15 @@ export default function Contact() {
   };
 
   return (
-    <div className="bg-white min-h-screen">
-      <Navbar />
-      <div className="pt-32 pb-20 px-6 max-w-2xl mx-auto">
+    <div className="bg-white min-h-screen text-black">
+      <div className="pt-16 pb-20 px-6 max-w-2xl mx-auto">
+        <button 
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-zinc-400 hover:text-black mb-12 transition-colors group w-fit"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Return</span>
+        </button>
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center p-3 bg-zinc-100 rounded-2xl mb-6">
             <Mail className="w-6 h-6 text-black" />
