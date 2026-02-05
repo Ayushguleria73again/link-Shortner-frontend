@@ -24,8 +24,9 @@ export default function GodModePage() {
                 setReports(reportsRes.data.data);
             } catch (err) {
                 console.error("Access Denied", err);
-                setError("Access Restricted. Redirecting...");
-                setTimeout(() => router.push('/dashboard'), 2000);
+                const backendError = err.response?.data?.error || "Access Restricted. Redirecting...";
+                setError(backendError);
+                setTimeout(() => router.push('/dashboard'), 5000); // 5s to read the error
             } finally {
                 setLoading(false);
             }
@@ -46,7 +47,8 @@ export default function GodModePage() {
         <div className="min-h-screen bg-black flex items-center justify-center">
             <div className="text-center">
                 <Lock className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h1 className="text-red-500 font-black text-xl uppercase tracking-widest">Unauthorized Access</h1>
+                <h1 className="text-red-500 font-black text-xl uppercase tracking-widest mb-2">Unauthorized Access</h1>
+                <p className="text-zinc-500 font-mono text-xs uppercase tracking-[0.2em]">{error}</p>
             </div>
         </div>
     );
