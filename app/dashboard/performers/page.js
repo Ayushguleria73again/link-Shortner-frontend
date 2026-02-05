@@ -56,10 +56,10 @@ export default function PerformersPage() {
                              <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl">
                                 <Trophy className="w-6 h-6 text-yellow-400 fill-yellow-400" />
                              </div>
-                             <h1 className="text-4xl font-black text-black tracking-tight">Top Performers.</h1>
+                             <h1 className="text-4xl font-black text-black tracking-tight">Top Signals.</h1>
                         </div>
                         <p className="text-zinc-500 font-medium text-lg max-w-xl">
-                            A complete ranking of your most effective signal protocols.
+                            Live telemetry and performance rankings for your active protocols.
                         </p>
                     </div>
 

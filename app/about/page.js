@@ -17,7 +17,7 @@ export default function About() {
               Mission Control
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8">
-              We are obsessed with <span className="text-zinc-400">Data.</span>
+              The <span className="text-zinc-400">Mission.</span>
             </h1>
             <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-8">
               smol was built for marketers, developers, and creators who demand more than just a redirect. We believe that every click tells a story, and you deserve to read it.
