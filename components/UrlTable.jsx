@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import {
     Copy, Trash2, BarChart2, CheckCircle2,
     Settings, QrCode, ExternalLink, Shield, CalendarOff, PowerOff,
-    Folder
+    Folder,
+    Activity
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';

@@ -586,7 +586,7 @@ export default function Dashboard() {
                       <Activity className="w-3 h-3 text-emerald-500" />
                       Real-time Traffic stream active
                    </div>
-                   {analytics.health && (
+                   {analytics?.health && (
                       <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${
                          analytics.health.status === 'online' ? 'text-emerald-500' : 
                          analytics.health.status === 'offline' ? 'text-rose-500' : 'text-amber-500'
