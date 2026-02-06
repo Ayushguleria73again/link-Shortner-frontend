@@ -146,7 +146,16 @@ export default function GodModePage() {
 
                             {/* Recent Signups */}
                             <div className="lg:col-span-2 bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl">
-                                <h3 className="text-sm font-black uppercase tracking-widest mb-8 text-zinc-400">Recent Signups</h3>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-zinc-400">Recent Signups</h3>
+                                    <Link 
+                                        href="/admin/users"
+                                        className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-colors flex items-center gap-2"
+                                    >
+                                        View All Users
+                                        <ChevronRight className="w-3 h-3" />
+                                    </Link>
+                                </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
                                         <thead>
