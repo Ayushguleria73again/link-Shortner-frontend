@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import SignalReport from '@/components/SignalReport';
 
 export default function ActivityArchive() {
     const [activity, setActivity] = useState([]);
@@ -15,10 +16,24 @@ export default function ActivityArchive() {
     const [page, setPage] = useState(1);
     const [pagination, setPagination] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [selectedSignal, setSelectedSignal] = useState(null);
+    const [userPlan, setUserPlan] = useState('free');
 
     useEffect(() => {
         fetchActivity();
+        fetchUserPlan();
     }, [page, filter]);
+
+    const fetchUserPlan = async () => {
+        try {
+            const { data } = await api.get('/auth/me');
+            if (data.data) {
+                setUserPlan(data.data.plan || 'free');
+            }
+        } catch (err) {
+            console.error('Error fetching plan:', err);
+        }
+    };
 
     const fetchActivity = async () => {
         setLoading(true);
@@ -86,7 +101,8 @@ export default function ActivityArchive() {
                         {filteredActivity.map((signal, i) => (
                             <div 
                                 key={signal._id} 
-                                className="group bg-zinc-50/50 hover:bg-white border border-zinc-100 p-6 rounded-[28px] transition-all hover:shadow-xl hover:shadow-zinc-200/50 flex flex-col md:flex-row md:items-center justify-between gap-6"
+                                onClick={() => setSelectedSignal(signal)}
+                                className="group bg-zinc-50/50 hover:bg-white border border-zinc-100 p-6 rounded-[28px] transition-all hover:shadow-xl hover:shadow-zinc-200/50 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer"
                             >
                                 <div className="flex items-center gap-6">
                                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner ${signal.isBot ? 'bg-zinc-100 group-hover:bg-zinc-200' : 'bg-indigo-50 group-hover:bg-indigo-100'} transition-colors`}>
@@ -95,7 +111,9 @@ export default function ActivityArchive() {
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-3">
                                             <span className="text-lg font-black text-black">/{signal.shortCode}</span>
-                                            <span className="px-2 py-0.5 bg-black text-white text-[8px] font-black rounded uppercase tracking-widest">Protocol</span>
+                                            <span className="px-2 py-0.5 bg-black text-white text-[8px] font-black rounded uppercase tracking-widest">
+                                                {signal.protocol?.includes('HTTPS') || signal.protocol?.includes('443') ? 'SECURE' : 'PROTOCOL'}
+                                            </span>
                                         </div>
                                         <div className="flex items-center gap-4 text-zinc-400 text-[9px] font-black uppercase tracking-widest">
                                             <div className="flex items-center gap-1.5">
@@ -119,11 +137,13 @@ export default function ActivityArchive() {
                                                 {signal.browser}
                                             </div>
                                             <div className="h-4 w-px bg-zinc-200" />
-                                            <span className="text-xs font-mono font-black text-zinc-400">{signal.ip || 'Masked'}</span>
+                                            <span className="text-xs font-mono font-black text-zinc-400">
+                                                {signal.ip ? signal.ip.split('.').slice(0, 2).join('.') + '.x.x' : 'Masked'}
+                                            </span>
                                         </div>
                                     </div>
-                                    <div className="w-10 h-10 rounded-full border border-zinc-100 flex items-center justify-center hover:bg-zinc-100 transition-colors">
-                                        <ChevronRight className="w-4 h-4 text-zinc-300" />
+                                    <div className="w-10 h-10 rounded-full border border-zinc-100 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
+                                        <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-white" />
                                     </div>
                                 </div>
                             </div>
@@ -171,6 +191,12 @@ export default function ActivityArchive() {
                     Satellite G-14 // End-to-End Analytics Sync
                 </div>
             </div>
+
+            <SignalReport 
+                click={selectedSignal} 
+                userPlan={userPlan}
+                onClose={() => setSelectedSignal(null)} 
+            />
         </div>
     );
 }

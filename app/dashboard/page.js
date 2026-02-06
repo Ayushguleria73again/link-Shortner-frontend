@@ -16,16 +16,18 @@ import {
 import { formatDistanceToNow, format } from 'date-fns';
 import Link from 'next/link';
 import SettingsView from '@/components/SettingsView';
+import HubView from '@/components/HubView';
 import DestructiveModal from '@/components/DestructiveModal';
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedShortCode, setSelectedShortCode] = useState(null);
   const [analytics, setAnalytics] = useState(null);
   const [overviewData, setOverviewData] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
-  const [activeView, setActiveView] = useState('links'); // 'links', 'settings', or 'overview'
+  const [activeView, setActiveView] = useState('links'); // 'links', 'settings', 'overview', or 'hub'
   const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
   const [username, setUsername] = useState(null); // NEW: Track username for Link Hub
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -33,6 +35,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const [selectedCampaignId, setSelectedCampaignId] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -42,18 +45,34 @@ export default function Dashboard() {
       return;
     }
     fetchUrls();
+    fetchCampaigns();
     fetchUserPlan();
   }, []);
 
   const fetchUserPlan = async () => {
     try {
-      const { data } = await api.get('/auth/me');
-      if (data.data) {
-        setUserPlan(data.data.plan || 'free'); 
-        setUsername(data.data.username);
+      const [userRes, profileRes] = await Promise.all([
+        api.get('/auth/me'),
+        api.get('/profile/me')
+      ]);
+
+      if (userRes.data.data) {
+        setUserPlan(userRes.data.data.plan || 'free'); 
+      }
+      if (profileRes.data.data) {
+        setUsername(profileRes.data.data.username);
       }
     } catch (err) {
       console.error('Error fetching plan/profile:', err);
+    }
+  };
+
+  const fetchCampaigns = async () => {
+    try {
+      const { data } = await api.get('/campaigns');
+      setCampaigns(data.data);
+    } catch (err) {
+      console.error('Error fetching campaigns:', err);
     }
   };
 
@@ -152,7 +171,9 @@ export default function Dashboard() {
           (statusFilter === 'inactive' && !url.isActive) ||
           (statusFilter === 'onetime' && url.isOneTime);
           
-        return matchesSearch && matchesStatus;
+        const matchesCampaign = !selectedCampaignId || url.campaignId === selectedCampaignId;
+          
+        return matchesSearch && matchesStatus && matchesCampaign;
       })
       .sort((a, b) => {
         if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
@@ -229,6 +250,12 @@ export default function Dashboard() {
                   label="Command Center" 
                />
                <TabButton 
+                  active={activeView === 'hub'} 
+                  onClick={() => { setActiveView('hub'); setSelectedShortCode(null); }} 
+                  icon={<Globe className={`w-3.5 h-3.5 ${activeView === 'hub' ? 'text-indigo-500' : ''}`} />} 
+                  label="Link Hub" 
+               />
+               <TabButton 
                   active={activeView === 'settings'} 
                   onClick={() => { setActiveView('settings'); setSelectedShortCode(null); }} 
                   icon={<Settings className="w-3.5 h-3.5" />} 
@@ -236,16 +263,6 @@ export default function Dashboard() {
                />
             </div>
 
-            {username && (
-              <Link 
-                href={`/u/${username}`}
-                target="_blank"
-                className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-black/10 group"
-              >
-                <ExternalLink className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-                View Link Hub
-              </Link>
-            )}
           </div>
         </div>
         
@@ -261,7 +278,16 @@ export default function Dashboard() {
       </div>
 
       {activeView === 'settings' ? (
-        <SettingsView urls={urls} onUpdateUrl={handleUpdateUrl} />
+        <SettingsView 
+          urls={urls} 
+          onUpdateUrl={handleUpdateUrl} 
+          onCampaignSelect={(id) => {
+            setSelectedCampaignId(id);
+            setActiveView('links');
+          }}
+        />
+      ) : activeView === 'hub' ? (
+        <HubView username={username} userPlan={userPlan} />
       ) : activeView === 'overview' ? (
         <div className="relative">
           {/* ELITE GATE OVERLAY */}
@@ -488,14 +514,23 @@ export default function Dashboard() {
       ) : !selectedShortCode ? (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
-          
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-            <div className="flex items-center gap-3">
-               <BarChart3 className="w-5 h-5 text-black" />
-               <h2 className="text-xs font-black uppercase tracking-[0.2em] text-black">Link Inventory</h2>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white flex items-center gap-4">
+                        Manage Center.
+                        {username && (
+                            <a 
+                                href={`/u/${username}`} 
+                                target="_blank"
+                                className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all group"
+                                title="View Hub"
+                            >
+                                <ExternalLink className="w-5 h-5 text-zinc-400 group-hover:text-white" />
+                            </a>
+                        )}
+                    </h1>
+                </div>
+                <div className="flex items-center gap-3">
               {/* Search */}
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-black transition-colors" />
@@ -548,6 +583,23 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+          
+          {selectedCampaignId && (
+            <div className="flex items-center gap-4 mb-8 p-4 bg-indigo-50 border border-indigo-100 rounded-2xl w-fit animate-in slide-in-from-left-4 duration-500">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-900">
+                  Cluster Isolated: <span className="italic">{campaigns.find(c => c._id === selectedCampaignId)?.name || 'Protocol Registry'}</span>
+                </span>
+              </div>
+              <button 
+                onClick={() => setSelectedCampaignId(null)}
+                className="text-[9px] font-black uppercase text-indigo-500 hover:text-indigo-700 underline tracking-widest"
+              >
+                Clear Isolation
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <div className="py-20 flex flex-col items-center gap-4">

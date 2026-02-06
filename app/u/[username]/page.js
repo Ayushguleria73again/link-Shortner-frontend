@@ -4,7 +4,8 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import MatrixRain from '@/components/MatrixRain';
-import { Link2, Twitter, Github, Linkedin, Instagram, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Link2, Twitter, Github, Linkedin, Instagram, ExternalLink, ShieldCheck, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -47,6 +48,17 @@ export default function PublicProfile() {
   return (
     <div className="min-h-screen bg-white selection:bg-black selection:text-white relative overflow-hidden">
       <MatrixRain />
+      
+      {/* Back to Website Navigation */}
+      <div className="fixed top-8 left-8 z-50">
+        <Link 
+          href="/"
+          className="flex items-center gap-2 bg-white/80 backdrop-blur-md border border-zinc-100 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-black hover:border-black transition-all shadow-xl shadow-zinc-100/20 group"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+          Back to Website
+        </Link>
+      </div>
       
       <div className="max-w-2xl mx-auto px-6 py-24 relative z-10 flex flex-col items-center">
         {/* Avatar */}

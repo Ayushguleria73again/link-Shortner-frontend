@@ -12,7 +12,7 @@ import DestructiveModal from './DestructiveModal';
 import DomainManager from './DomainManager';
 import CampaignManager from './CampaignManager';
 
-export default function SettingsView({ urls, onUpdateUrl }) {
+export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
     const [profile, setProfile] = useState({
         username: '',
         displayName: '',
@@ -189,138 +189,6 @@ export default function SettingsView({ urls, onUpdateUrl }) {
 
             {/* Link Hub Settings */}
             <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-8">
-                        <User className="w-5 h-5 text-indigo-500" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Link Hub Identity</h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-                        {/* Left: Editor */}
-                        <div className="space-y-6">
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Username</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-mono text-sm font-medium">smol.link/</span>
-                                    <input
-                                        type="text"
-                                        value={profile.username}
-                                        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                                        className="w-full pl-24 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                        placeholder="username"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
-                                <input
-                                    type="text"
-                                    value={profile.displayName}
-                                    onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-black outline-none transition-all"
-                                    placeholder="e.g. Ayush Guleria"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Bio</label>
-                                <textarea
-                                    value={profile.bio}
-                                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all h-24 resize-none"
-                                    placeholder="Tell your story..."
-                                />
-                            </div>
-
-                            <div className="pt-6 border-t border-zinc-50">
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">Social Links</h3>
-                                <div className="space-y-3">
-                                    <SocialInput
-                                        label="Twitter"
-                                        value={profile.socialLinks.twitter}
-                                        onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
-                                    />
-                                    <SocialInput
-                                        label="Github"
-                                        value={profile.socialLinks.github}
-                                        onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4 mt-4">
-                                <button
-                                    onClick={handleSaveProfile}
-                                    disabled={saving}
-                                    className="flex-[2] flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
-                                >
-                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                    Save Identity
-                                </button>
-
-                                {profile.username && (
-                                    <a
-                                        href={`/u/${profile.username}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex-1 flex items-center justify-center gap-2 bg-zinc-50 border border-zinc-200 text-black py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-100 transition-all active:scale-95"
-                                    >
-                                        <ExternalLink className="w-3.5 h-3.5" />
-                                        Live Hub
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Right: Live Preview */}
-                        <div className="bg-zinc-900 rounded-[40px] p-4 border-4 border-zinc-100 shadow-2xl relative overflow-hidden h-fit transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                            {/* Phone Notion */}
-                            <div className="absolute top-0 inset-x-0 h-6 bg-black/20 z-10 mx-auto w-32 rounded-b-xl backdrop-blur-md" />
-
-                            <div className="bg-white rounded-[32px] h-full min-h-[500px] p-6 flex flex-col items-center text-center pt-16 relative overflow-hidden">
-                                {/* Decor Background */}
-                                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-indigo-50 to-white" />
-
-                                {/* Avatar Mock */}
-                                <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-2xl font-black mb-4 shadow-xl z-10 border-4 border-white">
-                                    {profile.displayName ? profile.displayName[0].toUpperCase() : <User className="w-8 h-8" />}
-                                </div>
-
-                                <h3 className="text-lg font-black text-black z-10 mb-1">{profile.displayName || 'Your Name'}</h3>
-                                <p className="text-xs font-bold text-zinc-400 z-10 mb-4 bg-zinc-50 px-3 py-1 rounded-full font-mono">
-                                    @{profile.username || 'username'}
-                                </p>
-
-                                <p className="text-sm text-zinc-600 font-medium z-10 mb-8 max-w-[200px] leading-relaxed">
-                                    {profile.bio || 'Your simplified bio will appear here...'}
-                                </p>
-
-                                <div className="flex items-center gap-3 z-10">
-                                    {[1, 2, 3].map(i => (
-                                        <div key={i} className="w-10 h-10 bg-zinc-50 rounded-full flex items-center justify-center border border-zinc-100 text-zinc-300">
-                                            <Globe className="w-4 h-4" />
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="mt-auto w-full pt-8 space-y-3 z-10">
-                                    <div className="w-full h-12 bg-black text-white rounded-xl flex items-center justify-center text-xs font-bold shadow-lg">
-                                        Latest Link
-                                    </div>
-                                    <div className="w-full h-12 bg-zinc-50 rounded-xl border border-zinc-100" />
-                                </div>
-
-                                {/* Footer Brand */}
-                                <div className="mt-6 flex items-center gap-1 opacity-50">
-                                    <div className="w-3 h-3 bg-black rounded-full" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-800">smol.link</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Operational Campaign Manager */}
                 <div className="relative overflow-hidden rounded-[32px]">
                     {['free', 'starter'].includes(userPlan) && (
@@ -338,7 +206,11 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                             </button>
                         </div>
                     )}
-                    <CampaignManager urls={urls} onUpdateUrl={onUpdateUrl} />
+                    <CampaignManager
+                        urls={urls}
+                        onUpdateUrl={onUpdateUrl}
+                        onCampaignSelect={onCampaignSelect}
+                    />
                 </div>
 
                 {/* Custom Domain Manager */}

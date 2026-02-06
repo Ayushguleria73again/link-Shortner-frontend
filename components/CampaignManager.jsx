@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const CampaignManager = ({ urls }) => {
+const CampaignManager = ({ urls, onCampaignSelect }) => {
     const [campaigns, setCampaigns] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -169,7 +169,10 @@ const CampaignManager = ({ urls }) => {
                                         </div>
                                         <span className="text-[8px] font-black uppercase text-zinc-400">Live Traffic Stream Active</span>
                                     </div>
-                                    <button className="text-[9px] font-black uppercase text-black hover:underline tracking-widest">
+                                    <button
+                                        onClick={() => onCampaignSelect?.(campaign._id)}
+                                        className="text-[9px] font-black uppercase text-black hover:underline tracking-widest"
+                                    >
                                         Open Protocol Cluster
                                     </button>
                                 </div>
