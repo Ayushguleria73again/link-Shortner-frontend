@@ -445,12 +445,12 @@ export default function Dashboard() {
                                   <h4 className="text-[10px] font-black text-black uppercase tracking-tighter mb-1 truncate w-full">{market.name}</h4>
                                   <p className="text-lg font-black text-black font-mono">{market.value}</p>
                                   <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest">Signal Hits</span>
-                               </div>
+                                </div>
                             ))}
                             {(!overviewData?.countryStats || overviewData.countryStats.length === 0) && (
                                <div className="col-span-full py-20 text-center text-zinc-300 font-black text-[10px] uppercase tracking-widest">
                                   Awaiting global signal synchronisation...
-                               </div>
+                                </div>
                             )}
                          </div>
                          
