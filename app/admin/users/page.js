@@ -147,7 +147,7 @@ export default function AdminUsersPage() {
                                         <td className="px-8 py-8 text-zinc-400 font-mono text-xs">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-3.5 h-3.5 text-zinc-600" />
-                                                {format(new Date(user.createdAt), 'MMM dd, yyyy')}
+                                                {user.createdAt ? format(new Date(user.createdAt), 'MMM dd, yyyy') : 'No Date'}
                                             </div>
                                         </td>
                                         <td className="px-8 py-8 text-right">

@@ -55,7 +55,7 @@ export default function AdminNewsletterPage() {
         const rows = subscribers.map(sub => [
             sub.email,
             sub.isActive ? "Active" : "Inactive",
-            format(new Date(sub.createdAt), 'yyyy-MM-dd'),
+            sub.createdAt ? format(new Date(sub.createdAt), 'yyyy-MM-dd') : 'N/A',
             sub.userId || "Anonymous"
         ]);
 
@@ -176,7 +176,7 @@ export default function AdminNewsletterPage() {
                                             </span>
                                         </td>
                                         <td className="px-8 py-6 text-zinc-500 italic">
-                                            {format(new Date(sub.createdAt), 'MMM dd, yyyy')}
+                                            {sub.createdAt ? format(new Date(sub.createdAt), 'MMM dd, yyyy') : 'No Date'}
                                         </td>
                                     </tr>
                                 ))}
