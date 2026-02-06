@@ -97,7 +97,7 @@ export default function Footer() {
                             <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">All Systems Operational</span>
                         </div>
                         <div className="h-4 w-px bg-zinc-100 hidden md:block" />
-                        <Link href="/terms" className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors">Legal Override</Link>
+                        <Link href="/terms" className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors">Terms and Conditions</Link>
                     </div>
 
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-300">

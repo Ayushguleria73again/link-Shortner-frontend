@@ -13,7 +13,8 @@ export default function Signup() {
     email: '', 
     phoneNumber: '',
     password: '', 
-    confirmPassword: '' 
+    confirmPassword: '',
+    acceptedTerms: false
   });
   const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +42,8 @@ export default function Signup() {
         lastName: formData.lastName,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
-        password: formData.password
+        password: formData.password,
+        acceptedTerms: formData.acceptedTerms
       });
       setStep(2); // Move to OTP step
       setSuccess('Verification code sent to your email.');
@@ -194,6 +196,20 @@ export default function Signup() {
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+            </div>
+
+            <div className="flex items-start gap-3 py-2">
+              <input
+                type="checkbox"
+                required
+                id="terms"
+                checked={formData.acceptedTerms}
+                onChange={(e) => setFormData({ ...formData, acceptedTerms: e.target.checked })}
+                className="mt-1 w-4 h-4 rounded border-zinc-200 text-black focus:ring-black transition-all cursor-pointer"
+              />
+              <label htmlFor="terms" className="text-[10px] font-bold text-zinc-400 leading-tight cursor-pointer select-none">
+                I UNDERSTAND AND ACCEPT THE <Link href="/terms" className="text-black hover:underline">TERMS AND CONDITIONS</Link> OF OPERATION.
+              </label>
             </div>
 
             <div className="pt-2">
