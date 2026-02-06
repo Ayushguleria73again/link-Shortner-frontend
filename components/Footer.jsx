@@ -7,10 +7,15 @@ import { motion } from 'framer-motion';
 export default function Footer() {
     const [email, setEmail] = useState('');
 
-    const handleSubscribe = (e) => {
+    const handleSubscribe = async (e) => {
         e.preventDefault();
-        // Newsletter logic placeholder
-        setEmail('');
+        try {
+            await api.post('/newsletter/subscribe', { email });
+            toast.success('Encryption handshake complete. Welcome to the signal stream.');
+            setEmail('');
+        } catch (err) {
+            toast.error(err.response?.data?.error || 'Operational error in subscription.');
+        }
     };
 
     return (
