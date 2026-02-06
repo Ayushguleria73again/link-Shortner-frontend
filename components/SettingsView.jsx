@@ -5,7 +5,7 @@ import {
     Shield, Key, User, Globe,
     Save, RefreshCcw, Loader2, Link2,
     Terminal, Smartphone, Bell, PowerOff, Settings,
-    Palette, Layout, Image, Database
+    Palette, Layout, Image, Database, ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DestructiveModal from './DestructiveModal';
@@ -249,14 +249,28 @@ export default function SettingsView({ urls, onUpdateUrl }) {
                                 </div>
                             </div>
 
-                            <button
-                                onClick={handleSaveProfile}
-                                disabled={saving}
-                                className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4"
-                            >
-                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                Save Identity
-                            </button>
+                            <div className="flex gap-4 mt-4">
+                                <button
+                                    onClick={handleSaveProfile}
+                                    disabled={saving}
+                                    className="flex-[2] flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
+                                >
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                    Save Identity
+                                </button>
+
+                                {profile.username && (
+                                    <a
+                                        href={`/u/${profile.username}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex-1 flex items-center justify-center gap-2 bg-zinc-50 border border-zinc-200 text-black py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-100 transition-all active:scale-95"
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                        Live Hub
+                                    </a>
+                                )}
+                            </div>
                         </div>
 
                         {/* Right: Live Preview */}

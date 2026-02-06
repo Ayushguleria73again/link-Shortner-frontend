@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [activeView, setActiveView] = useState('links'); // 'links', 'settings', or 'overview'
   const [userPlan, setUserPlan] = useState('free'); // NEW: Track user plan
+  const [username, setUsername] = useState(null); // NEW: Track username for Link Hub
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,9 +50,10 @@ export default function Dashboard() {
       const { data } = await api.get('/auth/me');
       if (data.data) {
         setUserPlan(data.data.plan || 'free'); 
+        setUsername(data.data.username);
       }
     } catch (err) {
-      console.error('Error fetching plan:', err);
+      console.error('Error fetching plan/profile:', err);
     }
   };
 
@@ -212,25 +214,38 @@ export default function Dashboard() {
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black">Manage Center.</h1>
           <p className="text-zinc-400 font-medium text-sm mt-2 max-w-md">Professional-grade link management and audience intelligence.</p>
           
-          <div className="flex items-center gap-1 bg-zinc-50 p-1 rounded-2xl w-fit mt-8 border border-zinc-100">
-             <TabButton 
-                active={activeView === 'links'} 
-                onClick={() => { setActiveView('links'); setSelectedShortCode(null); }} 
-                icon={<Database className="w-3.5 h-3.5" />} 
-                label="Inventory" 
-             />
-             <TabButton 
-                active={activeView === 'overview'} 
-                onClick={() => { setActiveView('overview'); fetchOverview(); setSelectedShortCode(null); }} 
-                icon={<Zap className={`w-3.5 h-3.5 ${activeView === 'overview' ? 'text-indigo-500' : ''}`} />} 
-                label="Command Center" 
-             />
-             <TabButton 
-                active={activeView === 'settings'} 
-                onClick={() => { setActiveView('settings'); setSelectedShortCode(null); }} 
-                icon={<Settings className="w-3.5 h-3.5" />} 
-                label="Protocol Settings" 
-             />
+          <div className="flex flex-wrap items-center gap-4 mt-8">
+            <div className="flex items-center gap-1 bg-zinc-50 p-1 rounded-2xl border border-zinc-100">
+               <TabButton 
+                  active={activeView === 'links'} 
+                  onClick={() => { setActiveView('links'); setSelectedShortCode(null); }} 
+                  icon={<Database className="w-3.5 h-3.5" />} 
+                  label="Inventory" 
+               />
+               <TabButton 
+                  active={activeView === 'overview'} 
+                  onClick={() => { setActiveView('overview'); fetchOverview(); setSelectedShortCode(null); }} 
+                  icon={<Zap className={`w-3.5 h-3.5 ${activeView === 'overview' ? 'text-indigo-500' : ''}`} />} 
+                  label="Command Center" 
+               />
+               <TabButton 
+                  active={activeView === 'settings'} 
+                  onClick={() => { setActiveView('settings'); setSelectedShortCode(null); }} 
+                  icon={<Settings className="w-3.5 h-3.5" />} 
+                  label="Protocol Settings" 
+               />
+            </div>
+
+            {username && (
+              <Link 
+                href={`/u/${username}`}
+                target="_blank"
+                className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl shadow-black/10 group"
+              >
+                <ExternalLink className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                View Link Hub
+              </Link>
+            )}
           </div>
         </div>
         
