@@ -5,6 +5,6 @@ export default function robots() {
         allow: '/',
         disallow: ['/dashboard/', '/settings/'], // Protect private routes
       },
-      sitemap: 'https://smol-saas.com/sitemap.xml',
+      sitemap: 'https://smol.co.in/sitemap.xml',
     }
   }

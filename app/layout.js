@@ -19,11 +19,11 @@ export const metadata = {
   keywords: ["url shortener", "smol", "link management", "analytics", "aesthetic", "gen z"],
   authors: [{ name: "smol team" }],
   creator: "smol",
-  metadataBase: new URL('https://smol.link'), // Replace with actual domain
+  metadataBase: new URL('https://smol.co.in'), // Replace with actual domain
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://smol.link',
+    url: 'https://smol.co.in',
     title: 'smol | tiny links, big data',
     description: 'The aesthete\'s choice for link management. Minimalist, powerful, smol.',
     siteName: 'smol',

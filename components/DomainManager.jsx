@@ -176,7 +176,7 @@ export default function DomainManager({ userPlan }) {
                                             <div className="hidden md:block text-right">
                                                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">CNAME Record</p>
                                                 <code className="text-[10px] font-mono bg-zinc-100 px-2 py-1 rounded text-zinc-600 block mt-1">
-                                                    cname.smol-saas.com
+                                                    cname.smol.co.in
                                                 </code>
                                             </div>
                                             <button
