@@ -6,7 +6,7 @@ import ShortenForm from '@/components/ShortenForm';
 import UrlTable from '@/components/UrlTable';
 import AnalyticsChart from '@/components/AnalyticsChart';
 import { 
-  ChevronLeft, Loader2, RefreshCcw, 
+  ChevronLeft, ChevronRight, Loader2, RefreshCcw, 
   MousePointer2, Globe, Laptop, Smartphone,
   Zap, BarChart3, TrendingUp, Activity,
   Download, ExternalLink, Link2, Users, MapPin, Clock, Radio,
@@ -653,7 +653,16 @@ export default function Dashboard() {
                        <Radio className="w-4 h-4 text-rose-500 animate-pulse" />
                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-black">Live Activity Stream</h3>
                     </div>
-                     <span className="text-[9px] font-black text-rose-500 uppercase px-2 py-1 bg-rose-50 rounded-md">Real-time</span>
+                     <div className="flex items-center gap-3">
+                        <Link 
+                            href="/dashboard/activity"
+                            className="text-[9px] font-black text-zinc-400 uppercase tracking-widest hover:text-indigo-500 transition-colors flex items-center gap-1.5"
+                        >
+                            See All Registry
+                            <ChevronRight className="w-3 h-3" />
+                        </Link>
+                        <span className="text-[9px] font-black text-rose-500 uppercase px-2 py-1 bg-rose-50 rounded-md">Real-time</span>
+                     </div>
                   </div>
                   
                   {/* Human vs Bot breakdown (Elite+) */}
