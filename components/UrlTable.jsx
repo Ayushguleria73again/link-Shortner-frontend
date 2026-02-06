@@ -163,12 +163,34 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                                     <span className="text-[9px] font-black uppercase">Live</span>
                                                 </div>
                                                 {url.health && (
-                                                    <div className={`flex items-center gap-2 px-2 py-0.5 rounded-md w-fit border ${url.health.status === 'online' ? 'bg-emerald-50/50 border-emerald-100 text-emerald-600' :
-                                                        url.health.status === 'offline' ? 'bg-rose-50/50 border-rose-100 text-rose-600' :
-                                                            'bg-zinc-50 border-zinc-100 text-zinc-400'
-                                                        }`}>
+                                                    <div
+                                                        className={`flex items-center gap-2 px-2 py-0.5 rounded-md w-fit border transition-all cursor-default relative group/health ${url.health.status === 'online' ? 'bg-emerald-50/50 border-emerald-100 text-emerald-600' :
+                                                            url.health.status === 'offline' ? 'bg-rose-50/50 border-rose-100 text-rose-600' :
+                                                                'bg-zinc-50 border-zinc-100 text-zinc-400'
+                                                            }`}
+                                                    >
                                                         <Activity className="w-2.5 h-2.5" />
                                                         <span className="text-[8px] font-black uppercase tracking-tighter">{url.health.status} Heartbeat</span>
+
+                                                        {/* Intelligence Tooltip */}
+                                                        <div className="absolute bottom-full left-0 mb-2 w-max max-w-[200px] bg-black text-white text-[9px] p-3 rounded-xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all shadow-2xl z-50 pointer-events-none">
+                                                            <div className="flex flex-col gap-1.5">
+                                                                <div className="flex items-center justify-between gap-4">
+                                                                    <span className="text-zinc-500 font-black uppercase">Latency</span>
+                                                                    <span className="font-mono">{url.health.latency ? `${url.health.latency}ms` : 'N/A'}</span>
+                                                                </div>
+                                                                <div className="flex items-center justify-between gap-4">
+                                                                    <span className="text-zinc-500 font-black uppercase">Last Check</span>
+                                                                    <span className="font-mono">{url.health.lastChecked ? format(new Date(url.health.lastChecked), 'HH:mm:ss') : 'N/A'}</span>
+                                                                </div>
+                                                                {url.health.lastError && (
+                                                                    <div className="pt-1.5 border-t border-white/10 mt-1 text-rose-400 font-bold leading-tight">
+                                                                        Error: {url.health.lastError}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="absolute top-full left-4 border-8 border-transparent border-t-black" />
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
