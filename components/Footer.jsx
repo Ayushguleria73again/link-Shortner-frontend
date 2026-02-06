@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Link2, Twitter, Github, Linkedin, Mail, ArrowRight, Zap, Shield, Globe, Terminal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import api from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function Footer() {
     const [email, setEmail] = useState('');
