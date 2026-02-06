@@ -92,6 +92,12 @@ export default function GodModePage() {
                             >
                                 Newsletter
                             </Link>
+                            <Link 
+                                href="/admin/blog"
+                                className="px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-zinc-500 hover:text-white"
+                            >
+                                Blog CMS
+                            </Link>
                             <button 
                                 onClick={() => setActiveTab('reports')}
                                 className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reports' ? 'bg-red-500 text-white' : 'text-zinc-500 hover:text-white'}`}

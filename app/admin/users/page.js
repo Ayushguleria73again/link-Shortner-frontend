@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { Shield, Users, Mail, Phone, Calendar, Search, Filter, ArrowLeft, ChevronRight, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Shield, Users, Mail, Phone, Calendar, Search, Filter, ArrowLeft, ChevronRight, Zap, MoreVertical, LogIn, Ban, Crown, RefreshCcw, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState([]);
@@ -13,22 +14,58 @@ export default function AdminUsersPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterPlan, setFilterPlan] = useState('all');
     const [error, setError] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [actionMenuOpen, setActionMenuOpen] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const { data } = await api.get('/admin/users');
-                setUsers(data.data);
-            } catch (err) {
-                setError(err.response?.data?.error || "Unauthorized access.");
-                setTimeout(() => router.push('/dashboard'), 3000);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchUsers();
-    }, [router]);
+    }, []);
+
+    const fetchUsers = async () => {
+        try {
+            const { data } = await api.get('/admin/users');
+            setUsers(data.data);
+        } catch (err) {
+            setError(err.response?.data?.error || "Unauthorized access.");
+            setTimeout(() => router.push('/dashboard'), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdatePlan = async (userId, plan) => {
+        try {
+            const { data } = await api.put(`/admin/users/${userId}/plan`, { plan });
+            toast.success(data.message);
+            fetchUsers();
+            setActionMenuOpen(null);
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Failed to update plan.");
+        }
+    };
+
+    const handleToggleStatus = async (userId) => {
+        try {
+            const { data } = await api.put(`/admin/users/${userId}/status`);
+            toast.success(data.message);
+            fetchUsers();
+            setActionMenuOpen(null);
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Failed to toggle status.");
+        }
+    };
+
+    const handleImpersonate = async (userId) => {
+        try {
+            const { data } = await api.post(`/admin/users/${userId}/impersonate`);
+            localStorage.setItem('token', data.token);
+            toast.success("Impersonation Handshake Complete. Redirecting...");
+            setTimeout(() => window.location.href = '/dashboard', 1000);
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Impersonation failed.");
+        }
+    };
 
     const filteredUsers = users.filter(user => {
         const matchesSearch = 
@@ -101,7 +138,7 @@ export default function AdminUsersPage() {
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Status & Plan</th>
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Telemetry</th>
                                     <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Joined</th>
-                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right">Identifier</th>
+                                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800/50">
@@ -109,11 +146,14 @@ export default function AdminUsersPage() {
                                     <tr key={user._id} className="hover:bg-zinc-800/30 transition-colors group">
                                         <td className="px-8 py-8">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-black uppercase border border-zinc-700">
+                                                <div className={`w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-black uppercase border ${user.status === 'suspended' ? 'border-red-500/50 text-red-500' : 'border-zinc-700'}`}>
                                                     {user.firstName[0]}{user.lastName[0]}
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-white uppercase tracking-tight">{user.firstName} {user.lastName}</div>
+                                                    <div className="font-bold text-white uppercase tracking-tight flex items-center gap-2">
+                                                        {user.firstName} {user.lastName}
+                                                        {user.status === 'suspended' && <span className="bg-red-500/10 text-red-500 text-[8px] px-1.5 py-0.5 rounded border border-red-500/20">SUSPENDED</span>}
+                                                    </div>
                                                     <div className="text-[10px] text-zinc-500 font-mono lowercase flex items-center gap-1.5 mt-1">
                                                         <Mail className="w-3 h-3" />
                                                         {user.email}
@@ -150,10 +190,70 @@ export default function AdminUsersPage() {
                                                 {user.createdAt ? format(new Date(user.createdAt), 'MMM dd, yyyy') : 'No Date'}
                                             </div>
                                         </td>
-                                        <td className="px-8 py-8 text-right">
-                                            <div className="text-[10px] font-mono text-zinc-600 uppercase">
-                                                {user.phoneNumber || 'No Signal'}
-                                            </div>
+                                        <td className="px-8 py-8 text-right relative">
+                                            <button 
+                                                onClick={() => setActionMenuOpen(actionMenuOpen === user._id ? null : user._id)}
+                                                className="w-10 h-10 rounded-full hover:bg-zinc-800 flex items-center justify-center transition-colors"
+                                            >
+                                                <MoreVertical className="w-5 h-5 text-zinc-500 hover:text-white" />
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {actionMenuOpen === user._id && (
+                                                    <>
+                                                        <div className="fixed inset-0 z-10" onClick={() => setActionMenuOpen(null)} />
+                                                        <motion.div 
+                                                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                            className="absolute right-8 top-20 w-48 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-20 overflow-hidden"
+                                                        >
+                                                            <div className="p-2 space-y-1">
+                                                                <p className="px-3 py-2 text-[9px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800/50 mb-1">Oversight Actions</p>
+                                                                
+                                                                <button 
+                                                                    onClick={() => handleImpersonate(user._id)}
+                                                                    className="w-full text-left px-3 py-2 text-[10px] font-bold uppercase transition-colors hover:bg-zinc-800 flex items-center gap-3 text-emerald-400"
+                                                                >
+                                                                    <LogIn className="w-3.5 h-3.5" />
+                                                                    Impulse Login
+                                                                </button>
+
+                                                                <div className="border-t border-zinc-800/50 my-1 pt-1" />
+                                                                <p className="px-3 py-1 text-[8px] font-black text-zinc-600 uppercase tracking-widest">Tier Override</p>
+                                                                {['free', 'starter', 'pro', 'business'].map(p => (
+                                                                    <button 
+                                                                        key={p}
+                                                                        onClick={() => handleUpdatePlan(user._id, p)}
+                                                                        className={`w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase transition-colors hover:bg-zinc-800 flex items-center gap-3 ${user.plan === p ? 'text-white' : 'text-zinc-500'}`}
+                                                                    >
+                                                                        <Crown className={`w-3.5 h-3.5 ${user.plan === p ? 'text-amber-500' : 'text-zinc-700'}`} />
+                                                                        {p}
+                                                                    </button>
+                                                                ))}
+
+                                                                <div className="border-t border-zinc-800/50 my-1 pt-1" />
+                                                                <button 
+                                                                    onClick={() => handleToggleStatus(user._id)}
+                                                                    className={`w-full text-left px-3 py-2 text-[10px] font-bold uppercase transition-colors hover:bg-zinc-800 flex items-center gap-3 ${user.status === 'suspended' ? 'text-emerald-400' : 'text-red-500'}`}
+                                                                >
+                                                                    {user.status === 'suspended' ? (
+                                                                        <>
+                                                                            <RefreshCcw className="w-3.5 h-3.5" />
+                                                                            Reactivate
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <Ban className="w-3.5 h-3.5" />
+                                                                            Suspend User
+                                                                        </>
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </motion.div>
+                                                    </>
+                                                )}
+                                            </AnimatePresence>
                                         </td>
                                     </tr>
                                 ))}
