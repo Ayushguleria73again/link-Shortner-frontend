@@ -1,0 +1,144 @@
+================================================================================
+THEMEFOREST REGULAR LICENSE
+================================================================================
+
+This license is a legal agreement between you (the purchaser) and the author
+(Ayush) for the use of "smol - Premium Link Shortener SaaS" (the Item).
+
+By purchasing this Item, you agree to be bound by the terms of this license.
+
+================================================================================
+REGULAR LICENSE TERMS
+================================================================================
+
+1. WHAT YOU CAN DO:
+
+   ✓ Use the Item to create a single End Product for yourself or a client
+   ✓ Modify or manipulate the Item
+   ✓ Combine the Item with other works to create the End Product
+   ✓ Use the Item to create an End Product for a client (single project)
+   ✓ Deploy the End Product on a single domain/subdomain
+
+2. WHAT YOU CANNOT DO:
+
+   ✗ Sell, redistribute, or share the source code
+   ✗ Use the Item to create multiple End Products
+   ✗ Use the Item in a product offered for sale (SaaS) where the Item is the
+     core value of the product
+   ✗ Re-distribute the Item as stock, in a tool or template, or with source
+     files
+   ✗ Share your access to the Item with others
+   ✗ Use the Item in any application allowing an end user to customize the
+     Item (e.g., website builder, "create your own" application)
+
+3. END PRODUCT DEFINITION:
+
+   An "End Product" is a customized implementation of the Item requiring an
+   application of skill and effort. For example:
+   - A deployed link shortener service for your business
+   - A white-labeled version for a single client
+   - A customized analytics platform using this codebase
+
+4. EXTENDED LICENSE:
+
+   If you want to use this Item to create an End Product that will be sold or
+   offered as a SaaS product to multiple end users, you need to purchase the
+   Extended License.
+
+5. SUPPORT:
+
+   The author is not required to provide support under this license, but may
+   choose to do so at their discretion via the ThemeForest support system.
+
+6. WARRANTY:
+
+   The Item is provided "as is" without warranty of any kind, either expressed
+   or implied, including but not limited to the implied warranties of
+   merchantability and fitness for a particular purpose.
+
+7. LIABILITY:
+
+   In no event shall the author be liable for any claim, damages, or other
+   liability arising from the use of the Item.
+
+8. UPDATES:
+
+   You are entitled to download updates to the Item from ThemeForest for the
+   lifetime of the Item on ThemeForest.
+
+9. OWNERSHIP:
+
+   You are licensed, not sold, the Item. The author retains ownership of the
+   Item and all intellectual property rights.
+
+10. TERMINATION:
+
+    This license is effective until terminated. Your rights under this license
+    will terminate automatically without notice if you fail to comply with any
+    term of this license.
+
+================================================================================
+EXTENDED LICENSE TERMS
+================================================================================
+
+If you purchased the Extended License, you may also:
+
+✓ Use the Item to create an End Product that is sold or offered to multiple
+  end users (SaaS model)
+✓ Deploy the End Product on multiple domains for the same organization
+✓ Create a product where the Item's value is secondary to the overall product
+
+Extended License does NOT allow you to:
+✗ Resell or redistribute the source code
+✗ Create a competing product that is substantially similar to the Item
+✗ Offer the Item as a white-label solution to multiple clients
+
+================================================================================
+THIRD-PARTY LICENSES
+================================================================================
+
+This Item uses the following open-source libraries, each with their own license:
+
+Frontend Dependencies:
+- Next.js (MIT License)
+- React (MIT License)
+- Framer Motion (MIT License)
+- Tailwind CSS (MIT License)
+- Lucide React (ISC License)
+- Recharts (MIT License)
+- Other dependencies as listed in package.json
+
+Backend Dependencies:
+- Express (MIT License)
+- Mongoose (MIT License)
+- JWT (MIT License)
+- Bcrypt (MIT License)
+- Other dependencies as listed in package.json
+
+All third-party libraries are used in compliance with their respective licenses.
+
+================================================================================
+ATTRIBUTION
+================================================================================
+
+While not required, attribution is appreciated:
+"Powered by smol - Built by Ayush"
+
+================================================================================
+QUESTIONS?
+================================================================================
+
+For license clarification or to upgrade from Regular to Extended License,
+please contact via ThemeForest support or refer to Envato's official license
+terms at: https://themeforest.net/licenses/standard
+
+================================================================================
+
+© 2026 Ayush. All Rights Reserved.
+
+This license is based on Envato's standard licensing terms.
+For the complete Envato license, visit:
+https://themeforest.net/licenses/terms/regular
+https://themeforest.net/licenses/terms/extended
+
+================================================================================
