@@ -7,6 +7,7 @@ const ShortenForm = ({ onUrlCreated }) => {
     const [url, setUrl] = useState('');
     const [alias, setAlias] = useState('');
     const [isOneTime, setIsOneTime] = useState(false);
+    const [useBridgePage, setUseBridgePage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -45,12 +46,14 @@ const ShortenForm = ({ onUrlCreated }) => {
                 originalUrl: url,
                 customAlias: alias,
                 isOneTime,
+                useBridgePage,
                 customDomain: selectedDomain || null,
                 campaignId: selectedCampaign || null
             });
             setUrl('');
             setAlias('');
             setIsOneTime(false);
+            setUseBridgePage(false);
             setSelectedCampaign('');
             onUrlCreated(data.data);
         } catch (err) {
@@ -142,18 +145,32 @@ const ShortenForm = ({ onUrlCreated }) => {
                         </div>
                     </div>
 
-                    {/* Checkbox moved to a separate row for better alignment of the main inputs */}
-                    <div className="flex items-center gap-2 px-1">
-                        <input
-                            type="checkbox"
-                            id="one-time"
-                            checked={isOneTime}
-                            onChange={(e) => setIsOneTime(e.target.checked)}
-                            className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
-                        />
-                        <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
-                            Burn after read (One-time link)
-                        </label>
+                    <div className="flex flex-wrap items-center gap-6 px-1">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="one-time"
+                                checked={isOneTime}
+                                onChange={(e) => setIsOneTime(e.target.checked)}
+                                className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
+                            />
+                            <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
+                                Burn after read (One-time link)
+                            </label>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="use-bridge"
+                                checked={useBridgePage}
+                                onChange={(e) => setUseBridgePage(e.target.checked)}
+                                className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
+                            />
+                            <label htmlFor="use-bridge" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
+                                Redirection Bridge (Premium Splash)
+                            </label>
+                        </div>
                     </div>
                 </div>
 

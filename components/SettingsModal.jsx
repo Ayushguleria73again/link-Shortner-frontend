@@ -6,6 +6,7 @@ import api from '@/lib/api';
 const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
     const [formData, setFormData] = useState({
         isActive: url?.isActive ?? true,
+        useBridgePage: url?.useBridgePage ?? false,
         password: url?.password || '',
         expiresAt: url?.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : '',
         campaignId: url?.campaignId || ''
@@ -59,6 +60,26 @@ const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
                             className={`w-14 h-8 rounded-full transition-all relative ${formData.isActive ? 'bg-black' : 'bg-zinc-200'}`}
                         >
                             <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-sm ${formData.isActive ? 'left-7' : 'left-1'}`} />
+                        </button>
+                    </div>
+
+                    {/* Redirection Bridge Toggle */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-2xl ${formData.useBridgePage ? 'bg-indigo-50 text-indigo-600' : 'bg-zinc-50 text-zinc-400'}`}>
+                                <ExternalLink className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-black uppercase tracking-widest">Premium Splash</p>
+                                <p className="text-[10px] text-zinc-400 font-bold uppercase">Show redirection bridge</p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, useBridgePage: !formData.useBridgePage })}
+                            className={`w-14 h-8 rounded-full transition-all relative ${formData.useBridgePage ? 'bg-black' : 'bg-zinc-200'}`}
+                        >
+                            <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-sm ${formData.useBridgePage ? 'left-7' : 'left-1'}`} />
                         </button>
                     </div>
 
