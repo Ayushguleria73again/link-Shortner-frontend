@@ -90,6 +90,34 @@ export default function Login() {
               </>
             )}
           </button>
+
+          <div className="relative py-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-zinc-100"></div>
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest">
+              <span className="bg-white px-4 text-zinc-400">Or Continue With</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5001'}/api/auth/google`}
+              className="flex items-center justify-center gap-3 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl hover:bg-white hover:border-black transition-all group"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="w-5 h-5 object-contain" alt="Google" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-black">Google</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5001'}/api/auth/facebook`}
+              className="flex items-center justify-center gap-3 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl hover:bg-white hover:border-black transition-all group"
+            >
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" className="w-5 h-5" alt="Facebook" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-black">Facebook</span>
+            </button>
+          </div>
         </form>
 
         <p className="mt-12 text-zinc-400 text-[10px] font-bold tracking-widest">
