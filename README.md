@@ -2,7 +2,7 @@
 
 **smol.** is a premium, professional-grade link management and intelligence platform built for marketers, developers, and data-driven creators. It transforms standard URL shortening into an immersive "Command Center" experience.
 
-![Responsive Showcase](https://raw.githubusercontent.com/ayush/link-shortner/main/frontend/public/mockups/responsive_showcase.png) *(Note: Update with your actual hosted image URL if available)*
+
 
 ---
 
