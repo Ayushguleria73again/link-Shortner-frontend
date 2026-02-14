@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, use } from 'react';
 import api from '@/lib/api';
-import { Loader2, Globe, Shield, Zap, Lock, ArrowRight, Activity } from 'lucide-react';
+import { Loader2, Globe, Shield, Zap, Lock, ArrowRight, Activity, Terminal, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
@@ -60,9 +60,15 @@ export default function RedirectionBridge({ params: paramsPromise }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 text-black animate-spin" />
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Initializing Handshake</p>
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative">
+            <Loader2 className="w-12 h-12 text-black animate-spin opacity-20" />
+            <Cpu className="w-6 h-6 text-black absolute inset-0 m-auto animate-pulse" />
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black">Configuring Vercel</p>
+            <p className="text-[8px] font-bold uppercase tracking-[0.2em] text-zinc-400">Booting Edge Runtime...</p>
+          </div>
         </div>
       </div>
     );
@@ -98,84 +104,95 @@ export default function RedirectionBridge({ params: paramsPromise }) {
       {/* Three.js Background Layer */}
       <RedirectionBackground accentColor={accentColor} />
 
-      <div className="relative z-10 w-full max-w-xl px-6">
+      <div className="relative z-10 w-full max-w-2xl px-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-[48px] p-12 shadow-2xl shadow-zinc-200/50 text-center"
+          className="bg-white/90 backdrop-blur-2xl border border-zinc-200/50 rounded-[64px] p-16 shadow-2xl shadow-zinc-200/50 text-center"
         >
           {/* Header Branding */}
-          <div className="flex flex-col items-center mb-12">
+          <div className="flex flex-col items-center mb-16">
             {linkInfo.branding?.logo ? (
               <motion.img 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 src={linkInfo.branding.logo} 
                 alt="Brand Logo" 
-                className="h-12 w-auto mb-6 object-contain"
+                className="h-10 w-auto mb-8 object-contain grayscale brightness-0"
               />
             ) : (
-              <div className="w-16 h-16 bg-black rounded-3xl flex items-center justify-center mb-6">
-                <Zap className="w-8 h-8 text-white fill-current" />
+              <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-zinc-900/10">
+                <Terminal className="w-6 h-6 text-white" />
               </div>
             )}
-            <div className="space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">Secure Protocol</p>
-                <h1 className="text-2xl font-black tracking-tight text-black">
-                    Redirection in Progress
+            <div className="space-y-3">
+                <p className="text-[11px] font-black uppercase tracking-[0.5em] text-zinc-400">System Handshake</p>
+                <h1 className="text-4xl font-black tracking-tighter text-black uppercase">
+                    LINK CONTROL.
                 </h1>
             </div>
           </div>
 
           {/* Tactical Display */}
-          <div className="bg-zinc-50/50 border border-zinc-100/50 rounded-3xl p-8 mb-12 relative overflow-hidden group text-left">
-            <div className="flex justify-between items-end mb-4">
-               <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Target Cluster</p>
-                  <p className="text-sm font-bold text-black truncate max-w-[200px]">
-                    {linkInfo.originalUrl.replace(/^https?:\/\//, '')}
+          <div className="bg-zinc-50/80 border border-zinc-200/50 rounded-[32px] p-10 mb-16 relative overflow-hidden group text-left">
+            <div className="flex justify-between items-start mb-8">
+               <div className="space-y-1">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">Target Node</p>
+                  <p className="text-lg font-black text-black tracking-tight">
+                    {new URL(linkInfo.originalUrl).hostname.toUpperCase()}
                   </p>
                </div>
-               <div className="text-right">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">Status</p>
-                  <p className="text-xs font-black text-emerald-500 uppercase tracking-tighter flex items-center gap-1.5 justify-end">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Handshaking...
+               <div className="text-right space-y-1">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">Protocol</p>
+                  <p className="text-[10px] font-black text-black uppercase tracking-tighter flex items-center gap-2 justify-end">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                    Vercel Edge v2.0
                   </p>
                </div>
             </div>
 
             {/* Tactical Progress Bar */}
-            <div className="h-2 w-full bg-zinc-200/50 rounded-full overflow-hidden relative">
-              <motion.div 
-                className="h-full absolute left-0 top-0 transition-opacity duration-300 rounded-full"
-                style={{ 
-                  width: `${progress}%`,
-                  backgroundColor: accentColor,
-                  boxShadow: `0 0 20px ${accentColor}40`
-                }}
-              />
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Synchronizing Data Field</p>
+                <p className="text-[11px] font-black tabular-nums text-black">{Math.round(progress)}%</p>
+              </div>
+              <div className="h-3 w-full bg-zinc-200/50 rounded-full overflow-hidden relative border border-zinc-200/20">
+                <motion.div 
+                  className="h-full absolute left-0 top-0 transition-all duration-300 ease-out rounded-full"
+                  style={{ 
+                    width: `${progress}%`,
+                    backgroundColor: accentColor,
+                    boxShadow: `0 0 30px ${accentColor}60`
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+                </motion.div>
+              </div>
             </div>
 
-            <div className="mt-4 flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-zinc-400">
-               <span>ID: {linkInfo.shortCode}</span>
-               <span className="flex items-center gap-2">
-                 <Activity className="w-3 h-3" />
-                 Synchronizing Intelligence
+            <div className="mt-8 pt-8 border-t border-zinc-200/50 flex justify-between items-center text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400/80">
+               <div className="flex items-center gap-3">
+                 <Cpu className="w-3.5 h-3.5" />
+                 <span>Packet ID: {linkInfo.shortCode.toUpperCase()}</span>
+               </div>
+               <span className="flex items-center gap-2 text-black">
+                 <Activity className="w-3.5 h-3.5 animate-pulse" />
+                 Configuring Vercel
                </span>
             </div>
           </div>
 
           {/* Footer Security Badge */}
-          <div className="flex items-center justify-center gap-6 opacity-40">
+          <div className="flex items-center justify-center gap-8 opacity-30 group-hover:opacity-50 transition-opacity">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-black" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-black">Encrypted</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black">End-to-End Encryption</span>
             </div>
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-black" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-black">Global Transit</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black">Global Edge Node</span>
             </div>
           </div>
         </motion.div>
@@ -185,9 +202,9 @@ export default function RedirectionBridge({ params: paramsPromise }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="text-center mt-12 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400/50"
+          className="text-center mt-12 text-[10px] font-black uppercase tracking-[0.6em] text-zinc-400/30"
         >
-          smol. elite / spectral transit
+          smol protocol / elite elite elite
         </motion.div>
       </div>
     </div>
