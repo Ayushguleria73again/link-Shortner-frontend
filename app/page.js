@@ -11,77 +11,10 @@ import {
   Check, Copy, RotateCcw
 } from 'lucide-react';
 import PricingSection from '@/components/PricingSection';
+import ScrambleText from '@/components/ScrambleText';
+import AnimatedCounter from '@/components/AnimatedCounter';
+import { FeatureCard, UseCaseCard, FAQItem } from '@/components/LandingFeatures';
 
-const ScrambleText = ({ text, delay = 0 }) => {
-  const [displayText, setDisplayText] = React.useState('');
-  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_!@#$%^&*()';
-  
-  React.useEffect(() => {
-    let timeout;
-    let iteration = 0;
-    const totalIterations = 15;
-    
-    const startTimeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        setDisplayText(prev => {
-          return text.split('').map((char, index) => {
-            if (char === ' ' || char === '.' || char === '\n') return char;
-            if (index < iteration / (totalIterations / text.length)) {
-              return text[index];
-            }
-            return characters[Math.floor(Math.random() * characters.length)];
-          }).join('');
-        });
-
-        iteration++;
-        if (iteration >= totalIterations * 2) {
-          setDisplayText(text);
-          clearInterval(interval);
-        }
-      }, 50);
-      return () => clearInterval(interval);
-    }, delay);
-
-    return () => clearTimeout(startTimeout);
-  }, [text, delay]);
-
-  return <span>{displayText || ' '}</span>;
-};
-
-const AnimatedCounter = ({ value, duration = 2000, suffix = "" }) => {
-  const [count, setCount] = React.useState(0);
-  const target = parseFloat(value);
-  
-  React.useEffect(() => {
-    let start = 0;
-    const end = target;
-    const range = end - start;
-    let current = start;
-    const increment = end / (duration / 16);
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(current);
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-
-  // Subtle live fluctuation simulation
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() > 0.8) {
-        setCount(prev => prev + (Math.random() * 0.1));
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return <span>{count.toLocaleString(undefined, { maximumFractionDigits: 1 })}{suffix}</span>;
-};
 
 import api from '@/lib/api';
 
@@ -483,44 +416,3 @@ function PreviewStat({ label, value, icon }) {
     </div>
   );
 }
-
-function FeatureCard({ icon, title, text }) {
-  return (
-    <div className="bg-zinc-50/50 p-12 rounded-[40px] border border-zinc-100 hover:border-zinc-200 transition-all group">
-      <div className="mb-8 p-4 bg-white rounded-2xl w-fit shadow-sm group-hover:scale-110 transition-transform">
-        {icon}
-      </div>
-      <h3 className="text-xl font-black tracking-tight mb-4 uppercase">{title}</h3>
-      <p className="text-zinc-500 font-medium text-sm leading-relaxed">{text}</p>
-    </div>
-  );
-}
-const UseCaseCard = ({ category, title, description, color = "indigo" }) => (
-  <div className={`bg-white p-8 rounded-[32px] border border-zinc-100 hover:shadow-xl hover:shadow-${color}-500/10 transition-all group hover:-translate-y-1`}>
-    <div className={`inline-block px-3 py-1 rounded-full bg-${color}-50 text-[10px] font-black uppercase tracking-widest text-${color}-600 mb-6 group-hover:bg-${color}-500 group-hover:text-white transition-colors`}>
-      {category}
-    </div>
-    <h3 className="text-xl font-black mb-3">{title}</h3>
-    <p className="text-zinc-500 text-sm leading-relaxed font-medium">{description}</p>
-  </div>
-);
-
-const FAQItem = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  return (
-    <div 
-      onClick={() => setIsOpen(!isOpen)}
-      className={`bg-zinc-50 border border-zinc-100 rounded-2xl p-6 cursor-pointer hover:bg-white hover:shadow-md transition-all group ${isOpen ? 'bg-white shadow-md border-indigo-100' : ''}`}
-    >
-      <div className="flex items-center justify-between">
-        <h4 className={`font-bold text-sm transition-colors ${isOpen ? 'text-indigo-600' : 'text-zinc-900 group-hover:text-black'}`}>{question}</h4>
-        <ChevronRight className={`w-4 h-4 text-zinc-400 transition-transform ${isOpen ? 'rotate-90 text-indigo-500' : 'group-hover:text-black'}`} />
-      </div>
-      <div className={`grid transition-all duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0'}`}>
-        <div className="overflow-hidden">
-          <p className="text-sm text-zinc-500 font-medium leading-relaxed">{answer}</p>
-        </div>
-      </div>
-    </div>
-  );
-};

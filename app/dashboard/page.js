@@ -18,6 +18,8 @@ import Link from 'next/link';
 import SettingsView from '@/components/SettingsView';
 import HubView from '@/components/HubView';
 import DestructiveModal from '@/components/DestructiveModal';
+import StatCard from '@/components/StatCard';
+import { TabButton, UtmList } from '@/components/DashboardTabs';
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);
@@ -884,56 +886,3 @@ export default function Dashboard() {
   );
 }
 
-function UtmList({ title, data }) {
-    const cleanData = (data || []).filter(d => d.name !== 'None');
-    return (
-        <div className="space-y-4">
-            <h4 className="text-[9px] font-black text-black uppercase tracking-widest mb-4 pb-2 border-b border-zinc-50">{title}</h4>
-            {cleanData.length > 0 ? cleanData.map((item, i) => (
-                <div key={i} className="flex justify-between items-center group">
-                    <span className="text-[10px] font-bold text-zinc-600 truncate max-w-[150px] uppercase tracking-tighter">{item.name}</span>
-                    <span className="text-[10px] font-black font-mono text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">{item.value}</span>
-                </div>
-            )) : (
-                <p className="text-[9px] font-bold text-zinc-300 uppercase tracking-widest italic">No {title} data captured</p>
-            )}
-        </div>
-    );
-}
-
-function TabButton({ active, onClick, icon, label }) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-        active 
-        ? 'bg-white text-black shadow-sm' 
-        : 'text-zinc-400 hover:text-black hover:bg-zinc-100/50'
-      }`}
-    >
-      {icon}
-      {label}
-    </button>
-  );
-}
-
-function StatCard({ label, title, value, icon, color = 'bg-indigo-500', trend }) {
-  const displayLabel = label || title;
-  return (
-    <div className="bg-white border border-zinc-100 p-8 rounded-[32px] shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
-      <div className={`absolute top-0 right-0 w-32 h-32 ${color} opacity-[0.03] rounded-full -mr-16 -mt-16 group-hover:opacity-[0.06] transition-opacity`} />
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-2xl ${color}/10 text-black`}>
-          {icon && React.cloneElement(icon, { className: 'w-5 h-5' })}
-        </div>
-        {trend ? (
-            <span className="text-[8px] font-black text-emerald-500 uppercase px-2 py-1 bg-emerald-50 rounded-md">{trend}</span>
-        ) : (
-            <TrendingUp className="w-4 h-4 text-zinc-200 group-hover:text-black transition-colors" />
-        )}
-      </div>
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 relative z-10">{displayLabel}</p>
-      <p className="text-3xl font-black tracking-tighter text-black relative z-10 font-mono italic">{value}</p>
-    </div>
-  );
-}
