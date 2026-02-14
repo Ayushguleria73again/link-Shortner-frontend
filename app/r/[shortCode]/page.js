@@ -3,7 +3,12 @@ import React, { useState, useEffect, use } from 'react';
 import api from '@/lib/api';
 import { Loader2, Globe, Shield, Zap, Lock, ArrowRight, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import RedirectionBackground from '@/components/RedirectionBackground';
+import dynamic from 'next/dynamic';
+
+const RedirectionBackground = dynamic(() => import('@/components/RedirectionBackground'), { 
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-white -z-10" />
+});
 
 export default function RedirectionBridge({ params: paramsPromise }) {
   const params = use(paramsPromise);
