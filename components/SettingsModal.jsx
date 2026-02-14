@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { X, Save, Shield, Calendar, Power, Loader2, Folder } from 'lucide-react';
+import { X, Save, Shield, Calendar, Power, Loader2, Folder, ExternalLink } from 'lucide-react';
 import api from '@/lib/api';
 
 const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
