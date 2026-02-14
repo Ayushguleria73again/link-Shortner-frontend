@@ -21,7 +21,7 @@ export default function RedirectionBridge({ params: paramsPromise }) {
   useEffect(() => {
     const fetchLinkInfo = async () => {
       try {
-        const response = await api.get(`/api/urls/public/info/${shortCode}`);
+        const response = await api.get(`/urls/public/info/${shortCode}`);
         setLinkInfo(response.data.data);
         setLoading(false);
       } catch (err) {
