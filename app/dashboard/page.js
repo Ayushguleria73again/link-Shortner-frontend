@@ -457,6 +457,15 @@ export default function Dashboard() {
                              <span className="text-[8px] font-black uppercase tracking-tighter">{click.device || 'Mobile'}</span>
                           </div>
                        </div>
+                       
+                       {click.latitude && (
+                        <div className="mt-3 flex items-center gap-2 px-2 py-1 bg-indigo-50 border border-indigo-100 rounded-md w-fit">
+                           <MapPin className="w-2.5 h-2.5 text-indigo-500" />
+                           <span className="text-[8px] font-black text-indigo-600 uppercase tracking-tighter">
+                             SATELLITE SYNC: {click.latitude.toFixed(3)}, {click.longitude.toFixed(3)}
+                           </span>
+                        </div>
+                       )}
                     </div>
                  ))}
               </div>
@@ -769,10 +778,19 @@ export default function Dashboard() {
                                     <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">City Hidden</span>
                                 </div>
                             </div>
-                         ) : (
+                          ) : (
                             <>
-                                <p className="text-xs font-black text-black mb-1">{click.city}, {click.country}</p>
-                                <p className="text-[9px] text-zinc-400 uppercase font-bold tracking-widest">{click.browser} on {click.os}</p>
+                                <p className="text-xs font-black text-black mb-1 leading-tight">{click.city}, {click.country}</p>
+                                <p className="text-[9px] text-zinc-400 uppercase font-bold tracking-widest leading-none mb-2">{click.browser} on {click.os}</p>
+                                
+                                {click.latitude && (
+                                  <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md w-fit">
+                                    <MapPin className="w-2.5 h-2.5 text-emerald-500" />
+                                    <span className="text-[8px] font-black text-emerald-600 uppercase tracking-tighter">
+                                      GPS: {click.latitude.toFixed(4)}, {click.longitude.toFixed(4)}
+                                    </span>
+                                  </div>
+                                )}
                             </>
                          )}
                       </div>
