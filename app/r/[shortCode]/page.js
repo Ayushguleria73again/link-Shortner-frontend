@@ -24,6 +24,27 @@ export default function RedirectionBridge({ params: paramsPromise }) {
         const response = await api.get(`/urls/public/info/${shortCode}`);
         setLinkInfo(response.data.data);
         setLoading(false);
+
+        // Attempt Geolocation Tracking
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              try {
+                await api.post(`/urls/public/track-geo/${shortCode}`, {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                });
+                console.log('Location synchronized successfully');
+              } catch (trackErr) {
+                console.error('Location sync failed:', trackErr);
+              }
+            },
+            (err) => {
+              console.warn('Geolocation permission denied or error:', err.message);
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+          );
+        }
       } catch (err) {
         console.error('Failed to fetch link info:', err);
         setError('Link not found or inactive');
