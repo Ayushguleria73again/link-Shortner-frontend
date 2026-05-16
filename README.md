@@ -2,8 +2,6 @@
 
 **smol.** is a premium, professional-grade link management and intelligence platform built for marketers, developers, and data-driven creators. It transforms standard URL shortening into an immersive "Command Center" experience.
 
-
-
 ---
 
 ## 🌪️ The "Elite" Visual Identity
@@ -15,21 +13,29 @@
 
 ---
 
+## 🏗️ Modern Frontend Architecture
+The frontend has been modernized with a high-performance, declarative data-fetching layer.
+- **Centralized Hook Registry**: All API interactions are managed through a unified library in `hooks/useQueries.jsx`.
+- **TanStack Query (React Query) Integration**: State synchronization, intelligent caching, and automatic background re-validation.
+- **Atomic Mutations**: Success-driven cache invalidation ensures the UI remains synchronized without manual refreshes.
+- **Global Toast Feedback**: Consistent user notification system powered by `sonner`.
+
+---
+
 ## ⚡ Key Features
 
 ### 📡 Intelligence & Analytics
 - **Bot & Ghost Filtering**: Real-time identification of crawlers and non-human traffic to ensure marketing fidelity.
 - **UTM Campaign Tracking**: Automated extraction and aggregation of marketing signals (`utm_source`, `utm_medium`, `utm_campaign`).
-- **High-Precision Heartbeat**: Automated uptime monitoring with intelligent batch processing, retry logic, and real-time latency telemetry.
+- **High-Precision Heartbeat**: Automated uptime monitoring with intelligent batch processing, retry logic, and real-time telemetry.
 - **Satellite Market Heatmap**: High-fidelity global density visualization for Scale-tier market saturation analysis.
 - **City-Level Tracking**: Deep geo-intelligence to see exactly where your signal is landing.
 - **Real-time Pulse Feed**: A live "Tick" stream of incoming click events across your collection.
-- **Performance Ranking**: Identification of high-value "Power Links" via the Performer Intelligence table.
 
-### 📧 Communication Protocols
-- **Smart Email Service**: Centralized messaging system that respects user privacy. "Essential" signals (OTPs) bypass gates, while "Optional" insights (Milestones) are governed by user settings.
-- **Signal Stream (Newsletter)**: A public-facing telemetry stream for non-users and power users alike, fully integrated with the global preference engine.
-- **Link Hub Identity**: Custom public profiles (`/u/username`) with verified credentials, social integration, and real-time identity previews.
+### 📧 Identity & Communication
+- **Profile Identity & Digital Persona**: Centralized management of your universal username, bio, and social connections (Twitter, GitHub, LinkedIn, Instagram).
+- **Link Hub Profiles**: Custom public-facing identity pages (`/u/username`) with real-time previews.
+- **Smart Email Service**: Integrated messaging for "Essential" signals (OTPs) and "Optional" insights (Milestones).
 
 ### 🛡️ Enterprise-Grade Security
 - **Password Armor**: Lock sensitive links behind high-security gates.
@@ -41,78 +47,42 @@
 - **Monetization Engine**: Pre-integrated with Razorpay (Spark, Growth, Elite tiers).
 - **Campaign Grouping**: Organize links into logical business units for aggregated tracking.
 - **Custom Domains**: Support for branded short links with CNAME verification logic.
-- **God Mode**: A hidden administrative oversight dashboard for global ecosystem monitoring.
-
-### 📝 Community Intelligence (Blog System)
-- **High-Authority Content**: SEO-optimized articles focusing on link management, analytics, and digital security.
-- **Visual Intelligence**: Custom-generated cover imagery for all technical entries.
-- **Interactivity Protocol**: Persisted "Like" and comment interactions to foster community engagement.
-- **Terminology Accuracy**: Direct, literal language optimized for clarity and SEO.
 
 ---
 
 ## 🛠️ Technology Stack
-- **Frontend**: Next.js 14 (App Router), React, Framer Motion, Tailwind CSS.
-- **Backend**: Node.js, Express, JWT, MongoDB (Mongoose).
-- **Payment Gateway**: Razorpay Integration.
-- **Deployment**: Optimized for Vercel/Render.
+- **Frontend**: Next.js (App Router), React, TanStack Query (v5), Framer Motion, Tailwind CSS, Lucide.
+- **State Management**: Centralized React Hooks + React Query Cache.
+- **UI Components**: Radix UI (accessible primitives), Lucide Icons, Sonner Toasts.
 
 ---
 
 ## 🚀 Getting Started
 
 ### 1. Installation
-Clone the repository and install dependencies for both layers:
+Clone the repository and install dependencies:
 ```bash
 # Frontend
-cd frontend && npm install
-
-# Backend
-cd backend && npm install
+cd link-Shortner-frontend && npm install
 ```
 
 ### 2. Environment Configuration
-Create `.env` files in both directories based on these templates:
-
-#### Backend (`/backend/.env`)
+Create a `.env.local` file in the root directory:
 ```env
-PORT=5001
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-FRONTEND_URL=http://localhost:3000
-NODE_ENV=development
-
-# Email (Nodemailer)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_EMAIL=your_email@gmail.com
-SMTP_PASSWORD=your_app_specific_password
-
-# Payment (Razorpay)
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-```
-
-#### Frontend (`/frontend/.env.local`)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5001/api
-NEXT_PUBLIC_BASE_URL=http://localhost:5001
+NEXT_PUBLIC_API_URL=your_backend_api_url
+NEXT_PUBLIC_BASE_URL=your_backend_base_url
 NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_key_id
 ```
 
 ### 3. Execution
 ```bash
-# Start Backend
-cd backend && npm run dev
-
-# Start Frontend
-cd frontend && npm run dev
+npm run dev
 ```
 
 ---
 
 ## 🏷️ Tags
-`saas` `link-shortener` `nextjs` `analytics` `matrix` `dashboard` `premium` `minimalist` `react` `nodejs` `mongodb` `razorpay` `redirection` `responsive` `pwa`
+`saas` `link-shortener` `nextjs` `tanstack-query` `analytics` `matrix` `dashboard` `premium` `minimalist` `react` `nodejs` `mongodb` `razorpay` `redirection`
 
 ---
 
