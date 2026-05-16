@@ -89,24 +89,24 @@ export default function Signup() {
 
   if (step === 1) {
     return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
-        <div className="w-full max-w-sm">
+      <div className="min-h-screen py-20 flex items-center justify-center px-6 bg-white uppercase tracking-tight">
+        <div className="w-full max-w-md">
           <div className="mb-12">
-            <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+            <h1 className="text-5xl font-black mb-3 flex items-center gap-3">
               Join.
-              <ShieldCheck className="w-8 h-8 text-black" />
+              <ShieldCheck className="w-10 h-10 text-black" />
             </h1>
-            <p className="text-zinc-400 text-xs font-bold tracking-widest">Create your secure account.</p>
+            <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Create your secure access protocol.</p>
           </div>
 
           {error && (
-            <div className="bg-black text-white px-4 py-3 rounded-xl mb-8 text-[10px] font-bold text-center">
+            <div className="bg-black text-white px-4 py-3 rounded-xl mb-12 text-[10px] font-bold text-center">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSignup} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSignup} className="space-y-6">
+            <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">First Name</label>
                     <input
@@ -267,8 +267,8 @@ export default function Signup() {
 
   // OTP Verification Step
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen py-20 flex items-center justify-center px-6 bg-white uppercase tracking-tight">
+      <div className="w-full max-w-md">
         <div className="mb-12">
           <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
             <Mail className="w-8 h-8 text-black" />

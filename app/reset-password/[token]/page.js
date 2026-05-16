@@ -39,15 +39,15 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen py-20 flex items-center justify-center px-6 bg-white uppercase tracking-tight">
+      <div className="w-full max-w-md">
         <div className="mb-12">
-          <h1 className="text-4xl font-black mb-2">Secure.</h1>
+          <h1 className="text-5xl font-black mb-3">Secure.</h1>
           <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Redefine your access credentials</p>
         </div>
 
         {error && (
-          <div className="bg-black text-white px-4 py-3 rounded-xl mb-8 text-[10px] font-bold">
+          <div className="bg-black text-white px-4 py-3 rounded-xl mb-12 text-[10px] font-bold text-center">
             {error}
           </div>
         )}

@@ -74,7 +74,7 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
-    const isAuthPage = pathname === '/login' || pathname === '/signup';
+    const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/forgot-password' || pathname.startsWith('/reset-password');
     const isErrorPage = pathname.startsWith('/p/') || pathname === '/suspended';
     if (isAuthPage || isErrorPage) return null;
 

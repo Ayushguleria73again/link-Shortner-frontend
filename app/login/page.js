@@ -30,20 +30,20 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-6 bg-white uppercase tracking-tight">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen py-20 flex items-center justify-center px-6 bg-white uppercase tracking-tight">
+      <div className="w-full max-w-md">
         <div className="mb-12">
-          <h1 className="text-4xl font-black mb-2">Access.</h1>
-          <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">welcome back to smol</p>
+          <h1 className="text-5xl font-black mb-3">Login.</h1>
+          <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Enter your credentials to proceed</p>
         </div>
 
         {error && (
-          <div className="bg-black text-white px-4 py-3 rounded-xl mb-8 text-[10px] font-bold">
+          <div className="bg-black text-white px-4 py-3 rounded-xl mb-12 text-[10px] font-bold text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Email Address</label>
             <input
