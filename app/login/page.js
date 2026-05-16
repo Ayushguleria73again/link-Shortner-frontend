@@ -57,7 +57,12 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Password</label>
+            <div className="flex justify-between items-center">
+              <label className="text-[10px] font-black tracking-[0.2em] text-zinc-400">Password</label>
+              <Link href="/forgot-password" id="forgot-password-link" className="text-[10px] font-black tracking-[0.1em] text-black hover:underline">
+                FORGOT?
+              </Link>
+            </div>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
