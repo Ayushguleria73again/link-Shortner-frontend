@@ -155,7 +155,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                                 className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
                             />
                             <label htmlFor="one-time" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
-                                Burn after read (One-time link)
+                                One-time use link (Secure)
                             </label>
                         </div>
 
@@ -168,7 +168,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                                 className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black"
                             />
                             <label htmlFor="use-bridge" className="text-xs font-bold text-zinc-500 cursor-pointer select-none">
-                                Redirection Bridge (Premium Splash)
+                                Branded Splash Page (Premium)
                             </label>
                         </div>
                     </div>

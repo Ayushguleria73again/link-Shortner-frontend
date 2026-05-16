@@ -1,7 +1,7 @@
 import { Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'sonner';
-import CommandMenu from "@/components/CommandMenu";
+import CommandMenu from "@/components/layout/CommandMenu";
 
 const inter = Inter({ subsets: ["latin"] });
 const spaceMono = Space_Mono({ 
@@ -58,7 +58,7 @@ export const viewport = {
   maximumScale: 1,
 };
 
-import LayoutWrapper from "@/components/LayoutWrapper";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 export default function RootLayout({ children }) {
   return (

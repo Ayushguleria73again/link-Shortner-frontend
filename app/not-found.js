@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import MatrixRain from '@/components/MatrixRain';
+import MatrixRain from '@/components/ui/MatrixRain';
 import { Terminal, MoveLeft, Radio } from 'lucide-react';
 
 export default function NotFound() {

@@ -9,8 +9,8 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import api from '@/lib/api';
-import QrModal from './QrModal';
-import SettingsModal from './SettingsModal';
+import QrModal from '@/components/dashboard/QrModal';
+import SettingsModal from '@/components/settings/SettingsModal';
 
 const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
     const [copiedId, setCopiedId] = React.useState(null);

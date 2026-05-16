@@ -1,51 +1,24 @@
-"use client";
-import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import SocialCallbackClient from '@/components/auth/SocialCallbackClient';
 import { Loader2 } from 'lucide-react';
 
-function SocialCallbackContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export const metadata = {
+  title: "Authenticating... | smol",
+  description: "Finalizing your secure social authentication protocol.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
-  useEffect(() => {
-    const token = searchParams.get('token');
-    const userJson = searchParams.get('user');
-
-    if (token && userJson) {
-      try {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', userJson);
-        
-        // Success redirect
-        router.push('/dashboard');
-      } catch (err) {
-        console.error('Failed to process social login:', err);
-        router.push('/login?error=auth_failed');
-      }
-    } else {
-      router.push('/login?error=missing_credentials');
-    }
-  }, [router, searchParams]);
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-      <div className="mb-8">
-        <h1 className="text-4xl font-black tracking-tighter mb-2">Synchronizing.</h1>
-        <p className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em] text-center">Finalizing secure protocol</p>
-      </div>
-      <Loader2 className="w-12 h-12 animate-spin text-black" />
-    </div>
-  );
-}
-
-export default function SocialCallback() {
+export default function SocialCallbackPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
         <Loader2 className="w-12 h-12 animate-spin text-black" />
       </div>
     }>
-      <SocialCallbackContent />
+      <SocialCallbackClient />
     </Suspense>
   );
 }

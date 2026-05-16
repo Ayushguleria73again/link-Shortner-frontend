@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import PricingSection from '@/components/PricingSection';
+import Navbar from '@/components/layout/Navbar';
+import PricingSection from '@/components/landing/PricingSection';
 import { ArrowLeft, Check, Minus } from 'lucide-react';
 import Link from 'next/link';
 

@@ -67,12 +67,13 @@ export default function PricingSection() {
                         });
 
                         if (verifyRes.data.success) {
-                            // Update local user data
-                            const user = JSON.parse(localStorage.getItem('user'));
-                            user.plan = planId;
-                            localStorage.setItem('user', JSON.stringify(user));
+                            // Update local state and redirect to success page
+                            localStorage.setItem('user', JSON.stringify({
+                                ...JSON.parse(localStorage.getItem('user') || '{}'),
+                                plan: planId
+                            }));
                             setUserPlan(planId);
-                            router.push('/dashboard?success=plan_upgraded');
+                            router.push(`/payment-success?plan=${planId}`);
                         }
                     } catch (err) {
                         alert('Payment verification failed. Please contact support.');
@@ -82,12 +83,23 @@ export default function PricingSection() {
                     name: JSON.parse(localStorage.getItem('user'))?.firstName || "",
                     email: JSON.parse(localStorage.getItem('user'))?.email || "",
                 },
+                modal: {
+                    ondismiss: () => {
+                        setLoading(false);
+                    }
+                },
                 theme: {
                     color: "#000000"
                 }
             };
 
             const rzp = new window.Razorpay(options);
+
+            rzp.on('payment.failed', function (response) {
+                alert(`Payment failed: ${response.error.description}`);
+                setLoading(false);
+            });
+
             rzp.open();
         } catch (err) {
             console.error('Purchase Error:', err);

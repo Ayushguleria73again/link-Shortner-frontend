@@ -8,9 +8,9 @@ import {
     Palette, Layout, Image, Database, ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
-import DestructiveModal from './DestructiveModal';
-import DomainManager from './DomainManager';
-import CampaignManager from './CampaignManager';
+import DestructiveModal from '@/components/ui/DestructiveModal';
+import DomainManager from '@/components/dashboard/DomainManager';
+import CampaignManager from '@/components/dashboard/CampaignManager';
 
 export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
     const [profile, setProfile] = useState({

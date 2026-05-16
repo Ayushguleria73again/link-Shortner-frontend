@@ -1,10 +1,17 @@
-"use client";
-import React from 'react';
 import Link from 'next/link';
-import { PowerOff, ArrowLeft, ShieldAlert, ZapOff } from 'lucide-react';
-import MatrixRain from '@/components/MatrixRain';
+import { PowerOff, ArrowLeft, ShieldAlert } from 'lucide-react';
+import MatrixRain from '@/components/ui/MatrixRain';
 
-export default function SuspendedLink() {
+export const metadata = {
+  title: "Access Restricted | smol",
+  description: "The requested link has been suspended by the administrator. Access to this transmission gateway is currently deactivated.",
+  robots: {
+    index: false,
+    follow: false,
+  }
+};
+
+export default function SuspendedPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-6 relative overflow-hidden">
       <MatrixRain />

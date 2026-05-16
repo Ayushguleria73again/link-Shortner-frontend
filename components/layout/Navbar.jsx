@@ -20,7 +20,8 @@ const Navbar = () => {
         setIsLoggedIn(!!token);
 
         const fetchUserData = async () => {
-            if (token) {
+            // Only fetch if we have a token and don't have user data yet
+            if (token && !user) {
                 try {
                     const { data } = await api.get('/auth/me');
                     if (data.data) {
@@ -29,15 +30,16 @@ const Navbar = () => {
                     }
                 } catch (err) {
                     console.error("Failed to sync user data", err);
-                    // Fallback to local storage if API fails
                     const localUser = localStorage.getItem('user');
                     if (localUser) setUser(JSON.parse(localUser));
                 }
+            } else if (!token) {
+                setUser(null);
             }
         };
 
         fetchUserData();
-    }, [pathname]);
+    }, [pathname, !!user]); // Dependencies changed to prevent infinite loops and redundant fetches
 
     // Close mobile menu on route change
     React.useEffect(() => {
@@ -128,7 +130,7 @@ const Navbar = () => {
                                     <div className="absolute top-1/2 right-0 w-64 pt-12 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
                                         <div className="bg-white border border-zinc-100 rounded-[24px] shadow-2xl overflow-hidden ring-1 ring-black/5">
                                             <div className="p-4 border-b border-zinc-50 bg-zinc-50/50">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1 text-right">Authenticated as</p>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1 text-right">Logged in as</p>
                                                 <p className="text-sm font-bold text-black truncate text-right">{user?.firstName} {user?.lastName}</p>
                                                 <p className="text-[10px] font-medium text-zinc-500 truncate text-right">{user?.email}</p>
                                             </div>
@@ -138,7 +140,7 @@ const Navbar = () => {
                                                     <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center group-hover/item:bg-white transition-colors">
                                                         <Link2 className="w-4 h-4 text-zinc-500" />
                                                     </div>
-                                                    <span className="text-sm font-bold text-zinc-700">Command Center</span>
+                                                    <span className="text-sm font-bold text-zinc-700">Go to Dashboard</span>
                                                 </Link>
 
                                                 {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
@@ -146,7 +148,7 @@ const Navbar = () => {
                                                         <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/admin:bg-white transition-colors">
                                                             <Activity className="w-4 h-4 text-red-500" />
                                                         </div>
-                                                        <span className="text-sm font-bold text-red-600 group-hover/admin:text-white transition-colors">Mission Control</span>
+                                                        <span className="text-sm font-bold text-red-600 group-hover/admin:text-white transition-colors">Admin Settings</span>
                                                     </Link>
                                                 )}
 
@@ -159,7 +161,7 @@ const Navbar = () => {
                                                     <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center group-hover/logout:bg-white transition-colors text-red-500">
                                                         <LogOut className="w-4 h-4" />
                                                     </div>
-                                                    <span className="text-sm font-bold text-red-600">Secure Logout</span>
+                                                    <span className="text-sm font-bold text-red-600">Logout</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -239,7 +241,7 @@ const Navbar = () => {
                                         </Link>
                                         {(user?.role === 'admin' || user?.email?.toLowerCase() === 'ayushguleria73@gmail.com') && (
                                             <Link href="/admin/god-mode" className="text-lg font-black py-2 text-red-500 hover:translate-x-2 transition-transform uppercase tracking-tighter">
-                                                Mission Control
+                                                Admin Settings
                                             </Link>
                                         )}
                                         <Link href="/pricing" className="text-lg font-medium py-2 hover:translate-x-2 transition-transform">
