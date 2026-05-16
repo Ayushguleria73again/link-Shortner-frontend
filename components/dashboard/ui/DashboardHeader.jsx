@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Zap, Database, Settings, Globe, RefreshCcw } from 'lucide-react';
-import { TabButton } from '@/components/dashboard/DashboardTabs';
+import { TabButton } from './DashboardTabs';
 
 const DashboardHeader = ({
     userPlan,

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
-import StatCard from '@/components/dashboard/StatCard';
+import StatCard from '@/components/dashboard/analytics/StatCard';
 
 const LinkDetailsView = ({
     selectedShortCode,

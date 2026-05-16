@@ -3,15 +3,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import SettingsView from '@/components/settings/SettingsView';
-import HubView from '@/components/dashboard/HubView';
+import HubView from '@/components/dashboard/management/HubView';
 import DestructiveModal from '@/components/ui/DestructiveModal';
 
 // Extracted Dashboard Components
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import InventoryView from '@/components/dashboard/InventoryView';
-import AnalyticsOverview from '@/components/dashboard/AnalyticsOverview';
-import LinkDetailsView from '@/components/dashboard/LinkDetailsView';
-import UpgradeGate from '@/components/dashboard/UpgradeGate';
+import DashboardHeader from '@/components/dashboard/ui/DashboardHeader';
+import InventoryView from '@/components/dashboard/inventory/InventoryView';
+import AnalyticsOverview from '@/components/dashboard/analytics/AnalyticsOverview';
+import LinkDetailsView from '@/components/dashboard/inventory/LinkDetailsView';
+import UpgradeGate from '@/components/dashboard/ui/UpgradeGate';
 
 export default function Dashboard() {
   const [urls, setUrls] = useState([]);

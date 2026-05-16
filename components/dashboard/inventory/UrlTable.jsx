@@ -9,7 +9,7 @@ import {
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import api from '@/lib/api';
-import QrModal from '@/components/dashboard/QrModal';
+import QrModal from '@/components/dashboard/inventory/QrModal';
 import SettingsModal from '@/components/settings/SettingsModal';
 
 const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {

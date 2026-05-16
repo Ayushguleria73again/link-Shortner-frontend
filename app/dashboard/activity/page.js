@@ -1,4 +1,4 @@
-import ActivityStreamClient from '@/components/dashboard/ActivityStreamClient';
+import ActivityStreamClient from '@/components/dashboard/analytics/ActivityStreamClient';
 
 export const metadata = {
   title: "Activity Stream | smol Dashboard",

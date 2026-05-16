@@ -1,4 +1,4 @@
-import PerformersTableClient from '@/components/dashboard/PerformersTableClient';
+import PerformersTableClient from '@/components/dashboard/analytics/PerformersTableClient';
 
 export const metadata = {
   title: "Elite Performers | smol Dashboard",

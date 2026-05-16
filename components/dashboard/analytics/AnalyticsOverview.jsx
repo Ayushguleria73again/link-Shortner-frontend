@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
-import StatCard from '@/components/dashboard/StatCard';
+import StatCard from './StatCard';
 import AnalyticsChart from '@/components/analytics/AnalyticsChart';
 
 const AnalyticsOverview = ({ 

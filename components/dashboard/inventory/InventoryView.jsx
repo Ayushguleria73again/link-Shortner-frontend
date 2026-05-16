@@ -2,7 +2,7 @@
 import React from 'react';
 import { Search, Filter, ArrowDownWideNarrow, X, Loader2, ExternalLink } from 'lucide-react';
 import ShortenForm from '@/components/landing/ShortenForm';
-import UrlTable from '@/components/dashboard/UrlTable';
+import UrlTable from '@/components/dashboard/inventory/UrlTable';
 
 const InventoryView = ({
     urls,
