@@ -36,7 +36,7 @@ export default function ForgotPassword() {
             ← BACK TO LOGIN
           </Link>
           <h1 className="text-5xl font-black mb-3 mt-4">Reset.</h1>
-          <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Initiate security recovery protocol</p>
+          <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">We'll help you get back in</p>
         </div>
 
         {error && (

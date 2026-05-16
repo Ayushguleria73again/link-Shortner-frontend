@@ -96,7 +96,7 @@ export default function Signup() {
               Join.
               <ShieldCheck className="w-10 h-10 text-black" />
             </h1>
-            <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Create your secure access protocol.</p>
+            <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">Create your free account today.</p>
           </div>
 
           {error && (
