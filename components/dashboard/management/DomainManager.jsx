@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import api from '@/lib/api';
+import React, { useState } from 'react';
 import { Globe, Plus, Loader2, Check, AlertCircle, Trash2, RefreshCcw, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { 
+    useDomains, 
+    useAddDomain, 
+    useVerifyDomain, 
+    useDeleteDomain 
+} from '@/hooks/useQueries';
+
 export default function DomainManager({ userPlan }) {
-    const [domains, setDomains] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [newDomain, setNewDomain] = useState('');
-    const [adding, setAdding] = useState(false);
-    const [verifying, setVerifying] = useState(null);
+
+    // Centralized Hooks
+    const { data: domains = [], isLoading: loading } = useDomains();
+    const { mutate: addDomain, isPending: adding } = useAddDomain();
+    const { mutate: verifyDomain, variables: verifyingId } = useVerifyDomain();
+    const { mutate: deleteDomain } = useDeleteDomain();
+
+    const verifying = verifyingId; // Track which ID is being verified
 
     const PLAN_LIMITS = {
         free: 0,
@@ -20,61 +30,21 @@ export default function DomainManager({ userPlan }) {
     const limit = PLAN_LIMITS[userPlan] || 0;
     const canAdd = domains.length < limit;
 
-    useEffect(() => {
-        fetchDomains();
-    }, []);
-
-    const fetchDomains = async () => {
-        try {
-            setLoading(true);
-            const { data } = await api.get('/domains');
-            setDomains(data.data);
-        } catch (err) {
-            console.error('Error fetching domains:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleAddDomain = async (e) => {
+    const handleAddDomain = (e) => {
         e.preventDefault();
         if (!newDomain) return;
-
-        try {
-            setAdding(true);
-            const { data } = await api.post('/domains', { domain: newDomain });
-            setDomains([data.data, ...domains]);
-            setNewDomain('');
-            toast.success('Domain registered. Please configure DNS.');
-        } catch (err) {
-            toast.error(err.response?.data?.error || 'Failed to add domain');
-        } finally {
-            setAdding(false);
-        }
+        addDomain(newDomain, {
+            onSuccess: () => setNewDomain('')
+        });
     };
 
-    const handleVerify = async (id) => {
-        try {
-            setVerifying(id);
-            const { data } = await api.post(`/domains/${id}/verify`);
-            setDomains(domains.map(d => d._id === id ? data.data : d));
-            toast.success('Domain verified successfully!');
-        } catch (err) {
-            toast.error(err.response?.data?.error || 'Verification failed');
-        } finally {
-            setVerifying(null);
-        }
+    const handleVerify = (id) => {
+        verifyDomain(id);
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
         if (!confirm('Are you sure? This will break any links using this domain.')) return;
-        try {
-            await api.delete(`/domains/${id}`);
-            setDomains(domains.filter(d => d._id !== id));
-            toast.success('Domain removed.');
-        } catch (err) {
-            toast.error('Failed to remove domain');
-        }
+        deleteDomain(id);
     };
 
     if (loading) return <div className="py-10 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-indigo-500" /></div>;

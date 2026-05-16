@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { X, Save, Shield, Calendar, Power, Loader2, Folder, ExternalLink, Activity, Terminal, Lock, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '@/lib/api';
+import { useUpdateUrl } from '@/hooks/useQueries';
 
 const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
     const [formData, setFormData] = useState({
@@ -12,26 +12,19 @@ const SettingsModal = ({ isOpen, onClose, url, onUpdate, campaigns = [] }) => {
         expiresAt: url?.expiresAt ? new Date(url.expiresAt).toISOString().split('T')[0] : '',
         campaignId: url?.campaignId || ''
     });
-    const [loading, setLoading] = useState(false);
+
+    const { mutate: updateUrl, isPending: loading } = useUpdateUrl();
 
     if (!isOpen) return null;
 
-    const accentColor = url?.branding?.accentColor || "#6366f1";
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setLoading(true);
-        try {
-            const { data } = await api.put(`/url/${url._id}`, formData);
-            onUpdate(data.data);
-            onClose();
-        } catch (err) {
-            console.error('Update failed:', err);
-            // In a real elite app, we'd have a custom toast, but keeping it simple for stability
-            alert('Security clearance failed: Could not update parameters.');
-        } finally {
-            setLoading(false);
-        }
+        updateUrl({ id: url._id, data: formData }, {
+            onSuccess: (updated) => {
+                if (onUpdate) onUpdate(updated);
+                onClose();
+            }
+        });
     };
 
     return (

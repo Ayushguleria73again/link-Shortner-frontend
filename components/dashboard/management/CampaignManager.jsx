@@ -8,53 +8,32 @@ import {
     Zap, Radio, Target
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { useCampaigns, useCreateCampaign, useDeleteCampaign } from '@/hooks/useQueries';
 
 const CampaignManager = ({ urls, onCampaignSelect }) => {
-    const queryClient = useQueryClient();
     const [showAddModal, setShowAddModal] = useState(false);
     const [newCampaign, setNewCampaign] = useState({ name: '', description: '', color: '#6366f1' });
 
-    // Query for Campaigns
-    const { isLoading: loading, data: campaigns = [] } = useQuery({
-        queryKey: ['campaigns'],
-        queryFn: async () => {
-            const { data } = await api.get('/campaigns');
-            return data.data;
-        }
-    });
+    // Use Centralized Hooks
+    const { isLoading: loading, data: campaigns = [] } = useCampaigns();
+    const { mutate: createCampaign, isPending: submitting } = useCreateCampaign();
+    const { mutate: deleteCampaign } = useDeleteCampaign();
 
-    // Mutation for Creating Campaign
-    const { mutate: handleCreate, isPending: submitting } = useMutation({
-        mutationFn: async (e) => {
-            e.preventDefault();
-            return api.post('/campaigns', newCampaign);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['campaigns']);
-            setShowAddModal(false);
-            setNewCampaign({ name: '', description: '', color: '#6366f1' });
-            toast.success('Campaign created successfully');
-        },
-        onError: () => {
-            toast.error('Could not create campaign');
-        }
-    });
+    const handleCreate = (e) => {
+        e.preventDefault();
+        createCampaign(newCampaign, {
+            onSuccess: () => {
+                setShowAddModal(false);
+                setNewCampaign({ name: '', description: '', color: '#6366f1' });
+            }
+        });
+    };
 
-    // Mutation for Deleting Campaign
-    const { mutate: handleDelete } = useMutation({
-        mutationFn: async (id) => {
-            if (!confirm('Are you sure you want to delete this campaign? Links will be moved to ungrouped.')) return;
-            return api.delete(`/campaigns/${id}`);
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['campaigns']);
-            toast.success('Campaign deleted');
-        },
-        onError: () => {
-            toast.error('Delete failed');
-        }
-    });
+    const handleDelete = (id) => {
+        if (!confirm('Are you sure you want to delete this campaign? Links will be moved to ungrouped.')) return;
+        deleteCampaign(id);
+    };
 
     const getCampaignStats = (campaignId) => {
         const campaignUrls = urls.filter(u => u.campaignId === campaignId);

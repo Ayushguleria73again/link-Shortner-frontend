@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/lib/api';
+import { toast } from 'sonner';
 import { Loader2, ArrowRight, ShieldCheck, Eye, EyeOff, Mail, Key } from 'lucide-react';
+
+import { useRegister, useVerifyOtp, useResendOtp } from '@/hooks/useQueries';
 
 export default function SignupClient() {
   const [step, setStep] = useState(1); // 1: Signup, 2: OTP
@@ -19,72 +20,45 @@ export default function SignupClient() {
   const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const router = useRouter();
 
-  const handleSignup = async (e) => {
+  // Centralized Hooks
+  const { mutate: register, isPending: registering, error: registerError } = useRegister();
+  const { mutate: verifyOtp, isPending: verifying, error: verifyError } = useVerifyOtp();
+  const { mutate: resendOtp, isPending: resending } = useResendOtp();
+
+  const handleSignup = (e) => {
     e.preventDefault();
-    setError('');
-
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
-    setLoading(true);
-
-    try {
-      await api.post('/auth/register', {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        password: formData.password,
-        acceptedTerms: formData.acceptedTerms
-      });
-      setStep(2); // Move to OTP step
-      setSuccess('Verification code sent to your email.');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
+    register({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      password: formData.password,
+      acceptedTerms: formData.acceptedTerms
+    }, {
+      onSuccess: () => {
+        setStep(2);
+      }
+    });
   };
 
-  const handleVerify = async (e) => {
+  const handleVerify = (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const { data } = await api.post('/auth/verify', {
-        email: formData.email,
-        otp
-      });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      router.push('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Verification failed');
-    } finally {
-      setLoading(false);
-    }
+    verifyOtp({ email: formData.email, otp });
   };
 
-  const handleResendOtp = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      await api.post('/auth/resend-otp', { email: formData.email });
-      setSuccess('New code sent to your email.');
-    } catch (err) {
-      setError('Failed to resend code.');
-    } finally {
-      setLoading(false);
-    }
+  const handleResendOtp = () => {
+    resendOtp({ email: formData.email });
   };
+
+  const loading = registering || verifying || resending;
+  const error = registerError?.response?.data?.error || verifyError?.response?.data?.error;
+  const success = ''; // We can use toast now for success messages
 
   if (step === 1) {
     return (

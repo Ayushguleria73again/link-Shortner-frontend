@@ -9,10 +9,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserAuth, useHubData, useUpdateProfile } from '@/hooks/useQueries';
 
-export default function HubView({ username, userPlan }) {
-    const queryClient = useQueryClient();
+export default function HubView({ username: dashboardUsername, userPlan }) {
     const [profile, setProfile] = useState({
         username: '',
         displayName: '',
@@ -20,44 +19,28 @@ export default function HubView({ username, userPlan }) {
         socialLinks: { twitter: '', github: '', linkedin: '', instagram: '' }
     });
 
-    // Query for Hub Data
-    const { isLoading: loading, data: hubData } = useQuery({
-        queryKey: ['hubData', username],
-        queryFn: async () => {
-            const [profileRes, hubRes] = await Promise.all([
-                api.get('/profile/me'),
-                username ? api.get(`/profile/${username}`) : Promise.resolve({ data: { data: null } })
-            ]);
-            return {
-                profile: profileRes.data.data,
-                links: hubRes.data.data?.links || []
-            };
-        },
-        enabled: !!username,
-    });
+    // Centralized Queries
+    const { data: userData, isLoading: authLoading } = useUserAuth();
+    const { data: links = [], isLoading: linksLoading } = useHubData(dashboardUsername);
 
-    // Update local profile when query data arrives
+    // Update local profile when auth data arrives
     useEffect(() => {
-        if (hubData?.profile) {
-            setProfile(hubData.profile);
+        if (userData?.profile) {
+            setProfile(userData.profile);
         }
-    }, [hubData]);
+    }, [userData]);
 
-    const links = hubData?.links || [];
+    const loading = authLoading || linksLoading;
 
     // Mutation for Saving Profile
-    const { mutate: handleSave, isPending: saving } = useMutation({
-        mutationFn: async () => {
-            return api.post('/profile', profile);
-        },
-        onSuccess: () => {
-            toast.success('Profile updated. Link Hub updated.');
-            queryClient.invalidateQueries(['hubData', username]);
-        },
-        onError: (err) => {
-            toast.error(err.response?.data?.error || 'Save failed.');
-        }
-    });
+    const { mutate: handleSave, isPending: saving } = useUpdateProfile();
+
+    const onSave = () => {
+        handleSave(profile, {
+            onSuccess: () => toast.success('Profile updated. Link Hub updated.'),
+            onError: (err) => toast.error(err.response?.data?.error || 'Save failed.')
+        });
+    };
 
     if (loading) return (
         <div className="py-20 flex flex-col items-center gap-4">
@@ -191,7 +174,7 @@ export default function HubView({ username, userPlan }) {
                         </div>
 
                         <button
-                            onClick={handleSave}
+                            onClick={onSave}
                             disabled={saving}
                             className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4"
                         >

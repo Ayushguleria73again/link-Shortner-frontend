@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
     Trophy, ArrowLeft, RefreshCw, 
     Zap, ExternalLink, Calendar, 
@@ -8,28 +8,15 @@ import {
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
-import api from '@/lib/api';
+
+import { useTopPerformers } from '@/hooks/useQueries';
 
 export default function PerformersTableClient() {
-    const [urls, setUrls] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const fetchPerformers = async () => {
-        setLoading(true);
-        try {
-            const { data } = await api.get('/links/performers');
-            setUrls(data.data);
-        } catch (err) {
-            console.error('Failed to load elite signals:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: urls = [], isLoading: loading, refetch } = useTopPerformers();
 
-    useEffect(() => {
-        fetchPerformers();
-    }, []);
+    const fetchPerformers = () => refetch();
 
     const filteredUrls = urls.filter(url => 
         url.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||

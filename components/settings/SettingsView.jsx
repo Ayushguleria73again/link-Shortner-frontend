@@ -12,24 +12,26 @@ import DestructiveModal from '@/components/ui/DestructiveModal';
 import DomainManager from '@/components/dashboard/management/DomainManager';
 import CampaignManager from '@/components/dashboard/management/CampaignManager';
 
+import { 
+    useUserAuth, 
+    useUpdateProfile, 
+    useUpdateBranding, 
+    useUpdateSettings, 
+    useGenerateApiKey, 
+    useDeleteAccount 
+} from '@/hooks/useQueries';
+
 export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
+    // Centralized Data Hooks
+    const { data: userData, isLoading: loading } = useUserAuth();
+    
+    // Derived Local State (for UI editing)
     const [profile, setProfile] = useState({
         username: '',
         displayName: '',
         bio: '',
         socialLinks: { twitter: '', github: '', linkedin: '', instagram: '' }
     });
-    const [apiKey, setApiKey] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [showUsage, setShowUsage] = useState(false);
-
-    // Modal State
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    const [userUsage, setUserUsage] = useState(null); // New state for usage
-    const [userPlan, setUserPlan] = useState('free'); // New state for plan
     const [settings, setSettings] = useState({
         emailNotifications: true,
         weeklyInsights: false,
@@ -41,130 +43,55 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
         theme: 'glass',
         companyName: ''
     });
+
+    const [showUsage, setShowUsage] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const timeoutRef = useRef(null);
 
+    // Sync local state when server data arrives
     useEffect(() => {
-        fetchSettings();
-    }, []);
-
-    const fetchSettings = async () => {
-        try {
-            setLoading(true);
-            const [profileRes, userRes] = await Promise.all([
-                api.get('/profile/me'),
-                api.get('/auth/me')
-            ]);
-
-            if (profileRes.data.data) {
-                setProfile({
-                    ...profile,
-                    ...profileRes.data.data
-                });
-            }
-            if (userRes.data.data) {
-                setApiKey(userRes.data.data.apiKey);
-                setUserUsage(userRes.data.data.usage);
-                setUserPlan(userRes.data.data.plan);
-                if (userRes.data.data.settings) {
-                    setSettings(userRes.data.data.settings);
-                }
-                if (userRes.data.data.branding) {
-                    setBranding({
-                        ...branding,
-                        ...userRes.data.data.branding
-                    });
-                }
-            }
-        } catch (err) {
-            console.error('Error fetching settings:', err);
-            toast.error('Could not load settings.');
-        } finally {
-            setLoading(false);
+        if (userData) {
+            if (userData.profile) setProfile(userData.profile);
+            if (userData.settings) setSettings(userData.settings);
+            if (userData.branding) setBranding(userData.branding);
         }
-    };
+    }, [userData]);
 
-    const syncBranding = async (data) => {
-        try {
-            await api.put('/auth/branding', data);
-            toast.success('Branding updated.', { id: 'branding-sync' });
-        } catch (err) {
-            toast.error('Could not save branding.');
-        }
-    };
+    const userPlan = userData?.plan || 'free';
+    const apiKey = userData?.apiKey;
+    const userUsage = userData?.usage;
+
+    // Mutation Hooks
+    const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
+    const { mutate: updateBranding } = useUpdateBranding();
+    const { mutate: updateSettings } = useUpdateSettings();
+    const { mutate: generateApiKey } = useGenerateApiKey();
+    const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
 
     const handleUpdateBranding = (key, value) => {
         const newBranding = { ...branding, [key]: value };
         setBranding(newBranding);
-
-        // Debounce sync for color and text inputs
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => {
-            syncBranding(newBranding);
+            updateBranding(newBranding);
         }, 1200);
     };
 
-    const handleUpdateSetting = async (key, value) => {
+    const handleUpdateSetting = (key, value) => {
         const newSettings = { ...settings, [key]: value };
-        // Optimistic UI update
         setSettings(newSettings);
-        try {
-            await api.put('/auth/settings', newSettings);
-            toast.success('Settings updated successfully.');
-        } catch (err) {
-            toast.error('Could not save settings.');
-            // Revert on error
-            setSettings(settings);
-        }
+        updateSettings(newSettings);
     };
 
-    const handleGenerateKey = async () => {
-        try {
-            const { data } = await api.post('/auth/api-key');
-            setApiKey(data.data);
-            toast.success('Your new API key is ready.');
-        } catch (err) {
-            toast.error('Key generation failed.');
-        }
-    };
-
-    const handleSaveProfile = async () => {
-        try {
-            setSaving(true);
-            if (!profile.username) {
-                toast.error('Please enter a username.');
-                setSaving(false);
-                return;
-            }
-            await api.post('/profile', profile);
-            toast.success('Profile saved successfully.');
-        } catch (err) {
-            const message = err.response?.data?.error || 'Could not save profile.';
-            toast.error(message);
-        } finally {
-            setSaving(false);
-        }
+    const handleSaveProfile = () => {
+        if (!profile.username) return toast.error('Please enter a username.');
+        updateProfile(profile);
     };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = '/login';
-    };
-
-    const confirmDeleteAccount = async () => {
-        try {
-            setIsDeleting(true);
-            await api.delete('/auth/me');
-            toast.success('Account deleted.');
-            // Add slight delay for toast to be seen
-            setTimeout(() => {
-                handleLogout();
-            }, 1500);
-        } catch (err) {
-            toast.error('Could not delete account. Please contact support.');
-            setIsDeleting(false);
-            setShowDeleteModal(false);
-        }
     };
 
     if (loading) return (
@@ -179,7 +106,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
             <DestructiveModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
-                onConfirm={confirmDeleteAccount}
+                onConfirm={() => deleteAccount()}
                 title="Delete Account"
                 description="This action will permanently wipe your user data, profile identity, and all active tracking links. This process is irreversible."
                 confirmText="Terminate Account"
@@ -189,6 +116,92 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
 
             {/* Link Hub Settings */}
             <div className="lg:col-span-2 space-y-8">
+                {/* Profile Identity & Digital Persona */}
+                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
+                    <div className="flex items-center justify-between mb-10">
+                        <div className="flex items-center gap-3">
+                            <div className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100">
+                                <User className="w-5 h-5 text-indigo-500" />
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-black uppercase tracking-[0.2em]">Profile Identity</h2>
+                                <p className="text-[10px] text-zinc-400 font-medium mt-0.5">Control how you appear across the smol. network.</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleSaveProfile}
+                            disabled={saving}
+                            className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all disabled:opacity-50 shadow-lg shadow-black/10"
+                        >
+                            {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                            Save Changes
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Universal Username</label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 text-xs font-bold">smol.link/u/</span>
+                                    <input
+                                        type="text"
+                                        value={profile.username}
+                                        onChange={(e) => setProfile({ ...profile, username: e.target.value.toLowerCase().replace(/\s/g, '') })}
+                                        className="w-full pl-[88px] pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
+                                        placeholder="username"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
+                                <input
+                                    type="text"
+                                    value={profile.displayName}
+                                    onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
+                                    className="w-full px-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
+                                    placeholder="Your full name or alias"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Short Bio</label>
+                            <textarea
+                                value={profile.bio}
+                                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                                className="w-full px-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all h-[132px] resize-none"
+                                placeholder="Tell the world who you are in a few words..."
+                            />
+                        </div>
+                    </div>
+
+                    <div className="pt-10 border-t border-zinc-50">
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6">Social Connections</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <SocialInput 
+                                label="Twitter" 
+                                value={profile.socialLinks?.twitter} 
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
+                            />
+                            <SocialInput 
+                                label="GitHub" 
+                                value={profile.socialLinks?.github} 
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
+                            />
+                            <SocialInput 
+                                label="LinkedIn" 
+                                value={profile.socialLinks?.linkedin} 
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, linkedin: val } })}
+                            />
+                            <SocialInput 
+                                label="Instagram" 
+                                value={profile.socialLinks?.instagram} 
+                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, instagram: val } })}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* Operational Campaign Manager */}
                 <div className="relative overflow-hidden rounded-[32px]">
                     {['free', 'starter'].includes(userPlan) && (
@@ -312,8 +325,49 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                     </div>
                 </div>
 
-                {/* Developer API Section */}
+                        {/* API KEY SECTION */}
+                        <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mt-8 shadow-sm">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-3">
+                                    <Key className="w-5 h-5 text-indigo-500" />
+                                    <h2 className="text-sm font-black uppercase tracking-[0.2em]">Developer Access</h2>
+                                </div>
+                                <button
+                                    onClick={() => generateApiKey()}
+                                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
+                                >
+                                    <RefreshCcw className="w-3 h-3" />
+                                    Rotate Key
+                                </button>
+                            </div>
 
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Your API Key</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            readOnly
+                                            type="password"
+                                            value={apiKey || '••••••••••••••••'}
+                                            className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-mono font-bold focus:ring-1 focus:ring-black outline-none transition-all"
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(apiKey);
+                                                toast.success('API Key copied to clipboard');
+                                            }}
+                                            className="px-4 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <p className="text-[9px] text-zinc-400 mt-3 flex items-center gap-1.5">
+                                        <Shield className="w-3 h-3" />
+                                        Keep this key secure. It provides full access to your account signals via the API.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
             </div>
 
             <div className="space-y-8">

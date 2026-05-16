@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
     Activity, ArrowLeft, RefreshCw, 
     Link2, MapPin, Globe, Terminal, Loader2,
@@ -7,28 +7,15 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow, format } from 'date-fns';
-import api from '@/lib/api';
+
+import { useActivityStream } from '@/hooks/useQueries';
 
 export default function ActivityStreamClient() {
-    const [activities, setActivities] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const fetchActivity = async () => {
-        setLoading(true);
-        try {
-            const { data } = await api.get('/links/activity');
-            setActivities(data.data);
-        } catch (err) {
-            console.error('Failed to sync signals:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: activities = [], isLoading: loading, refetch } = useActivityStream();
 
-    useEffect(() => {
-        fetchActivity();
-    }, []);
+    const fetchActivity = () => refetch();
 
     const filteredActivities = activities.filter(act => 
         act.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||

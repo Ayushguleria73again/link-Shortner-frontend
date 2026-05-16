@@ -1,33 +1,22 @@
 "use client";
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/lib/api';
 import { Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
+
+import { useLogin } from '@/hooks/useQueries';
 
 export default function LoginClient() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const { mutate: login, isPending: loading, error: loginError } = useLogin();
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const { data } = await api.post('/auth/login', formData);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      router.push('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
+    login(formData);
   };
+
+  const error = loginError?.response?.data?.error;
 
   return (
     <div className="min-h-screen py-20 flex items-center justify-center px-6 bg-white uppercase tracking-tight">

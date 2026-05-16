@@ -1,67 +1,48 @@
 "use client";
 import React, { useState } from 'react';
 import { ArrowRight, LinkIcon, Sparkles, Loader2, Database } from 'lucide-react';
-import api from '@/lib/api';
+
+import { useDomains, useCampaigns, useShortenUrl } from '@/hooks/useQueries';
 
 const ShortenForm = ({ onUrlCreated }) => {
     const [url, setUrl] = useState('');
     const [alias, setAlias] = useState('');
     const [isOneTime, setIsOneTime] = useState(false);
     const [useBridgePage, setUseBridgePage] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-
-    // Custom Domain & Campaign Logic
-    const [domains, setDomains] = useState([]);
     const [selectedDomain, setSelectedDomain] = useState('');
-    const [campaigns, setCampaigns] = useState([]);
     const [selectedCampaign, setSelectedCampaign] = useState('');
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [domainRes, campaignRes] = await Promise.all([
-                    api.get('/domains'),
-                    api.get('/campaigns')
-                ]);
-                const verifiedDefaults = domainRes.data.data.filter(d => d.verified);
-                setDomains(verifiedDefaults);
-                setCampaigns(campaignRes.data.data);
-            } catch (err) {
-                console.error('Failed to load metadata');
-            }
-        };
-        fetchData();
-    }, []);
+    // Centralized Hooks
+    const { data: allDomains = [] } = useDomains();
+    const { data: campaigns = [] } = useCampaigns();
+    const { mutate: shortenUrl, isPending: loading, error: mutationError } = useShortenUrl();
 
-    const handleSubmit = async (e) => {
+    const domains = allDomains.filter(d => d.verified);
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (!url) return;
 
-        setLoading(true);
-        setError('');
-
-        try {
-            const { data } = await api.post('/url/shorten', {
-                originalUrl: url,
-                customAlias: alias,
-                isOneTime,
-                useBridgePage,
-                customDomain: selectedDomain || null,
-                campaignId: selectedCampaign || null
-            });
-            setUrl('');
-            setAlias('');
-            setIsOneTime(false);
-            setUseBridgePage(false);
-            setSelectedCampaign('');
-            onUrlCreated(data.data);
-        } catch (err) {
-            setError(err.response?.data?.error || 'Failed to shorten URL');
-        } finally {
-            setLoading(false);
-        }
+        shortenUrl({
+            originalUrl: url,
+            customAlias: alias,
+            isOneTime,
+            useBridgePage,
+            customDomain: selectedDomain || null,
+            campaignId: selectedCampaign || null
+        }, {
+            onSuccess: (newUrl) => {
+                setUrl('');
+                setAlias('');
+                setIsOneTime(false);
+                setUseBridgePage(false);
+                setSelectedCampaign('');
+                if (onUrlCreated) onUrlCreated(newUrl);
+            }
+        });
     };
+
+    const error = mutationError?.response?.data?.error;
 
     return (
         <div className="border border-zinc-200 bg-white p-6 md:p-10 rounded-3xl mb-12">

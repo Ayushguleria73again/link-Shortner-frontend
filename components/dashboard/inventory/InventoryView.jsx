@@ -6,7 +6,6 @@ import UrlTable from '@/components/dashboard/inventory/UrlTable';
 
 const InventoryView = ({
     urls,
-    setUrls,
     loading,
     searchQuery,
     setSearchQuery,
@@ -25,7 +24,7 @@ const InventoryView = ({
 }) => {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <ShortenForm onUrlCreated={(newUrl) => setUrls([newUrl, ...urls])} />
+            <ShortenForm />
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div className="flex items-center gap-4">

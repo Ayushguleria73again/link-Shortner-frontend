@@ -8,36 +8,27 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import api from '@/lib/api';
 import QrModal from '@/components/dashboard/inventory/QrModal';
 import SettingsModal from '@/components/settings/SettingsModal';
+
+import { useCampaigns, useUpdateUrl } from '@/hooks/useQueries';
 
 const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
     const [copiedId, setCopiedId] = React.useState(null);
     const [selectedUrl, setSelectedUrl] = useState(null);
     const [showQr, setShowQr] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
-    const [campaigns, setCampaigns] = useState([]);
 
-    React.useEffect(() => {
-        fetchCampaigns();
-    }, []);
+    // Centralized Hooks
+    const { data: campaigns = [] } = useCampaigns();
+    const { mutate: updateUrl } = useUpdateUrl();
 
-    const fetchCampaigns = async () => {
-        try {
-            const { data } = await api.get('/campaigns');
-            setCampaigns(data.data);
-        } catch (err) { }
-    };
-
-    const handleAssignCampaign = async (urlId, campaignId) => {
-        try {
-            const { data } = await api.put(`/url/${urlId}`, { campaignId: campaignId || null });
-            onUpdate(data.data);
-            toast.success('Assignment updated');
-        } catch (err) {
-            toast.error('Assignment failed');
-        }
+    const handleAssignCampaign = (urlId, campaignId) => {
+        updateUrl({ id: urlId, data: { campaignId: campaignId || null } }, {
+            onSuccess: (updated) => {
+                if (onUpdate) onUpdate(updated);
+            }
+        });
     };
 
     const copyToClipboard = (text, id) => {

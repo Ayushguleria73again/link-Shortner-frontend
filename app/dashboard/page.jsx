@@ -12,12 +12,19 @@ import DashboardHeader from '@/components/dashboard/ui/DashboardHeader';
 import InventoryView from '@/components/dashboard/inventory/InventoryView';
 import AnalyticsOverview from '@/components/dashboard/analytics/AnalyticsOverview';
 import LinkDetailsView from '@/components/dashboard/inventory/LinkDetailsView';
-import UpgradeGate from '@/components/dashboard/ui/UpgradeGate';
+import { 
+  useUserAuth, 
+  useCampaigns, 
+  useUrls, 
+  useLinkAnalytics, 
+  useOverviewAnalytics,
+  useDeleteUrl
+} from '@/hooks/useQueries';
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const [selectedShortCode, setSelectedShortCode] = useState(null);
-  const [activeView, setActiveView] = useState('links'); // 'links', 'settings', 'overview', or 'hub'
+  const [activeView, setActiveView] = useState('links'); 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,63 +41,16 @@ export default function Dashboard() {
     }
   }, [router]);
 
-  // Query: User Auth & Profile
-  const { data: userData } = useQuery({
-    queryKey: ['userAuth'],
-    queryFn: async () => {
-      const [userRes, profileRes] = await Promise.all([
-        api.get('/auth/me'),
-        api.get('/profile/me')
-      ]);
-      return {
-        plan: userRes.data.data?.plan || 'free',
-        username: profileRes.data.data?.username
-      };
-    },
-  });
-
+  // Use Centralized Hooks
+  const { data: userData } = useUserAuth();
   const userPlan = userData?.plan || 'free';
   const username = userData?.username;
 
-  // Query: Campaigns
-  const { data: campaigns = [] } = useQuery({
-    queryKey: ['campaigns'],
-    queryFn: async () => {
-      const { data } = await api.get('/campaigns');
-      return data.data;
-    },
-  });
-
-  // Query: URLs
-  const { isLoading: loading, data: urls = [], refetch: fetchUrls } = useQuery({
-    queryKey: ['urls'],
-    queryFn: async () => {
-      const { data } = await api.get('/url');
-      return data.data;
-    },
-  });
-
-  // Query: Analytics for selected link
-  const { isLoading: analyticsLoading, data: analytics } = useQuery({
-    queryKey: ['analytics', selectedShortCode],
-    queryFn: async () => {
-      const { data } = await api.get(`/analytics/${selectedShortCode}`);
-      return data.data;
-    },
-    enabled: !!selectedShortCode,
-    refetchInterval: selectedShortCode ? 5000 : false,
-  });
-
-  // Query: Overview Analytics
-  const { data: overviewData, isLoading: overviewLoading } = useQuery({
-    queryKey: ['overviewAnalytics'],
-    queryFn: async () => {
-      const { data } = await api.get('/analytics/overview');
-      return data.data;
-    },
-    enabled: activeView === 'overview',
-    refetchInterval: activeView === 'overview' ? 8000 : false,
-  });
+  const { data: campaigns = [] } = useCampaigns();
+  const { isLoading: loading, data: urls = [], refetch: fetchUrls } = useUrls();
+  
+  const { isLoading: analyticsLoading, data: analytics } = useLinkAnalytics(selectedShortCode);
+  const { data: overviewData, isLoading: overviewLoading } = useOverviewAnalytics(activeView === 'overview');
 
   const handleUpdateUrl = (updatedUrl) => {
     queryClient.setQueryData(['urls'], (old) => 
@@ -103,24 +63,22 @@ export default function Dashboard() {
     setDeleteModalOpen(true);
   };
 
-  // Mutation: Confirm Delete
-  const { mutate: confirmDelete } = useMutation({
-    mutationFn: async () => {
-      if (!linkToDelete) return;
-      return api.delete(`/url/${linkToDelete}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['urls']);
-      if (analytics && selectedShortCode === urls.find(u => u._id === linkToDelete)?.shortCode) {
-        setSelectedShortCode(null);
+  const { mutate: confirmDelete } = useDeleteUrl();
+
+  const handleConfirmDelete = () => {
+    confirmDelete(linkToDelete, {
+      onSuccess: () => {
+        if (analytics && selectedShortCode === urls.find(u => u._id === linkToDelete)?.shortCode) {
+          setSelectedShortCode(null);
+        }
+        setLinkToDelete(null);
+        setDeleteModalOpen(false);
+      },
+      onError: () => {
+        alert('Could not delete link');
       }
-      setLinkToDelete(null);
-      setDeleteModalOpen(false);
-    },
-    onError: () => {
-      alert('Could not delete link');
-    }
-  });
+    });
+  };
   
   const filteredUrls = useMemo(() => {
     return urls
@@ -210,7 +168,6 @@ export default function Dashboard() {
         ) : !selectedShortCode ? (
           <InventoryView 
             urls={urls}
-            setUrls={setUrls}
             loading={loading}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -242,7 +199,7 @@ export default function Dashboard() {
       <DestructiveModal 
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        onConfirm={confirmDelete}
+        onConfirm={handleConfirmDelete}
         title="Delete Link?"
         message="This will permanently delete the link and all associated tracking data. This action cannot be reversed."
       />
