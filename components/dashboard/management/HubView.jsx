@@ -43,7 +43,7 @@ export default function HubView({ username, userPlan }) {
             }
         } catch (err) {
             console.error('Error fetching hub data:', err);
-            toast.error('Failed to synchronize hub protocols.');
+            toast.error('Could not load hub data.');
         } finally {
             setLoading(false);
         }
@@ -53,9 +53,9 @@ export default function HubView({ username, userPlan }) {
         try {
             setSaving(true);
             await api.post('/profile', profile);
-            toast.success('Identity synchronized. Link Hub updated.');
+            toast.success('Profile updated. Link Hub updated.');
         } catch (err) {
-            toast.error(err.response?.data?.error || 'Sync failed.');
+            toast.error(err.response?.data?.error || 'Save failed.');
         } finally {
             setSaving(false);
         }
@@ -64,7 +64,7 @@ export default function HubView({ username, userPlan }) {
     if (loading) return (
         <div className="py-20 flex flex-col items-center gap-4">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Synchronizing Hub Protocols...</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Loading your hub...</p>
         </div>
     );
 
@@ -81,23 +81,23 @@ export default function HubView({ username, userPlan }) {
                     <div className="relative z-10">
                         <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
                             <Activity className="w-3 h-3 text-indigo-500" />
-                            Hub Telemetry
+                            Hub Performance
                         </h2>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                             <div>
-                                <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Public Reach</p>
+                                <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Total Audience</p>
                                 <p className="text-3xl font-black font-mono">{links.reduce((acc, curr) => acc + curr.totalClicks, 0).toLocaleString()}</p>
                                 <div className="flex items-center gap-1 text-[8px] font-black text-emerald-500 uppercase mt-1">
                                     <TrendingUp className="w-2 h-2" />
-                                    Signal Active
+                                    Active Traffic
                                 </div>
                             </div>
                             <div>
-                                <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Indices</p>
+                                <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Total Links</p>
                                 <p className="text-3xl font-black font-mono">{links.length}</p>
                                 <div className="text-[8px] font-black text-zinc-500 uppercase mt-1">
-                                    Active Clusters
+                                    Live Links
                                 </div>
                             </div>
                             <div className="hidden md:block">
@@ -119,13 +119,13 @@ export default function HubView({ username, userPlan }) {
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <ShieldCheck className="w-6 h-6 text-indigo-400" />
                             </div>
-                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Elite Identity Control</h3>
-                            <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to synchronize your public identity and unlock live Hub telemetry.</p>
+                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Premium Profile Control</h3>
+                            <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to customize your public profile and unlock live performance stats.</p>
                             <button
                                 onClick={() => window.location.href = '/pricing'}
                                 className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
                             >
-                                Unlock Elite Protocol
+                                Upgrade Plan
                             </button>
                         </div>
                     )}
@@ -133,7 +133,7 @@ export default function HubView({ username, userPlan }) {
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
                             <User className="w-5 h-5 text-indigo-500" />
-                            <h2 className="text-sm font-black uppercase tracking-[0.2em]">Identity Protocol</h2>
+                            <h2 className="text-sm font-black uppercase tracking-[0.2em]">Profile Settings</h2>
                         </div>
                         <a
                             href={`/u/${profile.username}`}
@@ -171,7 +171,7 @@ export default function HubView({ username, userPlan }) {
                         </div>
 
                         <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Mission Statement (Bio)</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Bio</label>
                             <textarea
                                 value={profile.bio}
                                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
@@ -198,7 +198,7 @@ export default function HubView({ username, userPlan }) {
                             className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4"
                         >
                             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            Synchronize Identity
+                            Save Profile
                         </button>
                     </div>
                 </div>
@@ -232,7 +232,7 @@ export default function HubView({ username, userPlan }) {
                                     </div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">@{profile.username || 'unknown'}</p>
                                     <p className="text-sm text-zinc-500 font-medium px-4 leading-relaxed">
-                                        {profile.bio || 'Waiting for mission intelligence...'}
+                                        {profile.bio || 'Waiting for your bio...'}
                                     </p>
                                 </div>
                             </div>
@@ -255,7 +255,7 @@ export default function HubView({ username, userPlan }) {
                                 {links.length === 0 && (
                                     <div className="py-12 flex flex-col items-center gap-2 text-zinc-300">
                                         <Globe className="w-8 h-8 opacity-20" />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">No Active Signals</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">No Active Links</span>
                                     </div>
                                 )}
                             </div>
@@ -284,7 +284,7 @@ function SocialInput({ label, value, onChange }) {
                 value={value || ''}
                 onChange={(e) => onChange(e.target.value)}
                 className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all placeholder:text-zinc-300"
-                placeholder={`${label} Protocol Link`}
+                placeholder={`${label} Profile Link`}
             />
         </div>
     );

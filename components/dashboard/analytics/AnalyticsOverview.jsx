@@ -23,28 +23,28 @@ const AnalyticsOverview = ({
             {/* OVERVIEW STATS */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
-                    title="Total Signal Reach"
+                    title="Total Traffic Reach"
                     value={overviewData?.totalClicks || 0}
                     icon={<Zap className="w-5 h-5 text-indigo-500" />}
                     trend="+14% this week"
                 />
                 <StatCard
-                    title="Unique Intelligence"
+                    title="Unique Audience"
                     value={overviewData?.uniqueClicks || 0}
                     icon={<Users className="w-5 h-5 text-emerald-500" />}
                     trend="+8% this week"
                 />
                 <StatCard
-                    title="Human Signals"
+                    title="Human Visitors"
                     value={overviewData?.humanClicks || 0}
                     icon={<Activity className="w-5 h-5 text-indigo-500" />}
                     trend={`${Math.round((overviewData?.humanClicks / (overviewData?.totalClicks || 1)) * 100)}% ratio`}
                 />
                 <StatCard
-                    title="Bot Filtering"
+                    title="Automated Traffic"
                     value={overviewData?.botClicks || 0}
                     icon={<Database className="w-5 h-5 text-zinc-400" />}
-                    trend="Cleaned traffic"
+                    trend="Filtered traffic"
                 />
                 <StatCard
                     title="Active Redirects"
@@ -52,7 +52,7 @@ const AnalyticsOverview = ({
                     icon={<Link2 className="w-5 h-5 text-amber-500" />}
                 />
                 <StatCard
-                    title="Markets Tracked"
+                    title="Global Markets"
                     value={overviewData?.countryStats?.length || 0}
                     icon={<Globe className="w-5 h-5 text-rose-500" />}
                 />
@@ -63,7 +63,7 @@ const AnalyticsOverview = ({
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-10">
                             <div>
-                                <h3 className="text-xl font-black text-black">Global Traffic Pulse.</h3>
+                                <h3 className="text-xl font-black text-black">Global Performance.</h3>
                                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time aggregate performance metrics</p>
                             </div>
                         </div>
@@ -118,7 +118,7 @@ const AnalyticsOverview = ({
             <div className="bg-white border border-zinc-100 rounded-[40px] p-10">
                 <div className="flex items-center justify-between mb-10">
                     <div>
-                        <h3 className="text-xl font-black text-black">Live Traffic Stream.</h3>
+                        <h3 className="text-xl font-black text-black">Live Visitor Feed.</h3>
                         <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time engagement across your links</p>
                     </div>
                     <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full">
@@ -207,7 +207,7 @@ const AnalyticsOverview = ({
                                 ))}
                                 {(!overviewData?.countryStats || overviewData.countryStats.length === 0) && (
                                     <div className="col-span-full py-20 text-center text-zinc-300 font-black text-[10px] uppercase tracking-widest">
-                                        Awaiting global signal synchronization...
+                                        Waiting for global traffic data...
                                     </div>
                                 )}
                             </div>

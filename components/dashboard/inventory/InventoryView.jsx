@@ -119,7 +119,7 @@ const InventoryView = ({
             {loading ? (
                 <div className="py-20 flex flex-col items-center gap-4">
                     <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Synchronizing Data...</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Loading your links...</p>
                 </div>
             ) : filteredUrls.length > 0 ? (
                 <UrlTable

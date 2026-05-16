@@ -144,7 +144,7 @@ export default function Dashboard() {
       setLinkToDelete(null);
       setDeleteModalOpen(false);
     } catch (err) {
-      alert('Action failed');
+      alert('Could not delete link');
     }
   };
   
@@ -269,7 +269,7 @@ export default function Dashboard() {
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={confirmDelete}
-        title="Destroy Signal?"
+        title="Delete Link?"
         message="This will permanently delete the link and all associated tracking data. This action cannot be reversed."
       />
     </div>

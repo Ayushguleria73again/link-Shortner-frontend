@@ -108,7 +108,7 @@ export default function LandingClient() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-50 border border-zinc-100 text-[10px] font-black tracking-[0.2em] text-zinc-400 mb-10 uppercase"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              Elite Analytics Suite 2.0 Now Live
+              Advanced Analytics Suite 2.0 Now Live
             </motion.div>
 
             <motion.h1 
@@ -125,7 +125,7 @@ export default function LandingClient() {
               variants={itemVariants}
               className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
             >
-              The professional-grade link shortener with real-time audience analytics, 
+              Professional-grade link management with real-time audience insights, 
               city-level tracking, and automated reporting.
             </motion.p>
 
@@ -211,7 +211,7 @@ export default function LandingClient() {
                 href={isLoggedIn ? "/dashboard" : "/signup"} 
                 className="w-full sm:w-auto bg-black text-white px-12 py-5 rounded-2xl font-black text-xs tracking-[0.2em] hover:bg-zinc-800 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 shadow-xl shadow-black/10 group"
               >
-                {isLoggedIn ? "GO TO DASHBOARD" : "CREATE ELITE LINK"}
+                {isLoggedIn ? "GO TO DASHBOARD" : "CREATE ADVANCED LINK"}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
@@ -229,7 +229,7 @@ export default function LandingClient() {
             >
                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-2 rounded-full text-[9px] font-black tracking-widest uppercase shadow-lg flex items-center gap-2">
                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                 Live Insight Engine
+                 Live Analytics Feed
                </div>
                <div className="bg-zinc-50 rounded-[32px] overflow-hidden">
                   <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -261,13 +261,13 @@ export default function LandingClient() {
             />
             <FeatureCard 
               icon={<Activity className="w-6 h-6 text-emerald-500" />}
-              title="Elite Intelligence"
-              text="Deep metrics: City-level data, device tracking, and referrer paths."
+              title="Advanced Analytics"
+              text="Comprehensive metrics: City-level data, device tracking, and referrer paths."
             />
             <FeatureCard 
               icon={<Shield className="w-6 h-6 text-rose-500" />}
-              title="Enterprise Armor"
-              text="Password protection, link expiration, and brute-force protection out of the box."
+              title="Advanced Security"
+              text="Password protection, link expiration, and automated threat detection."
             />
           </motion.div>
         </div>
@@ -283,7 +283,7 @@ export default function LandingClient() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl font-black tracking-tight mb-4">Master Every Link.</h2>
-            <p className="text-zinc-500 font-medium">Engineered for high-volume data redirection.</p>
+            <p className="text-zinc-500 font-medium">Built for high-performance link management.</p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <UseCaseCard 
@@ -317,25 +317,25 @@ export default function LandingClient() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-black tracking-tight mb-4">System FAQs.</h2>
-            <p className="text-zinc-500 font-medium">Common queries regarding the protocol.</p>
+            <h2 className="text-3xl font-black tracking-tight mb-4">Common Questions.</h2>
+            <p className="text-zinc-500 font-medium">Everything you need to know about the platform.</p>
           </motion.div>
           <div className="space-y-4">
             <FAQItem 
-              question="Does the free plan expire?" 
-              answer="No. The Spark plan is free forever. You get 50 active links and 1,000 monthly clicks with no credit card required." 
+              question="Does the free plan ever expire?" 
+              answer="No. Our Basic plan is free forever. You get 50 active links and 1,000 monthly clicks with no credit card required." 
             />
             <FAQItem 
               question="Can I use my own domain?" 
-              answer="Yes. Custom domains are available on Growth, Elite, and Scale plans. Verification is instant via DNS." 
+              answer="Yes. Custom domains are available on Growth, Advanced, and Enterprise plans. Setup is instant via DNS." 
             />
             <FAQItem 
               question="What happens if I exceed my click limit?" 
-              answer="Your links will continue to work. We never break your redirects. You'll just lose access to analytics until the next cycle or upgrade." 
+              answer="Your links will continue to work normally—we never break your redirects. You'll simply lose access to real-time analytics until the next cycle or you choose to upgrade." 
             />
             <FAQItem 
-              question="Is data GDPR compliant?" 
-              answer="Absolutely. We anonymize IP addresses and offer a strict 'Burn-on-Read' protocol for sensitive data." 
+              question="Is my data secure and private?" 
+              answer="Absolutely. We anonymize all tracking data and offer secure, one-time view links for your most sensitive information." 
             />
           </div>
         </div>
@@ -372,7 +372,7 @@ export default function LandingClient() {
               ))}
             </div>
             <div className="text-[10px] font-black tracking-[0.4em] text-zinc-300 uppercase">
-              Secure Link Transmission Active
+              Secure Link Management Active
             </div>
         </div>
       </div>
@@ -384,7 +384,7 @@ export default function LandingClient() {
            <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px]" />
            
            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8 relative z-10">
-             Ready for elite scale?
+             Ready to scale?
            </h2>
            <Link 
               href={isLoggedIn ? "/dashboard" : "/signup"} 

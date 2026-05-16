@@ -37,7 +37,7 @@ const DashboardHeader = ({
                                 userPlan === 'business' ? 'text-amber-500' :
                                     'text-zinc-400'
                         }`}>
-                        {userPlan === 'starter' ? 'Growth Analytics' : userPlan === 'pro' ? 'Elite Analytics' : userPlan === 'business' ? 'Scale Analytics' : 'Basic Analytics'}
+                        {userPlan === 'starter' ? 'Growth' : userPlan === 'pro' ? 'Advanced' : userPlan === 'business' ? 'Enterprise' : 'Basic'}
                     </span>
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black tracking-tight text-black">Your Dashboard.</h1>

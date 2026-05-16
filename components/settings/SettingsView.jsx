@@ -77,7 +77,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
             }
         } catch (err) {
             console.error('Error fetching settings:', err);
-            toast.error('Failed to sync settings.');
+            toast.error('Could not load settings.');
         } finally {
             setLoading(false);
         }
@@ -86,9 +86,9 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
     const syncBranding = async (data) => {
         try {
             await api.put('/auth/branding', data);
-            toast.success('Aesthetic protocols updated.', { id: 'branding-sync' });
+            toast.success('Branding updated.', { id: 'branding-sync' });
         } catch (err) {
-            toast.error('Failed to update aesthetics.');
+            toast.error('Could not save branding.');
         }
     };
 
@@ -109,9 +109,9 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
         setSettings(newSettings);
         try {
             await api.put('/auth/settings', newSettings);
-            toast.success('System configuration updated.');
+            toast.success('Settings updated successfully.');
         } catch (err) {
-            toast.error('Failed to update system config.');
+            toast.error('Could not save settings.');
             // Revert on error
             setSettings(settings);
         }
@@ -121,7 +121,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
         try {
             const { data } = await api.post('/auth/api-key');
             setApiKey(data.data);
-            toast.success('New API encryption key deployed.');
+            toast.success('Your new API key is ready.');
         } catch (err) {
             toast.error('Key generation failed.');
         }
@@ -131,14 +131,14 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
         try {
             setSaving(true);
             if (!profile.username) {
-                toast.error('Identity Protocol Error: Username is required.');
+                toast.error('Please enter a username.');
                 setSaving(false);
                 return;
             }
             await api.post('/profile', profile);
-            toast.success('Security clearance updated. Profile saved.');
+            toast.success('Profile saved successfully.');
         } catch (err) {
-            const message = err.response?.data?.error || 'Protocol error. Failed to save.';
+            const message = err.response?.data?.error || 'Could not save profile.';
             toast.error(message);
         } finally {
             setSaving(false);
@@ -155,13 +155,13 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
         try {
             setIsDeleting(true);
             await api.delete('/auth/me');
-            toast.success('Account terminated. Goodbye.');
+            toast.success('Account deleted.');
             // Add slight delay for toast to be seen
             setTimeout(() => {
                 handleLogout();
             }, 1500);
         } catch (err) {
-            toast.error('Termination failed. Contact support.');
+            toast.error('Could not delete account. Please contact support.');
             setIsDeleting(false);
             setShowDeleteModal(false);
         }
@@ -170,7 +170,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
     if (loading) return (
         <div className="py-20 flex flex-col items-center gap-4">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Syncing Settings...</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Loading Settings...</p>
         </div>
     );
     return (
@@ -180,7 +180,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={confirmDeleteAccount}
-                title="Self-Destruct Sequence"
+                title="Delete Account"
                 description="This action will permanently wipe your user data, profile identity, and all active tracking links. This process is irreversible."
                 confirmText="Terminate Account"
                 verificationText="DELETE"
@@ -196,7 +196,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <Database className="w-6 h-6 text-indigo-400" />
                             </div>
-                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Campaign Intelligence</h3>
+                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Campaign Management</h3>
                             <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to organize your signals into grouped campaigns and folders.</p>
                             <button
                                 onClick={() => window.location.href = '/pricing'}
@@ -224,17 +224,17 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <Palette className="w-6 h-6 text-indigo-400" />
                             </div>
-                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Elite Customization</h3>
+                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Premium Customization</h3>
                             <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to white-label your redirection bridge pages with custom branding.</p>
                             <button className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-                                Unlock Aesthetics
+                                Unlock Branding
                             </button>
                         </div>
                     )}
 
                     <div className="flex items-center gap-3 mb-8">
                         <Palette className="w-5 h-5 text-indigo-500" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Redirection Aesthetics</h2>
+                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Custom Branding</h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -306,8 +306,8 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             <Layout className="w-5 h-5 text-indigo-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-black uppercase">Live Aesthetic Preview</p>
-                            <p className="text-[10px] text-zinc-400 font-medium">Changes are mirrored in real-time across your redirection cluster.</p>
+                            <p className="text-xs font-black text-black uppercase">Live Branding Preview</p>
+                            <p className="text-[10px] text-zinc-400 font-medium">Changes are mirrored in real-time across your branded links.</p>
                         </div>
                     </div>
                 </div>
@@ -336,22 +336,22 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                                         }`} />
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-1">Current Protocol</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-1">Your Plan</p>
                                     <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${userPlan === 'business' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
                                         userPlan === 'pro' ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' :
                                             'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                                         }`}>
                                         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-                                        {userPlan} Tier
+                                        {userPlan} Plan
                                     </div>
                                 </div>
                             </div>
 
                             <h3 className="text-2xl font-black tracking-tight mb-2 text-white">
-                                {userPlan === 'business' ? 'Scale Protocol' : userPlan === 'pro' ? 'Elite Protocol' : userPlan === 'starter' ? 'Growth Protocol' : 'Spark Protocol'}
+                                {userPlan === 'business' ? 'Enterprise Plan' : userPlan === 'pro' ? 'Advanced Plan' : userPlan === 'starter' ? 'Growth Plan' : 'Basic Plan'}
                             </h3>
                             <p className="text-zinc-400 text-xs font-medium leading-relaxed mb-8 border-l-2 border-white/10 pl-3">
-                                {userPlan === 'free' ? 'Restricted access. Upgrade to unlock full telemetry.' : 'All advanced systems operational. Unlimited bandwidth available.'}
+                                {userPlan === 'free' ? 'Basic access. Upgrade to unlock more features.' : 'All systems operational. Advanced features active.'}
                             </p>
 
                             {showUsage && userUsage && (
@@ -359,7 +359,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                                     {/* Link Limit */}
                                     <div>
                                         <div className="flex justify-between text-[9px] uppercase font-black tracking-widest mb-2">
-                                            <span className="text-zinc-400">Database Entries</span>
+                                            <span className="text-zinc-400">Links Created</span>
                                             <span className="text-white">{userUsage.linksCreated} / {userPlan === 'free' ? '50' : userPlan === 'starter' ? '500' : '∞'}</span>
                                         </div>
                                         <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
@@ -373,7 +373,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                                     {/* Click Limit */}
                                     <div>
                                         <div className="flex justify-between text-[9px] uppercase font-black tracking-widest mb-2">
-                                            <span className="text-zinc-400">Traffic Throughput</span>
+                                            <span className="text-zinc-400">Monthly Clicks</span>
                                             <span className="text-white">{userUsage.clicksRecorded.toLocaleString()} / {userPlan === 'free' ? '1k' : userPlan === 'starter' ? '15k' : userPlan === 'pro' ? '150k' : '2M'}</span>
                                         </div>
                                         <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
@@ -396,7 +396,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                                     onClick={() => setShowUsage(!showUsage)}
                                     className="flex-1 py-4 bg-white hover:bg-zinc-200 text-black rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group/btn shadow-[0_0_20px_-10px_rgba(255,255,255,0.5)]"
                                 >
-                                    {showUsage ? 'Hide Telemetry' : 'Check Usage'}
+                                    {showUsage ? 'Hide Usage' : 'Check Usage'}
                                     <Shield className="w-3 h-3 group-hover/btn:scale-110 transition-transform" />
                                 </button>
                                 <button
@@ -414,7 +414,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                 <div className="bg-zinc-50 border border-zinc-100 rounded-[32px] p-8">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
                         <Bell className="w-3 h-3" />
-                        System Config
+                        System Settings
                     </h3>
                     <div className="space-y-4">
                         <ConfigToggle
@@ -423,12 +423,12 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             onToggle={() => handleUpdateSetting('emailNotifications', !settings.emailNotifications)}
                         />
                         <ConfigToggle
-                            label="Weekly Insight Logs"
+                            label="Weekly Performance Reports"
                             active={settings.weeklyInsights}
                             onToggle={() => handleUpdateSetting('weeklyInsights', !settings.weeklyInsights)}
                         />
                         <ConfigToggle
-                            label="Brute-Force Armor"
+                            label="Brute-Force Protection"
                             active={settings.bruteForceArmor}
                             onToggle={() => handleUpdateSetting('bruteForceArmor', !settings.bruteForceArmor)}
                         />

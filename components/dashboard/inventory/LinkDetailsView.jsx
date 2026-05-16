@@ -65,7 +65,7 @@ const LinkDetailsView = ({
             {analyticsLoading ? (
                 <div className="py-20 flex flex-col items-center gap-4">
                     <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Processing metrics...</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300">Loading insights...</p>
                 </div>
             ) : analytics && (
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
@@ -167,7 +167,7 @@ const LinkDetailsView = ({
                                 </div>
                             )) : (
                                 <div className="col-span-full py-12 text-center">
-                                    <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">Awaiting first signal...</p>
+                                    <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">Waiting for activity...</p>
                                 </div>
                             )}
                         </div>

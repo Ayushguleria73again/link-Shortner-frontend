@@ -51,7 +51,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
     if (urls.length === 0) {
         return (
             <div className="border border-dashed border-zinc-200 rounded-[32px] p-24 text-center bg-zinc-50/30">
-                <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs">No entries found in your collection</p>
+                <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs">No links found in your collection</p>
             </div>
         );
     }
@@ -74,7 +74,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                         <thead>
                             <tr className="border-b border-zinc-50 bg-zinc-50/30">
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Short Link</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Security / Metrics</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Stats & Security</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Campaign</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Status</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">Actions</th>
@@ -170,7 +170,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                                             }`}
                                                     >
                                                         <Activity className="w-2.5 h-2.5" />
-                                                        <span className="text-[8px] font-black uppercase tracking-tighter">{url.health.status} Heartbeat</span>
+                                                        <span className="text-[8px] font-black uppercase tracking-tighter">{url.health.status} Status</span>
 
                                                         {/* Intelligence Tooltip */}
                                                         <div className="absolute bottom-full left-0 mb-2 w-max max-w-[200px] bg-black text-white text-[9px] p-3 rounded-xl opacity-0 invisible group-hover/health:opacity-100 group-hover/health:visible transition-all shadow-2xl z-50 pointer-events-none">

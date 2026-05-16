@@ -99,12 +99,12 @@ export default function DomainManager({ userPlan }) {
                             <Globe className="w-5 h-5 text-indigo-400" />
                         </div>
                         <h3 className="text-xs font-black uppercase tracking-widest text-black mb-1">Custom Domains</h3>
-                        <p className="text-[10px] text-zinc-500 font-medium max-w-[200px] mb-4 text-center">Custom domains are reserved for Growth, Elite, and Scale protocols.</p>
+                        <p className="text-[10px] text-zinc-500 font-medium max-w-[200px] mb-4 text-center">Custom domains are reserved for Growth, Advanced, and Enterprise plans.</p>
                         <button
                             onClick={() => window.location.href = '/pricing'}
                             className="bg-zinc-950 text-white px-6 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all"
                         >
-                            Upgrade Protocol
+                            Upgrade Plan
                         </button>
                     </div>
                 )}
