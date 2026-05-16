@@ -5,6 +5,7 @@ import api from '@/lib/api';
 import SettingsView from '@/components/settings/SettingsView';
 import HubView from '@/components/dashboard/management/HubView';
 import DestructiveModal from '@/components/ui/DestructiveModal';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Extracted Dashboard Components
 import DashboardHeader from '@/components/dashboard/ui/DashboardHeader';
@@ -14,16 +15,9 @@ import LinkDetailsView from '@/components/dashboard/inventory/LinkDetailsView';
 import UpgradeGate from '@/components/dashboard/ui/UpgradeGate';
 
 export default function Dashboard() {
-  const [urls, setUrls] = useState([]);
-  const [campaigns, setCampaigns] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [selectedShortCode, setSelectedShortCode] = useState(null);
-  const [analytics, setAnalytics] = useState(null);
-  const [overviewData, setOverviewData] = useState(null);
-  const [analyticsLoading, setAnalyticsLoading] = useState(false);
   const [activeView, setActiveView] = useState('links'); // 'links', 'settings', 'overview', or 'hub'
-  const [userPlan, setUserPlan] = useState('free');
-  const [username, setUsername] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [linkToDelete, setLinkToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,98 +27,75 @@ export default function Dashboard() {
   const [showAllMarkets, setShowAllMarkets] = useState(false);
   const router = useRouter();
 
+  // Redirect if no token
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
       router.push('/login');
-      return;
     }
-    fetchUrls();
-    fetchCampaigns();
-    fetchUserPlan();
-  }, []);
+  }, [router]);
 
-  const fetchUserPlan = async () => {
-    try {
+  // Query: User Auth & Profile
+  const { data: userData } = useQuery({
+    queryKey: ['userAuth'],
+    queryFn: async () => {
       const [userRes, profileRes] = await Promise.all([
         api.get('/auth/me'),
         api.get('/profile/me')
       ]);
+      return {
+        plan: userRes.data.data?.plan || 'free',
+        username: profileRes.data.data?.username
+      };
+    },
+  });
 
-      if (userRes.data.data) {
-        setUserPlan(userRes.data.data.plan || 'free'); 
-      }
-      if (profileRes.data.data) {
-        setUsername(profileRes.data.data.username);
-      }
-    } catch (err) {
-      console.error('Error fetching plan/profile:', err);
-    }
-  };
+  const userPlan = userData?.plan || 'free';
+  const username = userData?.username;
 
-  const fetchCampaigns = async () => {
-    try {
+  // Query: Campaigns
+  const { data: campaigns = [] } = useQuery({
+    queryKey: ['campaigns'],
+    queryFn: async () => {
       const { data } = await api.get('/campaigns');
-      setCampaigns(data.data);
-    } catch (err) {
-      console.error('Error fetching campaigns:', err);
-    }
-  };
+      return data.data;
+    },
+  });
 
-  const fetchUrls = async () => {
-    try {
-      setLoading(true);
+  // Query: URLs
+  const { isLoading: loading, data: urls = [], refetch: fetchUrls } = useQuery({
+    queryKey: ['urls'],
+    queryFn: async () => {
       const { data } = await api.get('/url');
-      setUrls(data.data);
-    } catch (err) {
-      console.error('Error fetching URLs:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data.data;
+    },
+  });
 
-  const fetchAnalytics = async (shortCode, silent = false) => {
-    try {
-      if (!silent) setAnalyticsLoading(true);
-      setSelectedShortCode(shortCode);
-      const { data } = await api.get(`/analytics/${shortCode}`);
-      setAnalytics(data.data);
-    } catch (err) {
-      console.error('Error fetching analytics:', err);
-    } finally {
-      if (!silent) setAnalyticsLoading(false);
-    }
-  };
+  // Query: Analytics for selected link
+  const { isLoading: analyticsLoading, data: analytics } = useQuery({
+    queryKey: ['analytics', selectedShortCode],
+    queryFn: async () => {
+      const { data } = await api.get(`/analytics/${selectedShortCode}`);
+      return data.data;
+    },
+    enabled: !!selectedShortCode,
+    refetchInterval: selectedShortCode ? 5000 : false,
+  });
 
-  const fetchOverview = async (silent = false) => {
-    try {
-      if (!silent) setAnalyticsLoading(true);
+  // Query: Overview Analytics
+  const { data: overviewData, isLoading: overviewLoading } = useQuery({
+    queryKey: ['overviewAnalytics'],
+    queryFn: async () => {
       const { data } = await api.get('/analytics/overview');
-      setOverviewData(data.data);
-    } catch (err) {
-      console.error('Error fetching overview:', err);
-    } finally {
-      if (!silent) setAnalyticsLoading(false);
-    }
-  };
-
-  // Real-time polling effect
-  useEffect(() => {
-    let interval;
-    if (selectedShortCode) {
-      interval = setInterval(() => {
-        fetchAnalytics(selectedShortCode, true);
-      }, 5000);
-    } else if (activeView === 'overview') {
-      interval = setInterval(() => {
-        fetchOverview(true);
-      }, 8000);
-    }
-    return () => clearInterval(interval);
-  }, [selectedShortCode, activeView]);
+      return data.data;
+    },
+    enabled: activeView === 'overview',
+    refetchInterval: activeView === 'overview' ? 8000 : false,
+  });
 
   const handleUpdateUrl = (updatedUrl) => {
-    setUrls(urls.map(u => u._id === updatedUrl._id ? updatedUrl : u));
+    queryClient.setQueryData(['urls'], (old) => 
+      old?.map(u => u._id === updatedUrl._id ? updatedUrl : u)
+    );
   };
 
   const handleDelete = (id) => {
@@ -132,21 +103,24 @@ export default function Dashboard() {
     setDeleteModalOpen(true);
   };
 
-  const confirmDelete = async () => {
-    if (!linkToDelete) return;
-    try {
-      await api.delete(`/url/${linkToDelete}`);
-      setUrls(urls.filter(url => url._id !== linkToDelete));
+  // Mutation: Confirm Delete
+  const { mutate: confirmDelete } = useMutation({
+    mutationFn: async () => {
+      if (!linkToDelete) return;
+      return api.delete(`/url/${linkToDelete}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['urls']);
       if (analytics && selectedShortCode === urls.find(u => u._id === linkToDelete)?.shortCode) {
         setSelectedShortCode(null);
-        setAnalytics(null);
       }
       setLinkToDelete(null);
       setDeleteModalOpen(false);
-    } catch (err) {
+    },
+    onError: () => {
       alert('Could not delete link');
     }
-  };
+  });
   
   const filteredUrls = useMemo(() => {
     return urls
@@ -202,7 +176,7 @@ export default function Dashboard() {
         activeView={activeView}
         setActiveView={setActiveView}
         setSelectedShortCode={setSelectedShortCode}
-        fetchOverview={fetchOverview}
+        fetchOverview={() => queryClient.invalidateQueries(['overviewAnalytics'])}
         fetchUrls={fetchUrls}
         loading={loading}
       />
@@ -229,7 +203,7 @@ export default function Dashboard() {
               userPlan={userPlan}
               showAllMarkets={showAllMarkets}
               setShowAllMarkets={setShowAllMarkets}
-              loading={analyticsLoading}
+              loading={overviewLoading}
               setActiveView={setActiveView}
             />
           </div>
@@ -249,7 +223,7 @@ export default function Dashboard() {
             campaigns={campaigns}
             filteredUrls={filteredUrls}
             handleDelete={handleDelete}
-            fetchAnalytics={fetchAnalytics}
+            fetchAnalytics={setSelectedShortCode}
             handleUpdateUrl={handleUpdateUrl}
             username={username}
           />

@@ -8,55 +8,53 @@ import {
     Zap, Radio, Target
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const CampaignManager = ({ urls, onCampaignSelect }) => {
-    const [campaigns, setCampaigns] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const queryClient = useQueryClient();
     const [showAddModal, setShowAddModal] = useState(false);
     const [newCampaign, setNewCampaign] = useState({ name: '', description: '', color: '#6366f1' });
-    const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        fetchCampaigns();
-    }, []);
-
-    const fetchCampaigns = async () => {
-        try {
+    // Query for Campaigns
+    const { isLoading: loading, data: campaigns = [] } = useQuery({
+        queryKey: ['campaigns'],
+        queryFn: async () => {
             const { data } = await api.get('/campaigns');
-            setCampaigns(data.data);
-        } catch (err) {
-            toast.error('Could not load campaigns');
-        } finally {
-            setLoading(false);
+            return data.data;
         }
-    };
+    });
 
-    const handleCreate = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        try {
-            const { data } = await api.post('/campaigns', newCampaign);
-            setCampaigns([...campaigns, data.data]);
+    // Mutation for Creating Campaign
+    const { mutate: handleCreate, isPending: submitting } = useMutation({
+        mutationFn: async (e) => {
+            e.preventDefault();
+            return api.post('/campaigns', newCampaign);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['campaigns']);
             setShowAddModal(false);
             setNewCampaign({ name: '', description: '', color: '#6366f1' });
             toast.success('Campaign created successfully');
-        } catch (err) {
+        },
+        onError: () => {
             toast.error('Could not create campaign');
-        } finally {
-            setSubmitting(false);
         }
-    };
+    });
 
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to delete this campaign? Links will be moved to ungrouped.')) return;
-        try {
-            await api.delete(`/campaigns/${id}`);
-            setCampaigns(campaigns.filter(c => c._id !== id));
+    // Mutation for Deleting Campaign
+    const { mutate: handleDelete } = useMutation({
+        mutationFn: async (id) => {
+            if (!confirm('Are you sure you want to delete this campaign? Links will be moved to ungrouped.')) return;
+            return api.delete(`/campaigns/${id}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['campaigns']);
             toast.success('Campaign deleted');
-        } catch (err) {
+        },
+        onError: () => {
             toast.error('Delete failed');
         }
-    };
+    });
 
     const getCampaignStats = (campaignId) => {
         const campaignUrls = urls.filter(u => u.campaignId === campaignId);

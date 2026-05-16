@@ -59,14 +59,17 @@ export const viewport = {
 };
 
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import QueryProvider from "@/components/providers/QueryProvider";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} ${spaceMono.variable} min-h-screen flex flex-col`}>
-        <LayoutWrapper>
-          {children}
-        </LayoutWrapper>
+        <QueryProvider>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </QueryProvider>
         <Toaster position="bottom-right" theme="dark" />
         <CommandMenu />
       </body>
