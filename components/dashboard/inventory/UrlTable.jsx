@@ -64,17 +64,17 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-zinc-50 bg-zinc-50/30">
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Short Link</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Stats & Security</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Campaign</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">Actions</th>
+                                <th className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Short Link</th>
+                                <th className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Stats & Security</th>
+                                <th className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Campaign</th>
+                                <th className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Status</th>
+                                <th className="px-5 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-50">
                             {urls.map((url) => (
                                 <tr key={url._id} className="hover:bg-zinc-50/50 transition-colors group">
-                                    <td className="px-8 py-8">
+                                    <td className="px-5 py-5">
                                         <div className="flex flex-col gap-1">
                                             <div className="flex items-center gap-3">
                                                 <span className="font-black text-black text-lg tracking-tight">{url.shortCode}</span>
@@ -101,7 +101,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                             </p>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-8">
+                                    <td className="px-5 py-5">
                                         <div className="flex items-center gap-4">
                                             <div className="flex flex-col items-center">
                                                 <span className="text-sm font-black text-black">{url.totalClicks}</span>
@@ -121,7 +121,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-8">
+                                    <td className="px-5 py-5">
                                         <div className="flex items-center gap-2">
                                             <div className="relative group/camp items-center flex gap-2 bg-zinc-50 border border-zinc-100 px-3 py-2 rounded-xl transition-all hover:bg-white hover:border-zinc-200">
                                                 <Folder
@@ -141,7 +141,7 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-8">
+                                    <td className="px-5 py-5">
                                         {!url.isActive ? (
                                             <div className="flex items-center gap-2 px-3 py-1 bg-rose-50 text-rose-600 rounded-full w-fit">
                                                 <PowerOff className="w-3 h-3" />
@@ -187,32 +187,32 @@ const UrlTable = ({ urls, onDelete, onSelect, onUpdate }) => {
                                             </div>
                                         )}
                                     </td>
-                                    <td className="px-8 py-8 text-right">
+                                    <td className="px-5 py-5 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => handleQr(url)}
-                                                className="p-3 bg-white border border-zinc-100 text-zinc-400 hover:text-black hover:border-black rounded-2xl transition-all shadow-sm"
+                                                className="p-2.5 bg-white border border-zinc-100 text-zinc-400 hover:text-black hover:border-black rounded-xl transition-all shadow-sm"
                                                 title="Generate QR"
                                             >
                                                 <QrCode className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleSettings(url)}
-                                                className="p-3 bg-white border border-zinc-100 text-zinc-400 hover:text-black hover:border-black rounded-2xl transition-all shadow-sm"
+                                                className="p-2.5 bg-white border border-zinc-100 text-zinc-400 hover:text-black hover:border-black rounded-xl transition-all shadow-sm"
                                                 title="Settings"
                                             >
                                                 <Settings className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => onSelect(url.shortCode)}
-                                                className="p-3 bg-black text-white hover:bg-zinc-800 rounded-2xl transition-all shadow-md"
+                                                className="p-2.5 bg-black text-white hover:bg-zinc-800 rounded-xl transition-all shadow-md"
                                                 title="View Analytics"
                                             >
                                                 <BarChart2 className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => onDelete(url._id)}
-                                                className="p-3 text-zinc-300 hover:text-rose-500 transition-colors"
+                                                className="p-2.5 text-zinc-300 hover:text-rose-500 transition-colors"
                                                 title="Delete"
                                             >
                                                 <Trash2 className="w-4 h-4" />

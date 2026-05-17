@@ -51,9 +51,9 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
     );
 
     return (
-        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Control Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-8 border-b border-zinc-100">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-zinc-100">
                 <div className="relative">
                     <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-black rounded-r-full" />
                     <h3 className="text-3xl font-black text-black tracking-tighter">Campaigns.</h3>
@@ -64,7 +64,7 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="flex items-center gap-3 bg-black text-white px-8 py-5 rounded-[24px] font-black text-xs uppercase tracking-widest hover:bg-zinc-800 hover:-translate-y-1 active:translate-y-0 transition-all shadow-2xl shadow-black/20"
+                    className="flex items-center gap-2 bg-black text-white px-6 py-4 rounded-[16px] font-black text-[10px] uppercase tracking-widest hover:bg-zinc-800 hover:-translate-y-1 active:translate-y-0 transition-all shadow-xl shadow-black/20"
                 >
                     <Plus className="w-5 h-5" />
                     Create Campaign
@@ -72,10 +72,10 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
             </div>
 
             {campaigns.length === 0 ? (
-                <div className="relative overflow-hidden border border-zinc-100 rounded-[48px] p-24 text-center bg-zinc-50/30 group">
+                <div className="relative overflow-hidden border border-zinc-100 rounded-[24px] p-12 text-center bg-zinc-50/30 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 via-transparent to-rose-50/0 group-hover:via-indigo-50/30 transition-all duration-1000" />
                     <div className="relative z-10">
-                        <div className="w-20 h-20 bg-white rounded-[32px] flex items-center justify-center shadow-xl mb-8 mx-auto border border-zinc-100 group-hover:scale-110 transition-transform">
+                        <div className="w-16 h-16 bg-white rounded-[20px] flex items-center justify-center shadow-lg mb-6 mx-auto border border-zinc-100 group-hover:scale-110 transition-transform">
                             <Target className="w-10 h-10 text-zinc-200" />
                         </div>
                         <h4 className="text-2xl font-black text-black mb-2 italic tracking-tight">No Campaigns Found.</h4>
@@ -89,20 +89,20 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
                     </div>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {campaigns.map((campaign) => {
                         const stats = getCampaignStats(campaign._id);
                         return (
-                            <div key={campaign._id} className="relative bg-white border border-zinc-100 p-10 rounded-[40px] shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 transition-all group overflow-hidden">
+                            <div key={campaign._id} className="relative bg-white border border-zinc-100 p-6 rounded-[24px] shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 transition-all group overflow-hidden">
                                 {/* Technical Corner Badge */}
                                 <div className="absolute -top-6 -right-6 w-24 h-24 rotate-45 flex items-end justify-center pb-2 opacity-10 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: campaign.color }}>
                                     <Zap className="w-4 h-4 text-white -rotate-45" />
                                 </div>
 
-                                <div className="flex items-start justify-between mb-12">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-[28px] flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform" style={{ backgroundColor: campaign.color }}>
-                                            <Folder className="w-8 h-8" />
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-[20px] flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform" style={{ backgroundColor: campaign.color }}>
+                                            <Folder className="w-5 h-5" />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-3 mb-1">
@@ -120,24 +120,24 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="bg-zinc-50 group-hover:bg-white border border-transparent group-hover:border-zinc-100 p-6 rounded-[32px] transition-all">
-                                        <div className="flex items-center gap-3 text-zinc-400 mb-2">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-zinc-50 group-hover:bg-white border border-transparent group-hover:border-zinc-100 p-4 rounded-[20px] transition-all">
+                                        <div className="flex items-center gap-2 text-zinc-400 mb-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                                             <span className="text-[9px] font-black uppercase tracking-[0.2em]">Total Clicks</span>
                                         </div>
-                                        <p className="text-3xl font-black text-black font-mono italic">{stats.totalHits}</p>
+                                        <p className="text-2xl font-black text-black font-mono italic">{stats.totalHits}</p>
                                     </div>
-                                    <div className="bg-zinc-50 group-hover:bg-white border border-transparent group-hover:border-zinc-100 p-6 rounded-[32px] transition-all">
+                                    <div className="bg-zinc-50 group-hover:bg-white border border-transparent group-hover:border-zinc-100 p-4 rounded-[20px] transition-all">
                                         <div className="flex items-center gap-3 text-zinc-400 mb-2">
                                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                             <span className="text-[9px] font-black uppercase tracking-[0.2em]">Unique Audience</span>
                                         </div>
-                                        <p className="text-3xl font-black text-black font-mono italic">{stats.uniqueReach}</p>
+                                        <p className="text-2xl font-black text-black font-mono italic">{stats.uniqueReach}</p>
                                     </div>
                                 </div>
 
-                                <div className="mt-8 pt-8 border-t border-zinc-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
+                                <div className="mt-6 pt-6 border-t border-zinc-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
                                     <div className="flex items-center gap-2">
                                         <div className="flex -space-x-2">
                                             {[1, 2, 3].map(i => (
@@ -162,8 +162,8 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
             {/* INITIALIZE MODAL [ELITE] */}
             {showAddModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-500">
-                    <div className="bg-white rounded-[56px] p-12 max-w-xl w-full shadow-[0_0_100px_rgba(0,0,0,0.2)] animate-in zoom-in-95 duration-500 border border-zinc-100">
-                        <div className="flex justify-between items-start mb-12">
+                    <div className="bg-white rounded-[32px] p-8 max-w-xl w-full shadow-[0_0_100px_rgba(0,0,0,0.2)] animate-in zoom-in-95 duration-500 border border-zinc-100">
+                        <div className="flex justify-between items-start mb-8">
                             <div>
                                 <h3 className="text-4xl font-black text-black tracking-tighter mb-2">Create Campaign.</h3>
                                 <p className="text-zinc-400 text-xs font-medium">Set up a new campaign to organize and track your links.</p>
@@ -173,15 +173,15 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
                             </button>
                         </div>
 
-                        <form onSubmit={handleCreate} className="space-y-10">
-                            <div className="space-y-4">
+                        <form onSubmit={handleCreate} className="space-y-6">
+                            <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 px-2 block">Campaign Name</label>
                                 <input
                                     required
                                     type="text"
                                     value={newCampaign.name}
                                     onChange={(e) => setNewCampaign({ ...newCampaign, name: e.target.value })}
-                                    className="w-full px-8 py-6 bg-zinc-50 border border-zinc-100 rounded-[32px] font-black text-lg focus:ring-4 focus:ring-black/5 focus:bg-white outline-none transition-all placeholder:text-zinc-200"
+                                    className="w-full px-6 py-4 bg-zinc-50 border border-zinc-100 rounded-[20px] font-black text-base focus:ring-4 focus:ring-black/5 focus:bg-white outline-none transition-all placeholder:text-zinc-200"
                                     placeholder="e.g. Summer Marketing 2024"
                                 />
                             </div>
@@ -208,7 +208,7 @@ const CampaignManager = ({ urls, onCampaignSelect }) => {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full py-6 bg-black text-white rounded-[32px] font-black text-sm uppercase tracking-[0.2em] shadow-2xl hover:shadow-black/30 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center gap-4"
+                                className="w-full py-4 bg-black text-white rounded-[20px] font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:shadow-black/30 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center justify-center gap-3"
                             >
                                 {submitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Plus className="w-6 h-6" />}
                                 Save Campaign

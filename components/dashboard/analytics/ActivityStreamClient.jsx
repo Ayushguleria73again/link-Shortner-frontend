@@ -3,25 +3,47 @@ import React, { useState } from 'react';
 import { 
     Activity, ArrowLeft, RefreshCw, 
     Link2, MapPin, Globe, Terminal, Loader2,
-    Calendar, Clock, Shield, Search, Zap
+    Calendar, Clock, Shield, Search, Zap,
+    ChevronLeft, ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow, format } from 'date-fns';
 
-import { useActivityStream } from '@/hooks/useQueries';
+import { useActivityStream, useUrls } from '@/hooks/useQueries';
 
 export default function ActivityStreamClient() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedLink, setSelectedLink] = useState('ALL');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
-    const { data: activities = [], isLoading: loading, refetch } = useActivityStream();
+    const { data: response = {}, isLoading: loading, refetch } = useActivityStream(selectedLink, currentPage);
+    const activities = response.data || [];
+    const pagination = response.pagination || { total: 0, page: 1, pages: 1 };
+    
+    const { data: urls = [] } = useUrls();
 
     const fetchActivity = () => refetch();
 
-    const filteredActivities = activities.filter(act => 
-        act.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        act.location?.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        act.location?.country?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Combine all active URLs with any historical ones found in the activity feed
+    const uniqueLinks = [...new Set([
+        ...urls.map(u => u.shortCode),
+        ...activities.map(act => act.shortCode)
+    ])];
+
+    // Client-side text search filter on the current page of results
+    const filteredActivities = activities.filter(act => {
+        return act.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               act.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               act.country?.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+    // Reset to page 1 whenever filters change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedLink]);
+
+    const totalPages = Math.max(1, pagination.pages || 1);
 
     return (
         <div className="min-h-screen bg-white">
@@ -54,9 +76,9 @@ export default function ActivityStreamClient() {
             </div>
 
             <div className="max-w-6xl mx-auto px-8 py-12">
-                {/* Search Bar */}
-                <div className="mb-12">
-                    <div className="relative group">
+                {/* Search Bar & Filters */}
+                <div className="mb-12 flex flex-col md:flex-row gap-4">
+                    <div className="relative group flex-1">
                         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                             <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-black transition-colors" />
                         </div>
@@ -65,8 +87,27 @@ export default function ActivityStreamClient() {
                             placeholder="Filter signals by shortcode or location..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-zinc-50 border border-zinc-100 text-black text-sm font-bold rounded-2xl py-5 pl-12 pr-6 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
+                            className="w-full h-full min-h-[56px] bg-zinc-50 border border-zinc-100 text-black text-sm font-bold rounded-2xl py-4 pl-12 pr-6 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
                         />
+                    </div>
+                    
+                    <div className="relative md:w-64">
+                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <Link2 className="w-4 h-4 text-zinc-400" />
+                        </div>
+                        <select
+                            value={selectedLink}
+                            onChange={(e) => setSelectedLink(e.target.value)}
+                            className="w-full h-full min-h-[56px] appearance-none bg-zinc-50 border border-zinc-100 text-black text-sm font-bold rounded-2xl py-4 pl-12 pr-10 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all cursor-pointer"
+                        >
+                            <option value="ALL">All Links</option>
+                            {uniqueLinks.map(link => (
+                                <option key={link} value={link}>{link}</option>
+                            ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                            <div className="w-2 h-2 border-b-2 border-r-2 border-zinc-400 transform rotate-45 -translate-y-0.5" />
+                        </div>
                     </div>
                 </div>
 
@@ -80,49 +121,81 @@ export default function ActivityStreamClient() {
                         {filteredActivities.map((act, i) => (
                             <div 
                                 key={i} 
-                                className="group flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-white border border-zinc-100 rounded-[32px] hover:border-black hover:shadow-2xl hover:shadow-zinc-200/50 transition-all"
+                                className="group flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:p-5 bg-white border border-zinc-100 rounded-[24px] hover:border-black hover:shadow-2xl hover:shadow-zinc-200/50 transition-all"
                             >
-                                <div className="flex items-center gap-6 mb-4 md:mb-0">
-                                    <div className="w-14 h-14 bg-zinc-50 rounded-2xl flex items-center justify-center group-hover:bg-black transition-colors relative">
-                                        <Zap className="w-6 h-6 text-black group-hover:text-white" />
-                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                                <div className="flex items-center gap-4 mb-4 md:mb-0">
+                                    <div className="w-10 h-10 bg-zinc-50 rounded-2xl flex items-center justify-center group-hover:bg-black transition-colors relative flex-shrink-0">
+                                        <Zap className="w-4 h-4 text-black group-hover:text-white" />
+                                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-3 mb-1">
-                                            <p className="font-black text-lg text-black">/{act.shortCode}</p>
+                                            <Link href={`/dashboard?link=${act.shortCode}`} className="font-black text-base text-black hover:text-indigo-600 transition-colors">/{act.shortCode}</Link>
                                             <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 bg-zinc-100 rounded-full text-zinc-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                                                {act.userAgent?.device || 'Unknown'}
+                                                {act.device && act.device !== 'unknown' ? act.device : 'Unknown'}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-4 text-xs font-bold text-zinc-400">
                                             <div className="flex items-center gap-1.5">
                                                 <MapPin className="w-3.5 h-3.5" />
-                                                {act.location?.city ? `${act.location.city}, ${act.location.country}` : 'Unknown Location'}
+                                                {(act.city && act.city !== 'Unknown') ? `${act.city}, ${act.country}` : 'Unknown Location'}
                                             </div>
                                             <div className="w-1 h-1 rounded-full bg-zinc-200" />
                                             <div className="flex items-center gap-1.5">
                                                 <Globe className="w-3.5 h-3.5" />
-                                                {act.referrer ? new URL(act.referrer).hostname : 'Direct Entry'}
+                                                {(() => {
+                                                    if (!act.referrer || act.referrer === 'Direct') return 'Direct Entry';
+                                                    try { return new URL(act.referrer).hostname; }
+                                                    catch (e) { return act.referrer; }
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-8 pl-20 md:pl-0">
+                                <div className="flex items-center gap-4 md:gap-6 pl-14 md:pl-0 w-full md:w-auto justify-between md:justify-end">
                                     <div className="text-right">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300 mb-1">Packet Captured</p>
-                                        <div className="flex items-center justify-end gap-2 text-zinc-500 font-bold text-sm">
-                                            <Clock className="w-3.5 h-3.5" />
-                                            {formatDistanceToNow(new Date(act.timestamp))} ago
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-zinc-300 mb-0.5">Packet Captured</p>
+                                        <div className="flex items-center justify-end gap-1.5 text-zinc-500 font-bold text-xs">
+                                            <Clock className="w-3 h-3" />
+                                            {formatDistanceToNow(new Date(act.createdAt))} ago
                                         </div>
                                     </div>
-                                    <div className="h-10 w-px bg-zinc-100" />
-                                    <div className="p-4 bg-zinc-50 rounded-2xl group-hover:bg-zinc-100 transition-colors">
-                                        <Shield className="w-5 h-5 text-zinc-300 group-hover:text-black transition-colors" />
+                                    <div className="h-8 w-px bg-zinc-100 hidden md:block" />
+                                    <div className="p-3 bg-zinc-50 rounded-xl group-hover:bg-zinc-100 transition-colors">
+                                        <Shield className="w-4 h-4 text-zinc-300 group-hover:text-black transition-colors" />
                                     </div>
                                 </div>
                             </div>
                         ))}
+                        
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="flex items-center justify-between pt-8 mt-8 border-t border-zinc-100">
+                                <p className="text-xs font-bold text-zinc-400">
+                                    Showing <span className="text-black">{((currentPage - 1) * ITEMS_PER_PAGE) + 1}</span> to <span className="text-black">{Math.min(currentPage * ITEMS_PER_PAGE, pagination.total)}</span> of <span className="text-black">{pagination.total}</span> signals
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    <button 
+                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-3 bg-white border border-zinc-200 rounded-xl text-black hover:border-black hover:bg-zinc-50 disabled:opacity-50 disabled:hover:border-zinc-200 disabled:hover:bg-white transition-all"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                    <div className="px-4 py-3 bg-zinc-50 rounded-xl text-xs font-black text-black">
+                                        Page {currentPage} of {totalPages}
+                                    </div>
+                                    <button 
+                                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-3 bg-white border border-zinc-200 rounded-xl text-black hover:border-black hover:bg-zinc-50 disabled:opacity-50 disabled:hover:border-zinc-200 disabled:hover:bg-white transition-all"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="py-40 text-center border-2 border-dashed border-zinc-100 rounded-[48px]">

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import SettingsView from '@/components/settings/SettingsView';
 import HubView from '@/components/dashboard/management/HubView';
@@ -23,6 +23,7 @@ import {
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
   const [selectedShortCode, setSelectedShortCode] = useState(null);
   const [activeView, setActiveView] = useState('links'); 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -34,12 +35,17 @@ export default function Dashboard() {
   const [showAllMarkets, setShowAllMarkets] = useState(false);
   const router = useRouter();
 
-  // Redirect if no token
+  // Redirect if no token, handle incoming link requests
   useEffect(() => {
     if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
       router.push('/login');
+      return;
     }
-  }, [router]);
+    const linkParam = searchParams.get('link');
+    if (linkParam) {
+        setSelectedShortCode(linkParam);
+    }
+  }, [router, searchParams]);
 
   // Use Centralized Hooks
   const { data: userData } = useUserAuth();
@@ -158,6 +164,7 @@ export default function Dashboard() {
             )}
             <AnalyticsOverview 
               overviewData={overviewData}
+              urls={urls}
               userPlan={userPlan}
               showAllMarkets={showAllMarkets}
               setShowAllMarkets={setShowAllMarkets}

@@ -10,14 +10,23 @@ export default function LayoutWrapper({ children }) {
     const isRedirectionPage = pathname.startsWith('/r/');
     const isStandalonePage = ['/about', '/faq', '/contact'].includes(pathname);
     const isAuthPage = ['/login', '/signup', '/forgot-password'].includes(pathname) || pathname.startsWith('/reset-password');
+    const isDashboard = pathname.startsWith('/dashboard');
 
     return (
         <>
-            {(!isAdminPage && !isStandalonePage && !isHubPage && !isRedirectionPage && !isAuthPage) && <Navbar />}
+            {(!isAdminPage && !isStandalonePage && !isHubPage && !isRedirectionPage && !isAuthPage) && (
+                <div className={isDashboard ? "md:hidden block" : ""}>
+                    <Navbar />
+                </div>
+            )}
             <main className={`flex-grow ${isAdminPage ? 'bg-black' : ''}`}>
                 {children}
             </main>
-            {(!isAdminPage && !isStandalonePage && !isHubPage && !isRedirectionPage && !isAuthPage) && <Footer />}
+            {(!isAdminPage && !isStandalonePage && !isHubPage && !isRedirectionPage && !isAuthPage) && (
+                <div className={isDashboard ? "md:hidden block" : ""}>
+                    <Footer />
+                </div>
+            )}
         </>
     );
 }

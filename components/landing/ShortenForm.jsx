@@ -45,10 +45,10 @@ const ShortenForm = ({ onUrlCreated }) => {
     const error = mutationError?.response?.data?.error;
 
     return (
-        <div className="border border-zinc-200 bg-white p-6 md:p-10 rounded-3xl mb-12">
-            <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="border border-zinc-200 bg-white p-5 md:p-6 rounded-[24px] mb-8">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex flex-col gap-4">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                         <div className="md:col-span-12 lg:col-span-4 space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Original URL</label>
                             <div className="relative">
@@ -57,7 +57,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                                     type="url"
                                     required
                                     placeholder="https://example.com/very-long-path"
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 px-6 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-medium text-sm"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 px-4 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-medium text-sm"
                                     value={url}
                                     onChange={(e) => setUrl(e.target.value)}
                                 />
@@ -69,7 +69,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Domain</label>
                             <div className="relative">
                                 <select
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-bold text-sm appearance-none"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 px-4 text-black focus:outline-none focus:border-black transition-all font-bold text-sm appearance-none"
                                     value={selectedDomain}
                                     onChange={(e) => setSelectedDomain(e.target.value)}
                                 >
@@ -89,7 +89,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                             <input
                                 type="text"
                                 placeholder="alias"
-                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 px-6 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-bold text-sm"
+                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 px-4 text-black placeholder:text-zinc-300 focus:outline-none focus:border-black transition-all font-bold text-sm"
                                 value={alias}
                                 onChange={(e) => setAlias(e.target.value)}
                             />
@@ -100,7 +100,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Campaign</label>
                             <div className="relative">
                                 <select
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 px-6 text-black focus:outline-none focus:border-black transition-all font-bold text-sm appearance-none"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 px-4 text-black focus:outline-none focus:border-black transition-all font-bold text-sm appearance-none"
                                     value={selectedCampaign}
                                     onChange={(e) => setSelectedCampaign(e.target.value)}
                                 >
@@ -119,7 +119,7 @@ const ShortenForm = ({ onUrlCreated }) => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-black text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all h-[54px] text-xs uppercase tracking-widest shadow-lg shadow-black/10"
+                                className="w-full bg-black text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all h-[46px] text-xs uppercase tracking-widest shadow-lg shadow-black/10"
                             >
                                 {loading ? <Loader2 className="animate-spin w-4 h-4" /> : 'SHORTEN'}
                             </button>

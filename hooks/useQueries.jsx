@@ -275,12 +275,14 @@ export function useTopPerformers() {
   });
 }
 
-export function useActivityStream() {
+export function useActivityStream(shortCode = 'ALL', page = 1) {
   return useQuery({
-    queryKey: ['activityStream'],
+    queryKey: ['activityStream', shortCode, page],
     queryFn: async () => {
-      const { data } = await api.get('/links/activity');
-      return data.data || [];
+      const params = new URLSearchParams({ page });
+      if (shortCode !== 'ALL') params.append('shortCode', shortCode);
+      const { data } = await api.get(`/analytics/activity?${params.toString()}`);
+      return data;
     },
   });
 }

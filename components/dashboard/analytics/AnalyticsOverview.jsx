@@ -1,27 +1,47 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { 
     Zap, Users, Activity, Database, Link2, Globe, 
     Loader2, ArrowUpRight, MapPin, Smartphone, 
-    ChevronRight 
+    ChevronRight, Search 
 } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import StatCard from './StatCard';
 import AnalyticsChart from '@/components/analytics/AnalyticsChart';
+import { useActivityStream } from '@/hooks/useQueries';
 
 const AnalyticsOverview = ({ 
     overviewData, 
+    urls = [],
     userPlan, 
     showAllMarkets, 
     setShowAllMarkets, 
     loading, 
     setActiveView 
 }) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedLink, setSelectedLink] = useState('ALL');
+
+    // Fetch live feed data dynamically using the server-side filter
+    const { data: activityResponse = {} } = useActivityStream(selectedLink, 1);
+    const liveFeed = activityResponse.data || overviewData?.recentClicks || [];
+
+    // Combine all active URLs with any historical ones found in the feed
+    const uniqueLinks = [...new Set([
+        ...urls.map(u => u.shortCode),
+        ...liveFeed.map(act => act.shortCode)
+    ])];
+
+    const filteredClicks = liveFeed.filter(click => {
+        return click.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               click.country?.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
         <div className={`animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-12 ${['free', 'starter'].includes(userPlan) ? 'blur-[8px] pointer-events-none select-none grayscale opacity-40' : ''}`}>
             {/* OVERVIEW STATS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                     title="Total Traffic Reach"
                     value={overviewData?.totalClicks || 0}
@@ -58,10 +78,10 @@ const AnalyticsOverview = ({
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                <div className="lg:col-span-2 bg-white border border-zinc-100 rounded-[40px] p-10 shadow-sm relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden">
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-10">
+                        <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h3 className="text-xl font-black text-black">Global Performance.</h3>
                                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time aggregate performance metrics</p>
@@ -77,16 +97,16 @@ const AnalyticsOverview = ({
                     </div>
                 </div>
 
-                <div className="bg-zinc-950 text-white rounded-[40px] p-10 relative overflow-hidden group">
+                <div className="bg-zinc-950 text-white rounded-[24px] p-6 relative overflow-hidden group">
                     <div className="relative z-10 h-full flex flex-col">
-                        <div className="flex items-center justify-between mb-10">
+                        <div className="flex items-center justify-between mb-6">
                             <h3 className="text-xl font-black text-white">Top 5 Performers.</h3>
                             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
                                 <ArrowUpRight className="w-4 h-4" />
                             </div>
                         </div>
 
-                        <div className="space-y-6 flex-1">
+                        <div className="space-y-4 flex-1">
                             {overviewData?.topPerformers?.map((u, i) => (
                                 <div key={i} className="flex items-center justify-between group/item">
                                     <div className="flex items-center gap-4">
@@ -106,7 +126,7 @@ const AnalyticsOverview = ({
 
                         <Link
                             href="/dashboard/performers"
-                            className="w-full py-4 bg-white text-black rounded-2xl font-black text-center text-[10px] uppercase tracking-widest mt-10 hover:bg-zinc-200 transition-all"
+                            className="w-full py-3 bg-white text-black rounded-2xl font-black text-center text-[10px] uppercase tracking-widest mt-6 hover:bg-zinc-200 transition-all"
                         >
                             Full Performers List
                         </Link>
@@ -115,8 +135,8 @@ const AnalyticsOverview = ({
             </div>
 
             {/* REAL-TIME GLOBAL FEED */}
-            <div className="bg-white border border-zinc-100 rounded-[40px] p-10">
-                <div className="flex items-center justify-between mb-10">
+            <div className="bg-white border border-zinc-100 rounded-[24px] p-6">
+                <div className="flex items-center justify-between mb-6">
                     <div>
                         <h3 className="text-xl font-black text-black">Live Visitor Feed.</h3>
                         <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time engagement across your links</p>
@@ -127,8 +147,43 @@ const AnalyticsOverview = ({
                     </div>
                 </div>
 
+                {/* Search Bar & Filters */}
+                <div className="mb-6 flex flex-col md:flex-row gap-4">
+                    <div className="relative group flex-1">
+                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <Search className="w-4 h-4 text-zinc-400 group-focus-within:text-black transition-colors" />
+                        </div>
+                        <input 
+                            type="text" 
+                            placeholder="Filter live feed by shortcode or location..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full h-full min-h-[48px] bg-zinc-50 border border-zinc-100 text-black text-sm font-bold rounded-2xl py-3 pl-12 pr-6 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all"
+                        />
+                    </div>
+                    
+                    <div className="relative md:w-48">
+                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                            <Link2 className="w-4 h-4 text-zinc-400" />
+                        </div>
+                        <select
+                            value={selectedLink}
+                            onChange={(e) => setSelectedLink(e.target.value)}
+                            className="w-full h-full min-h-[48px] appearance-none bg-zinc-50 border border-zinc-100 text-black text-sm font-bold rounded-2xl py-3 pl-12 pr-10 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all cursor-pointer"
+                        >
+                            <option value="ALL">All Links</option>
+                            {uniqueLinks.map(link => (
+                                <option key={link} value={link}>{link}</option>
+                            ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                            <div className="w-2 h-2 border-b-2 border-r-2 border-zinc-400 transform rotate-45 -translate-y-0.5" />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {overviewData?.recentClicks?.slice(0, 9).map((click, i) => (
+                    {filteredClicks.slice(0, 9).map((click, i) => (
                         <div key={i} className="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 group hover:border-black transition-all">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
@@ -169,8 +224,8 @@ const AnalyticsOverview = ({
 
                 {/* Advanced Geo-Intelligence Heatmap (Scale Exclusive) */}
                 {userPlan === 'business' && (
-                    <div className="mt-12 pt-12 border-t border-zinc-50">
-                        <div className="flex items-center justify-between mb-10">
+                    <div className="mt-8 pt-8 border-t border-zinc-50">
+                        <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h3 className="text-xl font-black text-black">Global Traffic Heatmap.</h3>
                                 <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time signal density and market reach</p>

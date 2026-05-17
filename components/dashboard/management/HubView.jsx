@@ -50,22 +50,22 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
     );
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Left Column: Editor & Stats */}
-            <div className="lg:col-span-7 space-y-8">
+            <div className="lg:col-span-7 space-y-6">
                 {/* Hub Stats Card */}
-                <div className="bg-black text-white rounded-[32px] p-8 relative overflow-hidden group">
+                <div className="bg-black text-white rounded-[24px] p-6 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 transition-opacity">
                         <BarChart3 className="w-24 h-24" />
                     </div>
 
                     <div className="relative z-10">
-                        <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
+                        <h2 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
                             <Activity className="w-3 h-3 text-indigo-500" />
                             Hub Performance
                         </h2>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                             <div>
                                 <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Total Audience</p>
                                 <p className="text-3xl font-black font-mono">{links.reduce((acc, curr) => acc + curr.totalClicks, 0).toLocaleString()}</p>
@@ -93,10 +93,10 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                 </div>
 
                 {/* Identity Editor */}
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm relative overflow-hidden">
+                <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden">
                     {/* Elite Gate */}
                     {['free', 'starter'].includes(userPlan) && (
-                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8">
+                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6">
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <ShieldCheck className="w-6 h-6 text-indigo-400" />
                             </div>
@@ -111,7 +111,7 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                         </div>
                     )}
 
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
                             <User className="w-5 h-5 text-indigo-500" />
                             <h2 className="text-sm font-black uppercase tracking-[0.2em]">Profile Settings</h2>
@@ -126,8 +126,8 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                         </a>
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Username</label>
                                 <div className="relative">
@@ -156,11 +156,11 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                             <textarea
                                 value={profile.bio}
                                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all h-24 resize-none"
+                                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-black outline-none transition-all h-20 resize-none"
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <SocialInput
                                 label="Twitter"
                                 value={profile.socialLinks?.twitter}
@@ -176,7 +176,7 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                         <button
                             onClick={onSave}
                             disabled={saving}
-                            className="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4"
+                            className="w-full flex items-center justify-center gap-3 bg-black text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50 mt-4 h-[46px]"
                         >
                             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Save Profile
@@ -193,16 +193,16 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                         <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Sandbox Preview</h3>
                     </div>
 
-                    <div className="bg-zinc-950 rounded-[48px] p-5 shadow-2xl border-[8px] border-zinc-900 h-[650px] relative overflow-hidden group">
+                    <div className="bg-zinc-950 rounded-[36px] p-4 shadow-2xl border-[6px] border-zinc-900 h-[600px] relative overflow-hidden group">
                         {/* Background Decor */}
                         <div className="absolute inset-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none" />
 
-                        <div className="bg-white rounded-[40px] h-full overflow-y-auto custom-scrollbar relative">
+                        <div className="bg-white rounded-[28px] h-full overflow-y-auto custom-scrollbar relative">
                             {/* Header */}
-                            <div className="pt-16 pb-12 flex flex-col items-center text-center px-6 relative">
-                                <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-indigo-50/50 to-white" />
+                            <div className="pt-12 pb-8 flex flex-col items-center text-center px-6 relative">
+                                <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-indigo-50/50 to-white" />
 
-                                <div className="w-24 h-24 bg-zinc-100 rounded-[32px] mb-6 shadow-xl border-4 border-white flex items-center justify-center text-3xl font-black text-zinc-300 relative z-10 overflow-hidden">
+                                <div className="w-20 h-20 bg-zinc-100 rounded-[24px] mb-4 shadow-xl border-4 border-white flex items-center justify-center text-2xl font-black text-zinc-300 relative z-10 overflow-hidden">
                                     {profile.displayName?.charAt(0).toUpperCase() || <User className="w-10 h-10" />}
                                 </div>
 
@@ -219,7 +219,7 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                             </div>
 
                             {/* Links List */}
-                            <div className="px-6 pb-20 space-y-3">
+                            <div className="px-5 pb-16 space-y-2">
                                 {links.slice(0, 5).map((link, i) => (
                                     <div key={i} className="group/link block bg-zinc-50 border border-zinc-100 p-4 rounded-2xl transition-all hover:bg-white hover:border-black hover:shadow-lg">
                                         <div className="flex items-center justify-between">
@@ -242,7 +242,7 @@ export default function HubView({ username: dashboardUsername, userPlan }) {
                             </div>
 
                             {/* Branding */}
-                            <div className="mt-auto py-8 flex flex-col items-center gap-2 opacity-30 sticky bottom-0 bg-white/80 backdrop-blur-sm w-full border-t border-zinc-50">
+                            <div className="mt-auto py-6 flex flex-col items-center gap-2 opacity-30 sticky bottom-0 bg-white/80 backdrop-blur-sm w-full border-t border-zinc-50">
                                 <div className="flex items-center gap-1.5 font-black text-sm">
                                     <div className="w-2.4 h-2.4 bg-black rounded-full" />
                                     smol.

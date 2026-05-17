@@ -22,7 +22,7 @@ export function TabButton({ active, onClick, icon, label }) {
     return (
         <button
             onClick={onClick}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${active
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all outline-none focus-visible:ring-2 focus-visible:ring-black/5 ${active
                     ? 'bg-white text-black shadow-sm'
                     : 'text-zinc-400 hover:text-black hover:bg-zinc-100/50'
                 }`}

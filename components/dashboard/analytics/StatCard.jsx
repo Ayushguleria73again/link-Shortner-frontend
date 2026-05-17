@@ -5,7 +5,7 @@ import { TrendingUp } from 'lucide-react';
 export default function StatCard({ label, title, value, icon, color = 'bg-indigo-500', trend }) {
     const displayLabel = label || title;
     return (
-        <div className="bg-white border border-zinc-100 p-8 rounded-[32px] shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+        <div className="bg-white border border-zinc-100 p-5 rounded-[24px] shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
             <div className={`absolute top-0 right-0 w-32 h-32 ${color} opacity-[0.03] rounded-full -mr-16 -mt-16 group-hover:opacity-[0.06] transition-opacity`} />
             <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-2xl ${color}/10 text-black`}>

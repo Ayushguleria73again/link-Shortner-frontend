@@ -50,8 +50,8 @@ export default function DomainManager({ userPlan }) {
     if (loading) return <div className="py-10 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-indigo-500" /></div>;
 
     return (
-        <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
-            <div className="flex items-center justify-between mb-8">
+        <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <Globe className="w-5 h-5 text-indigo-500" />
                     <h2 className="text-sm font-black uppercase tracking-[0.2em]">Custom Domains</h2>
@@ -64,7 +64,7 @@ export default function DomainManager({ userPlan }) {
             <div className="relative">
                 {/* Elite Gate for Free Tier */}
                 {userPlan === 'free' && (
-                    <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8 rounded-2xl border border-dashed border-zinc-200">
+                    <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 rounded-[24px] border border-dashed border-zinc-200">
                         <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center mb-3 shadow-xl">
                             <Globe className="w-5 h-5 text-indigo-400" />
                         </div>
@@ -80,7 +80,7 @@ export default function DomainManager({ userPlan }) {
                 )}
 
                 {/* Add Domain Form */}
-                <form onSubmit={handleAddDomain} className="mb-8">
+                <form onSubmit={handleAddDomain} className="mb-6">
                     <div className="flex gap-3">
                         <div className="flex-1 relative">
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-sm">https://</span>

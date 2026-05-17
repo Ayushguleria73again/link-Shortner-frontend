@@ -115,97 +115,12 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
             />
 
             {/* Link Hub Settings */}
-            <div className="lg:col-span-2 space-y-8">
-                {/* Profile Identity & Digital Persona */}
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm">
-                    <div className="flex items-center justify-between mb-10">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-zinc-50 rounded-2xl border border-zinc-100">
-                                <User className="w-5 h-5 text-indigo-500" />
-                            </div>
-                            <div>
-                                <h2 className="text-sm font-black uppercase tracking-[0.2em]">Profile Identity</h2>
-                                <p className="text-[10px] text-zinc-400 font-medium mt-0.5">Control how you appear across the smol. network.</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleSaveProfile}
-                            disabled={saving}
-                            className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all disabled:opacity-50 shadow-lg shadow-black/10"
-                        >
-                            {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
-                            Save Changes
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                        <div className="space-y-6">
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Universal Username</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 text-xs font-bold">smol.link/u/</span>
-                                    <input
-                                        type="text"
-                                        value={profile.username}
-                                        onChange={(e) => setProfile({ ...profile, username: e.target.value.toLowerCase().replace(/\s/g, '') })}
-                                        className="w-full pl-[88px] pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
-                                        placeholder="username"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Display Name</label>
-                                <input
-                                    type="text"
-                                    value={profile.displayName}
-                                    onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                                    className="w-full px-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all"
-                                    placeholder="Your full name or alias"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Short Bio</label>
-                            <textarea
-                                value={profile.bio}
-                                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                                className="w-full px-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs font-bold focus:ring-1 focus:ring-black outline-none transition-all h-[132px] resize-none"
-                                placeholder="Tell the world who you are in a few words..."
-                            />
-                        </div>
-                    </div>
-
-                    <div className="pt-10 border-t border-zinc-50">
-                        <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6">Social Connections</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <SocialInput 
-                                label="Twitter" 
-                                value={profile.socialLinks?.twitter} 
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, twitter: val } })}
-                            />
-                            <SocialInput 
-                                label="GitHub" 
-                                value={profile.socialLinks?.github} 
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, github: val } })}
-                            />
-                            <SocialInput 
-                                label="LinkedIn" 
-                                value={profile.socialLinks?.linkedin} 
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, linkedin: val } })}
-                            />
-                            <SocialInput 
-                                label="Instagram" 
-                                value={profile.socialLinks?.instagram} 
-                                onChange={(val) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, instagram: val } })}
-                            />
-                        </div>
-                    </div>
-                </div>
+            <div className="lg:col-span-2 space-y-6">
 
                 {/* Operational Campaign Manager */}
-                <div className="relative overflow-hidden rounded-[32px]">
+                <div className="relative bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm">
                     {['free', 'starter'].includes(userPlan) && (
-                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8 rounded-[32px] border border-zinc-100">
+                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 rounded-[24px]">
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <Database className="w-6 h-6 text-indigo-400" />
                             </div>
@@ -230,10 +145,10 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                 <DomainManager userPlan={userPlan} />
 
                 {/* Personalization & Redirection Aesthetics */}
-                <div className="bg-white border border-zinc-100 rounded-[32px] p-8 shadow-sm relative overflow-hidden">
+                <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden">
                     {/* Elite Gate */}
                     {['free', 'starter'].includes(userPlan) && (
-                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8">
+                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6">
                             <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
                                 <Palette className="w-6 h-6 text-indigo-400" />
                             </div>
@@ -245,13 +160,13 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                         </div>
                     )}
 
-                    <div className="flex items-center gap-3 mb-8">
+                    <div className="flex items-center gap-3 mb-6">
                         <Palette className="w-5 h-5 text-indigo-500" />
                         <h2 className="text-sm font-black uppercase tracking-[0.2em]">Custom Branding</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Company Name</label>
                                 <input
@@ -281,7 +196,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             </div>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Brand Accent Color</label>
                                 <div className="flex items-center gap-4 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
@@ -326,58 +241,67 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                 </div>
 
                         {/* API KEY SECTION */}
-                        <div className="bg-white border border-zinc-100 rounded-[32px] p-8 mt-8 shadow-sm">
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-3">
-                                    <Key className="w-5 h-5 text-indigo-500" />
-                                    <h2 className="text-sm font-black uppercase tracking-[0.2em]">Developer Access</h2>
+                        <div className="relative overflow-hidden bg-white border border-zinc-100 rounded-[24px] p-6 mt-6 shadow-sm">
+                            {/* Coming Soon Overlay */}
+                            <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center text-center p-6">
+                                <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-3 shadow-xl">
+                                    <Key className="w-5 h-5 text-indigo-400" />
                                 </div>
-                                <button
-                                    onClick={() => generateApiKey()}
-                                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
-                                >
-                                    <RefreshCcw className="w-3 h-3" />
-                                    Rotate Key
-                                </button>
+                                <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-1">Coming Soon</h3>
+                                <p className="text-[10px] text-zinc-500 font-medium max-w-[200px]">Programmatic API access is currently in development.</p>
                             </div>
 
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Your API Key</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            readOnly
-                                            type="password"
-                                            value={apiKey || '••••••••••••••••'}
-                                            className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-mono font-bold focus:ring-1 focus:ring-black outline-none transition-all"
-                                        />
-                                        <button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(apiKey);
-                                                toast.success('API Key copied to clipboard');
-                                            }}
-                                            className="px-4 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all"
-                                        >
-                                            Copy
-                                        </button>
+                            <div className="opacity-40 pointer-events-none select-none">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <Key className="w-5 h-5 text-indigo-500" />
+                                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Developer Access</h2>
                                     </div>
-                                    <p className="text-[9px] text-zinc-400 mt-3 flex items-center gap-1.5">
-                                        <Shield className="w-3 h-3" />
-                                        Keep this key secure. It provides full access to your account signals via the API.
-                                    </p>
+                                    <button
+                                        disabled
+                                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 transition-colors"
+                                    >
+                                        <RefreshCcw className="w-3 h-3" />
+                                        Rotate Key
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2 block">Your API Key</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                readOnly
+                                                disabled
+                                                type="password"
+                                                value="••••••••••••••••"
+                                                className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-mono font-bold outline-none transition-all"
+                                            />
+                                            <button
+                                                disabled
+                                                className="px-4 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                                            >
+                                                Copy
+                                            </button>
+                                        </div>
+                                        <p className="text-[9px] text-zinc-400 mt-3 flex items-center gap-1.5">
+                                            <Shield className="w-3 h-3" />
+                                            Keep this key secure. It provides full access to your account signals via the API.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-6">
                 {/* Usage & Plan Card */}
                 {/* Usage & Plan Card */}
                 <div className="relative group">
                     {/* Animated Border Gradient */}
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-[34px] opacity-75 blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-[26px] opacity-75 blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
 
-                    <div className="relative bg-zinc-950 text-white rounded-[32px] p-8 overflow-hidden border border-zinc-800">
+                    <div className="relative bg-zinc-950 text-white rounded-[24px] p-6 overflow-hidden border border-zinc-800">
                         {/* Texture/Pattern */}
                         {/* <div className="absolute inset-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div> */}
 
@@ -465,7 +389,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                     </div>
                 </div>
 
-                <div className="bg-zinc-50 border border-zinc-100 rounded-[32px] p-8">
+                <div className="bg-zinc-50 border border-zinc-100 rounded-[24px] p-6">
                     <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
                         <Bell className="w-3 h-3" />
                         System Settings
@@ -493,7 +417,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                 <div className="space-y-4">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-3 bg-zinc-100 text-zinc-600 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all border border-zinc-200"
+                        className="w-full flex items-center justify-center gap-3 bg-zinc-100 text-zinc-600 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all border border-zinc-200"
                     >
                         <PowerOff className="w-4 h-4" />
                         Log Out
@@ -501,7 +425,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
 
                     <button
                         onClick={() => setShowDeleteModal(true)}
-                        className="w-full flex items-center justify-center gap-3 bg-rose-50 text-rose-500 py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all border border-rose-100 group"
+                        className="w-full flex items-center justify-center gap-3 bg-rose-50 text-rose-500 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all border border-rose-100 group"
                     >
                         <PowerOff className="w-4 h-4 group-hover:rotate-180 transition-transform" />
                         Delete Account
