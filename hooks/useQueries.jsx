@@ -14,6 +14,7 @@ export function useUserAuth() {
         api.get('/profile/me')
       ]);
       return {
+        ...userRes.data.data,
         plan: userRes.data.data?.plan || 'free',
         username: profileRes.data.data?.username,
         profile: profileRes.data.data
@@ -108,11 +109,11 @@ export function useDeleteUrl() {
 /**
  * Analytics Hooks
  */
-export function useLinkAnalytics(shortCode) {
+export function useLinkAnalytics(shortCode, range = '7d') {
   return useQuery({
-    queryKey: ['analytics', shortCode],
+    queryKey: ['analytics', shortCode, range],
     queryFn: async () => {
-      const { data } = await api.get(`/analytics/${shortCode}`);
+      const { data } = await api.get(`/analytics/${shortCode}?range=${range}`);
       return data.data;
     },
     enabled: !!shortCode,
@@ -120,11 +121,11 @@ export function useLinkAnalytics(shortCode) {
   });
 }
 
-export function useOverviewAnalytics(enabled = false) {
+export function useOverviewAnalytics(enabled = false, range = '7d') {
   return useQuery({
-    queryKey: ['overviewAnalytics'],
+    queryKey: ['overviewAnalytics', range],
     queryFn: async () => {
-      const { data } = await api.get('/analytics/overview');
+      const { data } = await api.get(`/analytics/overview?range=${range}`);
       return data.data;
     },
     enabled: enabled,
@@ -269,7 +270,7 @@ export function useTopPerformers() {
   return useQuery({
     queryKey: ['topPerformers'],
     queryFn: async () => {
-      const { data } = await api.get('/links/performers');
+      const { data } = await api.get('/analytics/performers');
       return data.data || [];
     },
   });

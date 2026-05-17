@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import Link from 'next/link';
 import StatCard from './StatCard';
 import AnalyticsChart from '@/components/analytics/AnalyticsChart';
-import { useActivityStream } from '@/hooks/useQueries';
+import { useActivityStream, useLinkAnalytics, useOverviewAnalytics } from '@/hooks/useQueries';
 
 const AnalyticsOverview = ({ 
     overviewData, 
@@ -22,6 +22,7 @@ const AnalyticsOverview = ({
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedLink, setSelectedLink] = useState('ALL');
+    const [dateRange, setDateRange] = useState('7d');
 
     // Fetch live feed data dynamically using the server-side filter
     const { data: activityResponse = {} } = useActivityStream(selectedLink, 1);
@@ -32,6 +33,22 @@ const AnalyticsOverview = ({
         ...urls.map(u => u.shortCode),
         ...liveFeed.map(act => act.shortCode)
     ])];
+
+    // Fetch specific link analytics if selected
+    const { data: linkAnalyticsData, isLoading: linkAnalyticsLoading } = useLinkAnalytics(
+        selectedLink !== 'ALL' ? selectedLink : null,
+        dateRange
+    );
+
+    // Fetch overview analytics if global and filtered by date range
+    const { data: customOverviewData, isLoading: customOverviewLoading } = useOverviewAnalytics(
+        selectedLink === 'ALL',
+        dateRange
+    );
+
+    // Determine the active source of data
+    const activeData = selectedLink !== 'ALL' ? linkAnalyticsData : (customOverviewData || overviewData);
+    const isChartLoading = selectedLink !== 'ALL' ? linkAnalyticsLoading : customOverviewLoading;
 
     const filteredClicks = liveFeed.filter(click => {
         return click.shortCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,25 +61,25 @@ const AnalyticsOverview = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
                     title="Total Traffic Reach"
-                    value={overviewData?.totalClicks || 0}
+                    value={activeData?.totalClicks || 0}
                     icon={<Zap className="w-5 h-5 text-indigo-500" />}
                     trend="+14% this week"
                 />
                 <StatCard
                     title="Unique Audience"
-                    value={overviewData?.uniqueClicks || 0}
+                    value={activeData?.uniqueClicks || 0}
                     icon={<Users className="w-5 h-5 text-emerald-500" />}
                     trend="+8% this week"
                 />
                 <StatCard
                     title="Human Visitors"
-                    value={overviewData?.humanClicks || 0}
+                    value={activeData?.humanClicks || 0}
                     icon={<Activity className="w-5 h-5 text-indigo-500" />}
-                    trend={`${Math.round((overviewData?.humanClicks / (overviewData?.totalClicks || 1)) * 100)}% ratio`}
+                    trend={`${Math.round((activeData?.humanClicks / (activeData?.totalClicks || 1)) * 100)}% ratio`}
                 />
                 <StatCard
                     title="Automated Traffic"
-                    value={overviewData?.botClicks || 0}
+                    value={activeData?.botClicks || 0}
                     icon={<Database className="w-5 h-5 text-zinc-400" />}
                     trend="Filtered traffic"
                 />
@@ -73,7 +90,7 @@ const AnalyticsOverview = ({
                 />
                 <StatCard
                     title="Global Markets"
-                    value={overviewData?.countryStats?.length || 0}
+                    value={activeData?.countryStats?.length || 0}
                     icon={<Globe className="w-5 h-5 text-rose-500" />}
                 />
             </div>
@@ -81,14 +98,54 @@ const AnalyticsOverview = ({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden">
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                             <div>
-                                <h3 className="text-xl font-black text-black">Global Performance.</h3>
-                                <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time aggregate performance metrics</p>
+                                <h3 className="text-xl font-black text-black">
+                                    {selectedLink === 'ALL' ? 'Global Performance.' : `Performance for /${selectedLink}`}
+                                </h3>
+                                <p className="text-zinc-400 text-[10px] font-black uppercase tracking-widest mt-1">
+                                    {selectedLink === 'ALL' ? 'Real-time aggregate performance metrics' : 'Individual link redirection stats'}
+                                </p>
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-3">
+                                {/* Link Filter Dropdown */}
+                                <div className="relative min-w-[160px]">
+                                    <select
+                                        value={selectedLink}
+                                        onChange={(e) => setSelectedLink(e.target.value)}
+                                        className="w-full appearance-none bg-zinc-50 border border-zinc-100 text-black text-[10px] font-black uppercase tracking-widest rounded-xl py-2 pl-4 pr-10 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all cursor-pointer font-sans"
+                                    >
+                                        <option value="ALL">All Links</option>
+                                        {uniqueLinks.map(link => (
+                                            <option key={link} value={link}>{link}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-zinc-400">
+                                        <span className="text-[10px]">▼</span>
+                                    </div>
+                                </div>
+
+                                {/* Date Range Dropdown */}
+                                <div className="relative min-w-[140px]">
+                                    <select
+                                        value={dateRange}
+                                        onChange={(e) => setDateRange(e.target.value)}
+                                        className="w-full appearance-none bg-zinc-50 border border-zinc-100 text-black text-[10px] font-black uppercase tracking-widest rounded-xl py-2 pl-4 pr-10 outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all cursor-pointer font-sans"
+                                    >
+                                        <option value="today">Today</option>
+                                        <option value="7d">Last Week</option>
+                                        <option value="30d">Last Month</option>
+                                        <option value="all">All Time</option>
+                                    </select>
+                                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-zinc-400">
+                                        <span className="text-[10px]">▼</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        {overviewData ? (
-                            <AnalyticsChart data={overviewData.dailyClicks} />
+                        {activeData && !isChartLoading ? (
+                            <AnalyticsChart data={activeData.dailyClicks} />
                         ) : (
                             <div className="h-[300px] flex items-center justify-center">
                                 <Loader2 className="w-8 h-8 animate-spin text-zinc-200" />
@@ -131,6 +188,28 @@ const AnalyticsOverview = ({
                             Full Performers List
                         </Link>
                     </div>
+                </div>
+            </div>
+
+            {/* TRAFFIC SOURCES */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm">
+                    {activeData && !isChartLoading ? (
+                        <AnalyticsChart data={activeData.browserStats} title="Browser Distribution" type="bar" />
+                    ) : (
+                        <div className="h-[300px] flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 animate-spin text-zinc-200" />
+                        </div>
+                    )}
+                </div>
+                <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm">
+                    {activeData && !isChartLoading ? (
+                        <AnalyticsChart data={activeData.countryStats?.sort((a,b) => b.value - a.value).slice(0, 5)} title="Top Regions" type="pie" />
+                    ) : (
+                        <div className="h-[300px] flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 animate-spin text-zinc-200" />
+                        </div>
+                    )}
                 </div>
             </div>
 

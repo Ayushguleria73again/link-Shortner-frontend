@@ -146,24 +146,20 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
 
                 {/* Personalization & Redirection Aesthetics */}
                 <div className="bg-white border border-zinc-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden">
-                    {/* Elite Gate */}
-                    {['free', 'starter'].includes(userPlan) && (
-                        <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6">
-                            <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-4 shadow-2xl">
-                                <Palette className="w-6 h-6 text-indigo-400" />
-                            </div>
-                            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-2">Premium Customization</h3>
-                            <p className="text-xs text-zinc-500 font-medium max-w-[240px] mb-6">Upgrade to Pro to white-label your redirection bridge pages with custom branding.</p>
-                            <button className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-                                Unlock Branding
-                            </button>
+                    {/* Coming Soon Overlay */}
+                    <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center text-center p-6">
+                        <div className="w-12 h-12 bg-black text-white rounded-2xl flex items-center justify-center mb-3 shadow-xl">
+                            <Palette className="w-5 h-5 text-indigo-400" />
                         </div>
-                    )}
-
-                    <div className="flex items-center gap-3 mb-6">
-                        <Palette className="w-5 h-5 text-indigo-500" />
-                        <h2 className="text-sm font-black uppercase tracking-[0.2em]">Custom Branding</h2>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black mb-1">Coming Soon</h3>
+                        <p className="text-[10px] text-zinc-500 font-medium max-w-[200px]">Custom branding options are currently in development.</p>
                     </div>
+
+                    <div className="opacity-40 pointer-events-none select-none">
+                        <div className="flex items-center gap-3 mb-6">
+                            <Palette className="w-5 h-5 text-indigo-500" />
+                            <h2 className="text-sm font-black uppercase tracking-[0.2em]">Custom Branding</h2>
+                        </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
@@ -237,6 +233,7 @@ export default function SettingsView({ urls, onUpdateUrl, onCampaignSelect }) {
                             <p className="text-xs font-black text-black uppercase">Live Branding Preview</p>
                             <p className="text-[10px] text-zinc-400 font-medium">Changes are mirrored in real-time across your branded links.</p>
                         </div>
+                    </div>
                     </div>
                 </div>
 

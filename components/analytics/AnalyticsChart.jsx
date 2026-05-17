@@ -28,9 +28,10 @@ const AnalyticsChart = ({ data, title, type = "line" }) => {
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
+            const displayLabel = type === 'pie' ? payload[0].name : (label || title);
             return (
                 <div className="bg-white p-4 shadow-xl border border-zinc-100 rounded-2xl flex flex-col gap-1 ring-4 ring-black/5">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{label || title}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{displayLabel}</p>
                     <p className="text-lg font-black text-black">
                         {payload[0].value} <span className="text-sm font-medium text-zinc-400">Hits</span>
                     </p>
